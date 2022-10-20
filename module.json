@@ -1,0 +1,43 @@
+{
+    "id": "mini-tracker",
+    "title": "Mini Tracker",
+    "author": "Idle",
+    "description": "Floating combat tracker which can be moved, resized, minimized and reoriented.",
+    "authors": [
+        {
+            "name": "Idle",
+            "discord": "Idle#3251"
+        }
+    ],
+    "relationships": {
+        "requires": [
+            {
+                "id": "_sortablejs",
+                "type": "module",
+                "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/sortablejs-lib/main/module.json"
+            }
+        ]
+    },
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "esmodules": ["scripts/main.js"],
+    "styles": ["styles/tracker.css"],
+    "socket": true,
+    "version": "1.0.0",
+    "compatibility": {
+        "minimum": "10.287",
+        "verified": "10"
+    },
+    "manifestPlusVersion": "1.2.0",
+    "url": "https://github.com/reonZ/mini-tracker",
+    "readme": "https://github.com/reonZ/mini-tracker/blob/master/README.md",
+    "manifest": "https://raw.githubusercontent.com/reonZ/mini-tracker/master/module.json",
+    "download": "https://github.com/reonZ/mini-tracker/releases/download/1.0.0/module.zip",
+    "changelog": "https://github.com/reonZ/mini-tracker/releases",
+    "bugs": "https://github.com/reonZ/mini-tracker/issues"
+}

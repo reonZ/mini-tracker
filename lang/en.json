@@ -1,0 +1,32 @@
+{
+    "mini-tracker": {
+        "reverse": "Toggle Orientation",
+        "expand": "Expand List",
+        "settings": {
+            "enabled": {
+                "name": "Enabled",
+                "hint": "Enable/disable mini combat tracker"
+            },
+            "creature": {
+                "name": "Creature Name",
+                "hint": "Name used to hide creature names from players, leave empty to disable (unless the system has its own option)"
+            },
+            "pan": {
+                "name": "Pan to Token",
+                "hint": "Should the camera pan to the token of the current combatant"
+            },
+            "delay": {
+                "name": "Hover Delay",
+                "hint": "Time in milliseconds before the tracker expands on mouse hover"
+            },
+            "select": {
+                "name": "Select Token",
+                "hint": "Select the token of the current combatant"
+            },
+            "sheet": {
+                "name": "Open Sheet",
+                "hint": "Should the combatant sheet be openned on change"
+            }
+        }
+    }
+}
