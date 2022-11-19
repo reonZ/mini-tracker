@@ -7,6 +7,6 @@ export function playersCanSeeCombatantName(combatant) {
 }
 
 export function hideCreaturesName() {
-    if (game.system.id === 'pf2e') return !!game.settings.get('pf2e', 'metagame.tokenSetsNameVisibility')
+    if (game.system.id === 'pf2e') return !!game.settings.get('pf2e', 'metagame_tokenSetsNameVisibility')
     else return !!getSetting('creature')
 }
