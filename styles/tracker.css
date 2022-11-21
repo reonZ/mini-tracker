@@ -2,6 +2,10 @@
     position: fixed;
     width: 280px;
     z-index: 50;
+
+    font-size: 14px;
+    --sidebar-item-height: 48px;
+    --font-size-14: 14px;
 }
 #lvk-mini-tracker .__inner {
     position: relative;
