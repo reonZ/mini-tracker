@@ -2,6 +2,23 @@
 
 This module adds an extra floating `Combat Tracker` which provides new functionalities.
 
+-   [Displayed when needed](#displayed-when-needed)
+-   [Minimized](#minimized)
+-   [Expanded](#expanded)
+-   [Change Orientation](#change-orientation)
+-   [Saved](#saved)
+-   [Change initiative by dragging combatant](#change-initiative-by-dragging-combatant)
+-   [Hide creatures name](#hide-creatures-name)
+    -   [Systems](#systems)
+    -   [Modules](#modules)
+-   [Settings](#settings)
+    -   [Enabled (client)](#enabled-client)
+    -   [Hover Delay (client)](#hover-delay-client)
+    -   [Allow End Turn](#allow-end-turn)
+    -   [Pan to Token](#pan-to-token)
+    -   [Select Token](#select-token)
+    -   [Open Sheet](#open-sheet)
+
 # Displayed when needed
 
 The tracker will automatically appear on screen when there is an active encounter containing a combatant owned by the user (any combatant will do for the GM).
