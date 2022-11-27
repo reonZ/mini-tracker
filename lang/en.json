@@ -27,6 +27,10 @@
             "turn": {
                 "name": "Allow End Turn",
                 "hint": "Should the players be able to end their own turn."
+            },
+            "hp": {
+                "name": "System HP Path",
+                "hint": "If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM."
             }
         }
     }

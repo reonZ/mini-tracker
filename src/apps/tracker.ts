@@ -162,31 +162,36 @@ export class MiniTracker extends Application {
             return { hasCombat: false }
         }
 
-        const currentCombatant = combat.combatant
         const canHideNames = canNamesBeHidden()
         const allowEndTurn = getSetting<boolean>('turn')
+        const isCurrentTurn = !!combat.combatant?.isOwner
 
+        const isGM = game.user.isGM
+        const combatants = combat.combatants
+        const showHp = getSetting('hp')
+
+        let active = false
         let data = await ui.combat.getData()
 
-        if (canHideNames) {
-            const isGM = game.user.isGM
-            const combatants = combat.combatants
+        data.turns = data.turns.map(x => {
+            const combatant = combatants.get(x.id)!
+            const turn = x as CombatTrackerTurn & { hasPlayerOwner: boolean; playersCanSeeName: boolean; hp?: number | boolean }
 
-            data.turns = data.turns.map(x => {
-                const combatant = combatants.get(x.id)!
-                const turn = x as CombatTrackerTurn & { hasPlayerOwner: boolean; playersCanSeeName: boolean }
-                turn.hasPlayerOwner = combatant.hasPlayerOwner
-                turn.playersCanSeeName = playersSeeName(combatant)
-                if (!turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
-                return turn
-            })
-        }
+            turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`)
+            turn.hasPlayerOwner = combatant.hasPlayerOwner
+            turn.playersCanSeeName = playersSeeName(combatant)
+            if (canHideNames && !turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
+            if (x.active) active = true
 
-        if (!data.turns.find(x => x.active)) {
+            return turn
+        })
+
+        if (!active) {
             const active = Math.min(data.turn ?? 0, data.turns.length - 1)
             const combatant = data.turns[active]
-            combatant.active = true
             const css = combatant.css ? combatant.css.split(' ') : []
+
+            combatant.active = true
             css.push('active')
             combatant.css = css.join(' ')
         }
@@ -200,7 +205,8 @@ export class MiniTracker extends Application {
             canHideNames,
             innerCss: innerCss.join(' '),
             allowEndTurn,
-            canEndTurn: allowEndTurn && currentCombatant && currentCombatant.isOwner,
+            isCurrentTurn,
+            showHp,
         }
     }
 

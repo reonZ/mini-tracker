@@ -60,6 +60,13 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'hp',
+        config: true,
+        type: String,
+        default: 'attributes.hp.value',
+    })
+
+    registerSetting({
         name: 'pan',
         config: true,
         type: Boolean,

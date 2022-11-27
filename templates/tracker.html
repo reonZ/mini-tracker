@@ -73,7 +73,16 @@
 
                 <div class="__initiative">
                     {{#if this.hasRolled}}
+                    <!--  -->
+                    {{#if @root.user.isGM}}
+                    <div>
+                        <span>{{this.initiative}} <i class="fas fa-dice-d20"></i></span>
+                        <span>{{this.hp}} <i class="fas fa-heart"></i></span>
+                    </div>
+                    {{else}}
                     <span>{{this.initiative}}</span>
+                    {{/if}}
+                    <!--  -->
                     {{else if this.owner}}
                     <a class="__roll combatant-control" data-control="rollInitiative"></a>
                     {{/if}}
@@ -106,7 +115,7 @@
         </footer>
         {{else if allowEndTurn}}
         <footer>
-            <a class="combat-control{{#unless canEndTurn}} disabled{{/unless}}" data-control="nextTurn">
+            <a class="combat-control{{#unless isCurrentTurn}} disabled{{/unless}}" data-control="nextTurn">
                 {{localize 'COMBAT.TurnEnd'}}
             </a>
         </footer>
