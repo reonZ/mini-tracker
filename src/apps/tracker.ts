@@ -31,16 +31,16 @@ export class MiniTracker extends Application {
     constructor() {
         super()
 
-        const { left, bottom, top } = getSetting('coords') as TrackerCoords
+        const { left, bottom, top } = getSetting<TrackerCoords>('coords')
         if (typeof left === 'number') this.position.left = left
         if (typeof top === 'number') this.position.top = top
         if (typeof bottom === 'number') this.position.bottom = bottom
 
-        const expanded = getSetting('expanded') as string
+        const expanded = getSetting<string>('expanded')
         this._isExpanded = expanded !== 'false'
         this._maxHeight = expanded !== 'false' && expanded !== 'true' ? parseInt(expanded) : undefined
 
-        this._isReversed = getSetting('reversed') as boolean
+        this._isReversed = getSetting<boolean>('reversed')
 
         this._dragging = false
 
@@ -162,8 +162,11 @@ export class MiniTracker extends Application {
             return { hasCombat: false }
         }
 
-        let data = await ui.combat.getData()
+        const currentCombatant = combat.combatant
         const canHideNames = canNamesBeHidden()
+        const allowEndTurn = getSetting<boolean>('turn')
+
+        let data = await ui.combat.getData()
 
         if (canHideNames) {
             const isGM = game.user.isGM
@@ -196,6 +199,8 @@ export class MiniTracker extends Application {
             ...data,
             canHideNames,
             innerCss: innerCss.join(' '),
+            allowEndTurn,
+            canEndTurn: allowEndTurn && currentCombatant && currentCombatant.isOwner,
         }
     }
 
@@ -468,7 +473,7 @@ export class MiniTracker extends Application {
 
     #onListHover() {
         if (this.isExpanded) return
-        const delay = getSetting('delay') as number
+        const delay = getSetting<number>('delay')
         if (delay) this._listHoverHook = setTimeout(() => this.#expandList(), delay)
         else this.#expandList()
     }

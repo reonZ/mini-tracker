@@ -62,20 +62,24 @@ It will also add a new <img src="./readme/toggle.webp"> icon to show the GM the 
 
 ## Enabled (client)
 
-Enabel of disable the mini tracker for the user.
+Enable or disable the mini tracker for the user.
 
 ## Hover Delay (client)
 
-Set the amount of time (in milliseconds) before the tracker starts extending on mouse hover.
+Set the amount of time (in milliseconds) before the tracker starts expands on mouse hover.
+
+## Allow End Turn
+
+Should the players be able to end their own turn.
 
 ## Pan to Token
 
-When enabled, the GM's screen will center on the token of the combatant whose turn it is.
+Should the camera pan to the token of the current combatant. This option is only for the GM.
 
 ## Select Token
 
-When enabled, the token of the combatant whose turn it is will automatically select on the GM's client.
+Should the token of the current combatant be automatically selected. This option is only for the GM.
 
 ## Open Sheet
 
-When enabled, the actor sheet of the combatant whose turn it is will automatically be opened on the GM's client.
+Should the sheet of the current combatant be automatically opened. This option is only for the GM.

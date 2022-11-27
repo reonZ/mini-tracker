@@ -7,6 +7,10 @@
     --sidebar-item-height: 48px;
     --font-size-14: 14px;
 }
+#lvk-mini-tracker a.disabled {
+    color: grey;
+    pointer-events: none;
+}
 #lvk-mini-tracker .__inner {
     position: relative;
     border: 1px solid var(--color-border-dark);
@@ -59,6 +63,9 @@
     grid-template-columns: repeat(2, 24px) auto repeat(2, 24px);
 }
 #lvk-mini-tracker .__inner footer [data-control='startCombat'] {
+    grid-column: 3;
+}
+#lvk-mini-tracker .__inner footer [data-control='nextTurn']:only-child {
     grid-column: 3;
 }
 #lvk-mini-tracker .__inner > ol {

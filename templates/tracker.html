@@ -91,7 +91,7 @@
             <a class="combat-control" data-control="previousTurn" title="{{localize 'COMBAT.TurnPrev'}}">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <a class="combat-control" data-control="endCombat" title="{{localize 'COMBAT.End'}}"> {{localize 'COMBAT.End'}} </a>
+            <a class="combat-control" data-control="endCombat"> {{localize 'COMBAT.End'}} </a>
             <a class="combat-control" data-control="nextTurn" title="{{localize 'COMBAT.TurnNext'}}">
                 <i class="fas fa-arrow-right"></i>
             </a>
@@ -103,6 +103,12 @@
                 {{localize 'COMBAT.Begin'}}
             </a>
             {{/if}}
+        </footer>
+        {{else if allowEndTurn}}
+        <footer>
+            <a class="combat-control{{#unless canEndTurn}} disabled{{/unless}}" data-control="nextTurn">
+                {{localize 'COMBAT.TurnEnd'}}
+            </a>
         </footer>
         {{/if}}
     </div>

@@ -53,6 +53,13 @@ Hooks.once('init', () => {
     // WORLD SETTINGS
 
     registerSetting({
+        name: 'turn',
+        config: true,
+        type: Boolean,
+        default: false,
+    })
+
+    registerSetting({
         name: 'pan',
         config: true,
         type: Boolean,

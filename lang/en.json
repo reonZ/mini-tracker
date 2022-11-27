@@ -6,27 +6,27 @@
         "settings": {
             "enabled": {
                 "name": "Enabled",
-                "hint": "Enable/disable mini combat tracker"
-            },
-            "creature": {
-                "name": "Creature Name",
-                "hint": "Name used to hide creature names from players, leave empty to disable (unless the system has its own option)"
+                "hint": "Enable/disable mini combat tracker."
             },
             "pan": {
                 "name": "Pan to Token",
-                "hint": "Should the camera pan to the token of the current combatant"
+                "hint": "Should the camera pan to the token of the current combatant. This option is only for the GM."
             },
             "delay": {
                 "name": "Hover Delay",
-                "hint": "Time in milliseconds before the tracker expands on mouse hover"
+                "hint": "Time in milliseconds before the tracker expands on mouse hover."
             },
             "select": {
                 "name": "Select Token",
-                "hint": "Select the token of the current combatant"
+                "hint": "Select the token of the current combatant. This option is only for the GM."
             },
             "sheet": {
                 "name": "Open Sheet",
-                "hint": "Should the combatant sheet be openned on change"
+                "hint": "Should the sheet of the current combatant be automatically opened. This option is only for the GM."
+            },
+            "turn": {
+                "name": "Allow End Turn",
+                "hint": "Should the players be able to end their own turn."
             }
         }
     }
