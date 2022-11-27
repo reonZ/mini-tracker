@@ -29,7 +29,7 @@ The tracker will be removed when those conditions are not met anymore.
 
 ![](./readme/minimized.webp)
 
-The tracker is by default minimized to only display the current combatant and the header (also footer for the GM), this allow for a very discreet tracker that can be placed in a corner of the screen.
+The tracker is by default minimized to only display the current combatant, this allow for a very discreet tracker that can be placed in a corner of the screen.
 
 While minimized, the user can mouse over the combatant to expand the tracker temporarily, the delay before expansion can be set (default 250ms).
 
@@ -49,7 +49,7 @@ While expanded, you can reduce its size by dragging the extremity of the tracker
 
 The user can change the expanded orientation of the tracker by clicking <img src="./readme/orientation.webp" width="24">
 
-This will reverse the entire tracker, placing the header at the bottom (footer at the top for the GM) and expand the tracker upward instead of downward, this is useful if the user wants the tracker to be anchored at the bottom of the screen.
+This will reverse the tracker's window and make it expand upward instead of downward, this is useful if the user wants the tracker to be anchored at the bottom of the screen.
 
 # Saved
 
