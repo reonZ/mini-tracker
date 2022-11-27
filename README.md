@@ -38,16 +38,6 @@ This will reverse the entire tracker, placing the header at the bottom (footer a
 
 Position, orientation, minimized/expanded and size limite of the tracker are all saved on the user's browser between sessions.
 
-## Hide creatures name
-
-![](./readme/hidden.webp)
-
-The GM can set up a name that will be used in stead of NPC names in the tracker for the players. NOTE: it will also change the name in the regular tracker, otherwise this feature would be pointless.
-
-The GM can toggle showing individual NPC names by clicking <img src="./readme/rename.webp" width="24">
-
-The `Pathfinder Second Edition` system already has a system-wide feature to hide creature names, in that case, the module will directly hook into the system's feature, otherwise, the module will use its own mechanic.
-
 ## Change initiative by dragging combatant
 
 The tracker allow the GM to reorganize and change the initiative of a combatant simply by dragging them inside the tracker: Click and hold the left-click for a short time and start dragging a combatant to another position.
@@ -65,3 +55,14 @@ Those options are available to the GM to help them navigate quicker to the creat
 -   If `Open Sheet` is enabled, the creature's sheet will automatically be opened.
 
 Those options are only active for the GM when enabled, not for the players.
+
+## Hide creatures name
+
+If a recognized module/system feature allowing hidding creatures names is found, the module will replace the name of the creature for the players when appropriate.
+
+It will also add a new <img src="./readme/toggle.webp"> icon to show the GM the current state, also allowing its toggle if possible.
+
+The current recognized systems/modules are:
+
+-   [Pathfinder Second Edition (Official)](https://foundryvtt.com/packages/pf2e) system with the metagame `Tokens determine NPC name visibility` setting enabled.
+-   [Anonymous]() module.

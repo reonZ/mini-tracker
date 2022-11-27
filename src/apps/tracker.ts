@@ -1,21 +1,46 @@
-import { hideCreaturesName, playersCanSeeCombatantName } from './combatant.js'
-import { getCombatantFlag, getSetting, setCombatantFlag, setSetting, templatePath } from './utils/foundry.js'
-import { socketEmit } from './utils/socket.js'
+import { templatePath } from '~src/@utils/foundry/path'
+import { getSetting, setSetting } from '~src/@utils/foundry/settings'
+import { canNamesBeHidden, getName, playersSeeName, togglePlayersSeeName } from '~src/combatant'
+import { thirdPartyToggleSeeName } from '~src/third'
 
 export class MiniTracker extends Application {
+    private _isExpanded: boolean
+    private _maxHeight?: number
+    private _dragging: boolean
+    private _lastCombat: string
+    private _lastCombatant: string
+    private _lastMoveTime: number
+    private _initialPosition: ApplicationPosition
+    private _initialPointer: { x: number; y: number } = { x: 0, y: 0 }
+    private _combatantHeight?: number
+    private _boxHeight?: number
+    private _innerMargins?: number
+    private _isReversed: boolean
+    private _dragHook: (event: MouseEvent) => void
+    private _dragEndHook: (event: MouseEvent) => void
+    private _expandedDebounce: () => void
+    private _coordsDebounce: () => void
+    private _menu?: ContextMenu
+    private _listHoverHook?: NodeJS.Timeout
+    private _resizeHook: (event: MouseEvent) => void
+    private _resizeEndHook: (event: MouseEvent) => void
+    private _renderHook: number
+    private _hoverHook: number
+    private _sortable?: Sortable
+
     constructor() {
         super()
 
-        const { left, bottom, top } = /** @type {TrackerCoords} */ (getSetting('coords'))
+        const { left, bottom, top } = getSetting('coords') as TrackerCoords
         if (typeof left === 'number') this.position.left = left
         if (typeof top === 'number') this.position.top = top
         if (typeof bottom === 'number') this.position.bottom = bottom
 
-        const expanded = getSetting('expanded')
+        const expanded = getSetting('expanded') as string
         this._isExpanded = expanded !== 'false'
         this._maxHeight = expanded !== 'false' && expanded !== 'true' ? parseInt(expanded) : undefined
 
-        this._isReversed = /** @type {boolean} */ (getSetting('reversed'))
+        this._isReversed = getSetting('reversed') as boolean
 
         this._dragging = false
 
@@ -30,14 +55,15 @@ export class MiniTracker extends Application {
         this._resizeHook = this.#onResize.bind(this)
         this._resizeEndHook = this.#onResizeEnd.bind(this)
 
-        this._renderHook = Hooks.on('renderCombatTracker', () => this.render())
+        this._renderHook = Hooks.on('renderCombatTracker', this.#onRender.bind(this))
         this._hoverHook = Hooks.on('hoverToken', this.#onTokenHover.bind(this))
 
         this._coordsDebounce = debounce(this.#setCoords, 1000)
         this._expandedDebounce = debounce(this.#setExpanded, 1000)
+
+        this._initialPosition = this.position
     }
 
-    /** @returns {ApplicationOptions} */
     static get defaultOptions() {
         return {
             ...super.defaultOptions,
@@ -99,13 +125,13 @@ export class MiniTracker extends Application {
     get combatantHeight() {
         if (this._combatantHeight) return this._combatantHeight
         this._combatantHeight = this.combatantElements.filter('.active').outerHeight(true)
-        return /** @type {number} */ (this._combatantHeight)
+        return this._combatantHeight as number
     }
 
     get boxHeight() {
         if (this._boxHeight) return this._boxHeight
-        const height = /** @type {number} */ (this.element.outerHeight(true))
-        const listHeight = /** @type {number} */ (this.listElement.innerHeight())
+        const height = this.element.outerHeight(true)!
+        const listHeight = this.listElement.innerHeight()!
         this._boxHeight = height - listHeight
         return this._boxHeight
     }
@@ -130,13 +156,28 @@ export class MiniTracker extends Application {
         this._expandedDebounce()
     }
 
-    async getData() {
+    async getData(options?: Partial<ApplicationOptions> | undefined) {
         const combat = ui.combat.viewed
         if (!combat || !combat.turns.some(x => x.isOwner)) {
             return { hasCombat: false }
         }
 
-        const data = await ui.combat.getData()
+        let data = await ui.combat.getData()
+        const canHideNames = canNamesBeHidden()
+
+        if (canHideNames) {
+            const isGM = game.user.isGM
+            const combatants = combat.combatants
+
+            data.turns = data.turns.map(x => {
+                const combatant = combatants.get(x.id)!
+                const turn = x as CombatTrackerTurn & { hasPlayerOwner: boolean; playersCanSeeName: boolean }
+                turn.hasPlayerOwner = combatant.hasPlayerOwner
+                turn.playersCanSeeName = playersSeeName(combatant)
+                if (!turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
+                return turn
+            })
+        }
 
         if (!data.turns.find(x => x.active)) {
             const active = Math.min(data.turn ?? 0, data.turns.length - 1)
@@ -147,43 +188,18 @@ export class MiniTracker extends Application {
             combatant.css = css.join(' ')
         }
 
-        const hideNames = hideCreaturesName()
-        if (hideNames) {
-            const combatants = combat.combatants
-            const name = getSetting('creature')
-            const isGM = game.user.isGM
-
-            data.turns.forEach(x => {
-                const combatant = /** @type {Combatant} */ (combatants.get(x.id))
-                const canSeeName = playersCanSeeCombatantName(combatant)
-                x.playersCanSeeName = canSeeName
-                if (isGM) x.hasPlayerOwner = combatant.hasPlayerOwner
-                else if (!combatant.hasPlayerOwner && !canSeeName) x.name = name
-            })
-        }
-
-        const innerCss = /** @type {string[]} */ ([])
+        const innerCss = /** @type {string[]} */ []
         if (this.isExpanded) innerCss.push('expanded')
         if (this.isReversed) innerCss.push('reversed')
 
         return {
             ...data,
-            hideNames,
+            canHideNames,
             innerCss: innerCss.join(' '),
         }
     }
 
-    /** @param {JQuery} $html */
-    _contextMenu($html) {
-        this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())
-    }
-
-    /**
-     * @param {boolean} [force]
-     * @param {any} [options]
-     * @returns
-     */
-    render(force, options) {
+    render(force?: boolean, options?: any) {
         const combat = ui.combat.viewed
 
         const combatId = combat?.id ?? ''
@@ -214,8 +230,7 @@ export class MiniTracker extends Application {
         return super.close()
     }
 
-    /** @param {JQuery} $html */
-    activateListeners($html) {
+    activateListeners($html: JQuery) {
         const combat = ui.combat.viewed
         if (!combat || !this.innerElement.length) return
 
@@ -245,15 +260,14 @@ export class MiniTracker extends Application {
 
         $html.find('[data-control=trackerSettings]').on('click', () => new CombatTrackerConfig().render(true))
 
-        if (game.system.id !== 'pf2e') {
+        if (canNamesBeHidden() && thirdPartyToggleSeeName) {
             $html.find('[data-control=toggle-name-visibility]').on('click', this.#togglePlayersCanSeeName.bind(this))
         }
 
         combatants.on('click', tracker._onCombatantMouseDown.bind(tracker))
     }
 
-    /** @param {{left: number, top?: number, bottom?: number}} options */
-    setPosition({ left, top, bottom }) {
+    setPosition({ left, top, bottom }: ApplicationPosition) {
         const el = this.element[0]
         const currentPosition = this.position
         const minHeight = this.minHeight
@@ -290,8 +304,181 @@ export class MiniTracker extends Application {
         return currentPosition
     }
 
-    /** @param {number} [tmpHeight] */
-    #calculateHeight(tmpHeight) {
+    _contextMenu($html: JQuery) {
+        this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())
+    }
+
+    async #togglePlayersCanSeeName(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+        event.preventDefault()
+        if (!game.user.isGM) return
+
+        const $combatant = $(event.currentTarget).closest('.combatant')
+        const id = $combatant.attr('data-combatant-id')!
+        const combatant = ui.combat.viewed?.combatants.get(id)
+
+        if (combatant) togglePlayersSeeName(combatant)
+    }
+
+    #makeSortable() {
+        this._sortable = new Sortable(this.listElement[0], {
+            animation: 150,
+            draggable: '.combatant',
+            delay: 50,
+            onEnd: this.#onSortEnd.bind(this),
+        })
+    }
+
+    #onSortEnd(event: Sortable.SortableEvent) {
+        const id = event.item.dataset.combatantId
+        const combat = ui.combat.viewed
+        const oldIndex = /** @type {number} */ event.oldIndex
+        const newIndex = /** @type {number} */ event.newIndex
+
+        if (!combat || oldIndex === newIndex || !id) return
+
+        const turns = combat.turns
+        if (turns.length <= 1) return
+
+        const others = turns.filter(x => x.id !== id)
+        const prevCombatants = others.slice(0, newIndex)
+        const nextCombatants = others.slice(newIndex)
+
+        let prevInit = prevCombatants.reverse().find(x => x.initiative != null)?.initiative
+        let nextInit = nextCombatants.find(x => x.initiative != null)?.initiative
+
+        if (nextInit == null && prevInit == null) {
+            nextInit = 0
+            prevInit = 2
+        } else if (nextInit == null) {
+            nextInit = /** @type {number} */ prevInit! - 2
+        } else if (prevInit == null) {
+            prevInit = /** @type {number} */ nextInit + 2
+        }
+
+        // @ts-ignore
+        const newInit = (prevInit + nextInit) / 2
+        combat.setInitiative(id, newInit)
+    }
+
+    #onResizeStart(event: JQuery.MouseDownEvent) {
+        event.preventDefault()
+
+        window.addEventListener('mousemove', this._resizeHook)
+        window.addEventListener('mouseup', this._resizeEndHook)
+    }
+
+    #onResize(event: MouseEvent) {
+        event.preventDefault()
+
+        if (!this.moveTick) return
+
+        let maxHeight: number | undefined = event.clientY - (this.position.top ?? 0)
+        if (this.isReversed) maxHeight = -(maxHeight - this.minHeight)
+
+        maxHeight = Math.max(maxHeight, this.minHeight)
+
+        this.#calculateHeight(maxHeight)
+
+        const combatants = this.combatantElements.length
+        const expected = combatants * this.combatantHeight + this.boxHeight
+
+        if (maxHeight >= expected) maxHeight = undefined
+
+        this.maxHeight = maxHeight
+    }
+
+    #onResizeEnd(event: MouseEvent) {
+        event.preventDefault()
+
+        window.removeEventListener('mousemove', this._resizeHook)
+        window.removeEventListener('mouseup', this._resizeEndHook)
+    }
+
+    #onRender() {
+        this.render()
+    }
+
+    #onDragStart(event: JQuery.MouseDownEvent) {
+        event.preventDefault()
+
+        this.isDragging = true
+        this._initialPosition = duplicate(this.position)
+        this._initialPointer = { x: event.clientX, y: event.clientY }
+
+        window.addEventListener('mousemove', this._dragHook)
+        window.addEventListener('mouseup', this._dragEndHook)
+    }
+
+    #onDrag(event: MouseEvent) {
+        event.preventDefault()
+
+        if (!this.moveTick) return
+
+        const pos = this._initialPosition
+        const cursor = this._initialPointer
+        const left = (pos.left ?? 0) + (event.clientX - cursor.x)
+
+        if (this.isReversed) {
+            this.setPosition({
+                left,
+                bottom: (pos.bottom ?? 0) - (event.clientY - cursor.y),
+            })
+        } else {
+            this.setPosition({
+                left,
+                top: (pos.top ?? 0) + (event.clientY - cursor.y),
+            })
+        }
+
+        this._coordsDebounce()
+    }
+
+    #onDragEnd(event: MouseEvent) {
+        event.preventDefault()
+
+        this.isDragging = false
+        this.#calculateHeight()
+
+        window.removeEventListener('mousemove', this._dragHook)
+        window.removeEventListener('mouseup', this._dragEndHook)
+    }
+
+    #onTokenHover(token: Token, hovered: boolean) {
+        const combatant = token.combatant
+        if (!combatant) return
+        const combatants = this.combatantElements
+        combatants.removeClass('hovered')
+        if (hovered) combatants.filter(`[data-combatant-id="${combatant.id}"]`).addClass('hovered')
+    }
+
+    #setExpanded() {
+        setSetting('expanded', !this.isExpanded ? 'false' : this.maxHeight || 'true')
+    }
+
+    #expandList() {
+        this.innerElement.addClass('expanded')
+        this.#calculateHeight()
+    }
+
+    #collapseList() {
+        if (this._listHoverHook) clearTimeout(this._listHoverHook)
+        this.innerElement.removeClass('expanded')
+        this._menu?.close({ animate: false })
+    }
+
+    #onListHover() {
+        if (this.isExpanded) return
+        const delay = getSetting('delay') as number
+        if (delay) this._listHoverHook = setTimeout(() => this.#expandList(), delay)
+        else this.#expandList()
+    }
+
+    #onListOut() {
+        if (this.isExpanded) return
+        this.#collapseList()
+    }
+
+    #calculateHeight(tmpHeight?: number) {
         const inner = this.innerElement
         if (!inner.length) return
 
@@ -316,203 +503,16 @@ export class MiniTracker extends Application {
         if (this.isExpanded) this.#scrollToCurrent()
     }
 
-    /**
-     * this is used only when there is no system option
-     * @param {JQuery.ClickEvent<any, any, HTMLElement>} event
-     * */
-    async #togglePlayersCanSeeName(event) {
-        event.preventDefault()
-        if (!game.user.isGM) return
-
-        const $combatant = /** @type {HTMLElement} */ (event.currentTarget.closest('.combatant'))
-        const id = /** @type {string} */ ($combatant.dataset.combatantId)
-        const combatant = ui.combat.viewed?.combatants.get(id)
-
-        if (combatant) {
-            const canSeeName = getCombatantFlag(combatant, 'playersCanSeeName')
-            await setCombatantFlag(combatant, 'playersCanSeeName', !canSeeName)
-            this.render()
-            socketEmit({ type: 'refresh' })
-        }
-    }
-
-    #makeSortable() {
-        this._sortable = new Sortable(this.listElement[0], {
-            animation: 150,
-            draggable: '.combatant',
-            delay: 50,
-            onEnd: this.#onSortEnd.bind(this),
-        })
-    }
-
-    /** @param {Sortable.SortableEvent} event */
-    #onSortEnd(event) {
-        const id = event.item.dataset.combatantId
-        const combat = ui.combat.viewed
-        const oldIndex = /** @type {number} */ (event.oldIndex)
-        const newIndex = /** @type {number} */ (event.newIndex)
-
-        if (!combat || oldIndex === newIndex || !id) return
-
-        const turns = combat.turns
-        if (turns.length <= 1) return
-
-        const others = turns.filter(x => x.id !== id)
-        const prevCombatants = others.slice(0, newIndex)
-        const nextCombatants = others.slice(newIndex)
-
-        let prevInit = prevCombatants.reverse().find(x => x.initiative != null)?.initiative
-        let nextInit = nextCombatants.find(x => x.initiative != null)?.initiative
-
-        if (nextInit == null && prevInit == null) {
-            nextInit = 0
-            prevInit = 2
-        } else if (nextInit == null) {
-            nextInit = /** @type {number} */ (prevInit) - 2
-        } else if (prevInit == null) {
-            prevInit = /** @type {number} */ (nextInit) + 2
-        }
-
-        // @ts-ignore
-        const newInit = (prevInit + nextInit) / 2
-        combat.setInitiative(id, newInit)
-    }
-
     #scrollToCurrent() {
         const list = this.listElement
-        const height = /** @type {number} */ (list.innerHeight())
+        const height = list.innerHeight()!
         if (height === list.prop('scrollHeight')) return
         const active = list.find('> .active')[0]
         list.scrollTop(active.offsetTop - height / 2 + active.offsetHeight / 2)
     }
 
-    /** @param {JQuery.MouseDownEvent} event */
-    #onDragStart(event) {
-        event.preventDefault()
-
-        this.isDragging = true
-        this._initialPosition = duplicate(this.position)
-        this._initialPointer = { x: event.clientX, y: event.clientY }
-
-        window.addEventListener('mousemove', this._dragHook)
-        window.addEventListener('mouseup', this._dragEndHook)
-    }
-
-    /** @param {MouseEvent} event */
-    #onDrag(event) {
-        event.preventDefault()
-
-        if (!this.moveTick) return
-
-        const pos = /** @type {Application.Position} */ (this._initialPosition)
-        const cursor = /** @type {{x: Number, y: number}} */ (this._initialPointer)
-        const left = (pos.left ?? 0) + (event.clientX - cursor.x)
-
-        if (this.isReversed) {
-            this.setPosition({
-                left,
-                bottom: (pos.bottom ?? 0) - (event.clientY - cursor.y),
-            })
-        } else {
-            this.setPosition({
-                left,
-                top: (pos.top ?? 0) + (event.clientY - cursor.y),
-            })
-        }
-
-        this._coordsDebounce()
-    }
-
-    /** @param {MouseEvent} event */
-    #onDragEnd(event) {
-        event.preventDefault()
-
-        this.isDragging = false
-        this.#calculateHeight()
-
-        window.removeEventListener('mousemove', this._dragHook)
-        window.removeEventListener('mouseup', this._dragEndHook)
-    }
-
-    /** @param {JQuery.MouseDownEvent} event */
-    #onResizeStart(event) {
-        event.preventDefault()
-
-        window.addEventListener('mousemove', this._resizeHook)
-        window.addEventListener('mouseup', this._resizeEndHook)
-    }
-
-    /** @param {MouseEvent} event */
-    #onResize(event) {
-        event.preventDefault()
-
-        if (!this.moveTick) return
-
-        /** @type {number | undefined} */
-        let maxHeight = event.clientY - (this.position.top ?? 0)
-        if (this.isReversed) maxHeight = -(maxHeight - this.minHeight)
-
-        maxHeight = Math.max(maxHeight, this.minHeight)
-
-        this.#calculateHeight(maxHeight)
-
-        const combatants = this.combatantElements.length
-        const expected = combatants * this.combatantHeight + this.boxHeight
-
-        if (maxHeight >= expected) maxHeight = undefined
-
-        this.maxHeight = maxHeight
-    }
-
-    /** @param {MouseEvent} event */
-    #onResizeEnd(event) {
-        event.preventDefault()
-
-        window.removeEventListener('mousemove', this._resizeHook)
-        window.removeEventListener('mouseup', this._resizeEndHook)
-    }
-
-    /**
-     * @param {Token} token
-     * @param {boolean} hovered
-     */
-    #onTokenHover(token, hovered) {
-        const combatant = token.combatant
-        if (!combatant) return
-        const combatants = this.combatantElements
-        combatants.removeClass('hovered')
-        if (hovered) combatants.filter(`[data-combatant-id="${combatant.id}"]`).addClass('hovered')
-    }
-
     #setCoords() {
         const { left, top, bottom } = this.position
         setSetting('coords', { left, top, bottom })
-    }
-
-    #setExpanded() {
-        setSetting('expanded', !this.isExpanded ? 'false' : this.maxHeight || 'true')
-    }
-
-    #expandList() {
-        this.innerElement.addClass('expanded')
-        this.#calculateHeight()
-    }
-
-    #collapseList() {
-        if (this._listHoverHook) clearTimeout(this._listHoverHook)
-        this.innerElement.removeClass('expanded')
-        this._menu?.close({ animate: false })
-    }
-
-    #onListHover() {
-        if (this.isExpanded) return
-        const delay = getSetting('delay')
-        if (delay) this._listHoverHook = setTimeout(() => this.#expandList(), delay)
-        else this.#expandList()
-    }
-
-    #onListOut() {
-        if (this.isExpanded) return
-        this.#collapseList()
     }
 }

@@ -42,18 +42,18 @@
                     <h4>{{this.name}}</h4>
 
                     <div class="__icons">
-                        {{#if ../user.isGM}}
+                        {{#if @root.user.isGM}}
                         <a class="combatant-control{{#if this.hidden}} active{{/if}}" data-control="toggleHidden">
                             <i class="fas fa-eye-slash"></i>
                         </a>
-                        {{#if ../hideNames}} {{#unless this.hasPlayerOwner}}
+                        {{#if (and @root.canHideNames (not this.hasPlayerOwner))}}
                         <a
                             class="combatant-control{{#if this.playersCanSeeName}} active{{/if}}"
                             data-control="toggle-name-visibility"
                         >
                             <i class="fa-solid fa-signature"></i>
                         </a>
-                        {{/unless}} {{/if}}
+                        {{/if}}
                         <a class="combatant-control{{#if this.defeated}} active{{/if}}" data-control="toggleDefeated">
                             <i class="fas fa-skull"></i>
                         </a>

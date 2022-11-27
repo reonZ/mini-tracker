@@ -2,6 +2,7 @@
     "mini-tracker": {
         "reverse": "Toggle Orientation",
         "expand": "Expand List",
+        "unknown": "Unknown",
         "settings": {
             "enabled": {
                 "name": "Enabled",

@@ -1,10 +1,8 @@
-import { renameCombatants } from './foundry-tracker.js'
-import { MiniTracker } from './tracker.js'
-import { getSetting, registerSetting } from './utils/foundry.js'
-import { socketOn } from './utils/socket.js'
+import { getSetting, registerSetting } from './@utils/foundry/settings'
+import { MiniTracker } from './apps/tracker'
+import { thirdPartyInitialization } from './third'
 
-/** @type {MiniTracker | null} */
-let tracker = null
+let tracker: MiniTracker | null = null
 
 Hooks.once('init', () => {
     // CLIENT SETTINGS
@@ -55,17 +53,6 @@ Hooks.once('init', () => {
     // WORLD SETTINGS
 
     registerSetting({
-        name: 'creature',
-        type: String,
-        config: true,
-        default: '',
-        onChange: () => {
-            tracker?.render()
-            renameCombatants()
-        },
-    })
-
-    registerSetting({
         name: 'pan',
         config: true,
         type: Boolean,
@@ -85,21 +72,12 @@ Hooks.once('init', () => {
         type: Boolean,
         default: false,
     })
+
+    thirdPartyInitialization()
 })
 
 Hooks.once('ready', () => {
     if (getSetting('enabled')) createTracker()
-
-    if (game.user.isGM) return
-
-    Hooks.on('renderCombatTracker', renameCombatants)
-
-    socketOn(packet => {
-        if (packet.type === 'refresh') {
-            tracker?.render()
-            renameCombatants()
-        }
-    })
 })
 
 function createTracker() {

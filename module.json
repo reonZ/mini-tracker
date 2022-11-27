@@ -27,12 +27,11 @@
     ],
     "esmodules": ["scripts/main.js"],
     "styles": ["styles/tracker.css"],
-    "socket": true,
-    "version": "1.0.2",
     "compatibility": {
         "minimum": "10.287",
         "verified": "10"
     },
+    "version": "1.0.2",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/mini-tracker",
     "readme": "https://github.com/reonZ/mini-tracker/blob/master/README.md",
