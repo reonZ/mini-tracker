@@ -105,9 +105,12 @@ Hooks.once('ready', () => {
 })
 
 function immobilizeHooks(immobilize: unknown) {
-    if (game.user.isGM) return
-    const method = immobilize ? 'on' : 'off'
-    Hooks[method]('preUpdateToken', preUpdateToken)
+    if (!game.user.isGM) {
+        const method = immobilize ? 'on' : 'off'
+        Hooks[method]('preUpdateToken', preUpdateToken)
+    } else {
+        tracker?.render()
+    }
 }
 
 function createTracker() {
