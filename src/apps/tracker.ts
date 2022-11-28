@@ -170,7 +170,7 @@ export class MiniTracker extends Application {
         const immobilize = getSetting<boolean>('immobilize')
         const target = !isGM && getSetting<boolean>('target')
         const combatants = combat.combatants
-        const showHp = getSetting('hp')
+        const showHp = getSetting<string>('hp')
 
         let active = false
         let data = await ui.combat.getData()
@@ -186,6 +186,7 @@ export class MiniTracker extends Application {
             }
 
             turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`)
+            console.log(turn.hp)
             turn.hasPlayerOwner = combatant.hasPlayerOwner
             turn.playersCanSeeName = playersSeeName(combatant)
             turn.freed = !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed')

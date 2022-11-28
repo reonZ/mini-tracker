@@ -90,7 +90,7 @@
                 <div class="__initiative">
                     {{#if this.hasRolled}}
                     <!--  -->
-                    {{#if @root.user.isGM}}
+                    {{#if (and @root.user.isGM (ne this.hp undefined))}}
                     <div>
                         <span>{{this.initiative}} <i class="fas fa-dice-d20"></i></span>
                         <span>{{this.hp}} <i class="fas fa-heart"></i></span>

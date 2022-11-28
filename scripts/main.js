@@ -259,6 +259,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             const combatant = combatants.get(x.id);
             const turn = x;
             turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`);
+            console.log(turn.hp);
             turn.hasPlayerOwner = combatant.hasPlayerOwner;
             turn.playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
             turn.freed = !immobilize || combatant === currentCombatant || !!(0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
@@ -646,7 +647,8 @@ Hooks.once("init", ()=>{
         name: "hp",
         config: true,
         type: String,
-        default: "attributes.hp.value"
+        default: "attributes.hp.value",
+        onChange: $b013a5dd6d18443e$var$hpHooks
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "immobilize",
@@ -678,7 +680,18 @@ Hooks.once("init", ()=>{
 Hooks.once("ready", ()=>{
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("enabled")) $b013a5dd6d18443e$var$createTracker();
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize")) $b013a5dd6d18443e$var$immobilizeHooks(true);
+    if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp")) $b013a5dd6d18443e$var$hpHooks(true);
 });
+function $b013a5dd6d18443e$var$hpHooks(show) {
+    if (!game.user.isGM) return;
+    const method = show ? "on" : "off";
+    Hooks[method]("updateActor", $b013a5dd6d18443e$var$refreshTracker);
+    $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+}
+function $b013a5dd6d18443e$var$refreshTracker(actor, data) {
+    const hasHp = hasProperty(data, "system.attributes.hp.value");
+    if (hasHp) $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+}
 function $b013a5dd6d18443e$var$immobilizeHooks(immobilize) {
     if (!game.user.isGM) {
         const method = immobilize ? "on" : "off";

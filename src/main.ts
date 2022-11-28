@@ -72,6 +72,7 @@ Hooks.once('init', () => {
         config: true,
         type: String,
         default: 'attributes.hp.value',
+        onChange: hpHooks,
     })
 
     registerSetting({
@@ -109,7 +110,20 @@ Hooks.once('init', () => {
 Hooks.once('ready', () => {
     if (getSetting('enabled')) createTracker()
     if (getSetting('immobilize')) immobilizeHooks(true)
+    if (getSetting('hp')) hpHooks(true)
 })
+
+function hpHooks(show: unknown) {
+    if (!game.user.isGM) return
+    const method = show ? 'on' : 'off'
+    Hooks[method]('updateActor', refreshTracker)
+    tracker?.render()
+}
+
+function refreshTracker(actor: Actor, data: DocumentUpdateData<Actor>) {
+    const hasHp = hasProperty(data, 'system.attributes.hp.value')
+    if (hasHp) tracker?.render()
+}
 
 function immobilizeHooks(immobilize: unknown) {
     if (!game.user.isGM) {
