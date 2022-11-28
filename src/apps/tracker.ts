@@ -207,9 +207,10 @@ export class MiniTracker extends Application {
             combatant.css = css.join(' ')
         }
 
+        const reversed = this.isReversed
         const innerCss = /** @type {string[]} */ []
         if (this.isExpanded) innerCss.push('expanded')
-        if (this.isReversed) innerCss.push('reversed')
+        if (reversed) innerCss.push('reversed')
 
         return {
             ...data,
@@ -217,6 +218,7 @@ export class MiniTracker extends Application {
             innerCss: innerCss.join(' '),
             allowEndTurn: endTurn,
             isCurrentTurn: !currentCombatant?.isOwner,
+            arrow: reversed ? 'up' : 'down',
             immobilize,
             showHp,
             target,
