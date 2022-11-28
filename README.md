@@ -61,6 +61,12 @@ The tracker allow the GM to reorganize and change the initiative of a combatant 
 
 This will set a new initiative for the combatant, using decimals when needed (which may or may not be shown in the tracker depending on the system).
 
+# Prevent Movement
+
+If enabled, this module can prevent players from being able to move tokens on the board.
+
+Combatant tokens will by default be prevented from moving when out of turn. A new ![](./readme//immobilize.webp) icon is added to allow the GM to "free" a combatant token until the end of the current turn.
+
 # Hide creatures name
 
 If a recognized module/system allowing hidding creatures names is found, the name of the creatures will be hidden from the players when appropriate.
@@ -88,6 +94,14 @@ Set the amount of time (in milliseconds) before the tracker starts expands on mo
 ## Allow End Turn
 
 Should the players be able to end their own turn.
+
+## System HP Path
+
+If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM.
+
+## Prevent Movement
+
+When enabled, players will only be able to move their token during their turn. Or when the GM allows it.
 
 ## Pan to Token
 
