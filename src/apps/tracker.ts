@@ -210,7 +210,7 @@ export class MiniTracker extends Application {
         const reversed = this.isReversed
         const innerCss = /** @type {string[]} */ []
         if (this.isExpanded) innerCss.push('expanded')
-        if (reversed) innerCss.push('reversed')
+        if (reversed && !getSetting('fake-reversed')) innerCss.push('reversed')
 
         return {
             ...data,

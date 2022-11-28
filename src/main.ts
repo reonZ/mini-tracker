@@ -38,6 +38,16 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'fake-reversed',
+        scope: 'client',
+        type: Boolean,
+        default: false,
+        onChange: () => {
+            tracker?.render()
+        },
+    })
+
+    registerSetting({
         name: 'coords',
         scope: 'client',
         type: Object,
