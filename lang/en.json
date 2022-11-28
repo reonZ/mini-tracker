@@ -26,7 +26,7 @@
                 "hint": "Should the sheet of the current combatant be automatically opened. This option is only for the GM."
             },
             "turn": {
-                "name": "Allow End Turn",
+                "name": "End Turn",
                 "hint": "Should the players be able to end their own turn."
             },
             "hp": {
@@ -36,6 +36,10 @@
             "immobilize": {
                 "name": "Prevent Movement",
                 "hint": "When enabled, players will only be able to move their tokens during their turn."
+            },
+            "target": {
+                "name": "Target Token",
+                "hint": "Allow players to target a token from the tracker, this can be extra useful for systems that hide tokens but still display combatants in the tracker."
             }
         }
     }

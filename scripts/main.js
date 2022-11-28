@@ -245,11 +245,12 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         if (!combat || !combat.turns.some((x)=>x.isOwner)) return {
             hasCombat: false
         };
-        const currentCombatant = combat.combatant;
-        const canHideNames = (0, $cde63defe07c1790$export$63e364ad1cb51f52)();
-        const allowEndTurn = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("turn");
-        const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize");
         const isGM = game.user.isGM;
+        const currentCombatant = combat.combatant;
+        const hideNames = (0, $cde63defe07c1790$export$63e364ad1cb51f52)();
+        const endTurn = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("turn");
+        const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize");
+        const target = !isGM && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("target");
         const combatants = combat.combatants;
         const showHp = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp");
         let active = false;
@@ -262,7 +263,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             turn.playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
             turn.freed = !immobilize || combatant === currentCombatant || !!(0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
             turn.canImmobilize = combatant !== currentCombatant;
-            if (canHideNames && !turn.playersCanSeeName && !isGM) turn.name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
+            if (hideNames && !turn.playersCanSeeName && !isGM) turn.name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
             if (x.active) active = true;
             return turn;
         });
@@ -279,12 +280,13 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         if (this.isReversed) innerCss.push("reversed");
         return {
             ...data,
-            canHideNames: canHideNames,
+            canHideNames: hideNames,
             innerCss: innerCss.join(" "),
-            allowEndTurn: allowEndTurn,
+            allowEndTurn: endTurn,
             isCurrentTurn: !currentCombatant?.isOwner,
             immobilize: immobilize,
-            showHp: showHp
+            showHp: showHp,
+            target: target
         };
     }
     #onRender() {
@@ -330,6 +332,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         $list.on("mouseleave", this.#onListOut.bind(this));
         $html.find("[data-control=trackerReverse]").on("click", ()=>this.isReversed = !this.isReversed);
         $html.find("[data-control=trackerExpand]").on("click", ()=>this.isExpanded = !this.isExpanded);
+        $html.find("[data-control=targetCombatant]").on("click", this.#onTarget.bind(this));
         $html.find(".combat-control").on("click", tracker._onCombatControl.bind(tracker));
         $html.find(".combatant-control").on("click", tracker._onCombatantControl.bind(tracker));
         const combatants = $list.find(".combatant");
@@ -376,20 +379,32 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     _contextMenu($html) {
         this._menu = ContextMenu.create(this, $html, ".combatant", ui.combat._getEntryContextOptions());
     }
-    #onToggleImmobilized(event) {
-        event.preventDefault();
+    #getCombatantFromEvent(event) {
         const $combatant = $(event.currentTarget).closest(".combatant");
         const id = $combatant.attr("data-combatant-id");
-        const combat = ui.combat.viewed;
-        const combatant = combat?.combatants.get(id);
-        if (combatant) (0, $cde63defe07c1790$export$125ec828e2461284)(combatant);
+        return ui.combat.viewed?.combatants.get(id);
     }
-    async #togglePlayersCanSeeName(event1) {
+    #onTarget(event1) {
         event1.preventDefault();
-        const $combatant1 = $(event1.currentTarget).closest(".combatant");
-        const id1 = $combatant1.attr("data-combatant-id");
-        const combatant1 = ui.combat.viewed?.combatants.get(id1);
-        if (combatant1) (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant1);
+        const combatant = this.#getCombatantFromEvent(event1);
+        const token = combatant?.token;
+        if (!token) return;
+        const current = Array.from(game.user.targets).map((x)=>x.id);
+        const targets = event1.shiftKey ? current : current.filter((x)=>x === token.id);
+        const index = targets.indexOf(token.id);
+        if (index !== -1) targets.splice(index, 1);
+        else targets.push(token.id);
+        game.user.updateTokenTargets(targets);
+    }
+    #onToggleImmobilized(event2) {
+        event2.preventDefault();
+        const combatant1 = this.#getCombatantFromEvent(event2);
+        if (combatant1) (0, $cde63defe07c1790$export$125ec828e2461284)(combatant1);
+    }
+    async #togglePlayersCanSeeName(event3) {
+        event3.preventDefault();
+        const combatant2 = this.#getCombatantFromEvent(event3);
+        if (combatant2) (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant2);
     }
     #makeSortable() {
         this._sortable = new Sortable(this.listElement[0], {
@@ -399,15 +414,15 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             onEnd: this.#onSortEnd.bind(this)
         });
     }
-    #onSortEnd(event2) {
-        const id2 = event2.item.dataset.combatantId;
-        const combat1 = ui.combat.viewed;
-        const oldIndex = /** @type {number} */ event2.oldIndex;
-        const newIndex = /** @type {number} */ event2.newIndex;
-        if (!combat1 || oldIndex === newIndex || !id2) return;
-        const turns = combat1.turns;
+    #onSortEnd(event4) {
+        const id1 = event4.item.dataset.combatantId;
+        const combat = ui.combat.viewed;
+        const oldIndex = /** @type {number} */ event4.oldIndex;
+        const newIndex = /** @type {number} */ event4.newIndex;
+        if (!combat || oldIndex === newIndex || !id1) return;
+        const turns = combat.turns;
         if (turns.length <= 1) return;
-        const others = turns.filter((x)=>x.id !== id2);
+        const others = turns.filter((x)=>x.id !== id1);
         const prevCombatants = others.slice(0, newIndex);
         const nextCombatants = others.slice(newIndex);
         let prevInit = prevCombatants.reverse().find((x)=>x.initiative != null)?.initiative;
@@ -419,17 +434,17 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         else if (prevInit == null) prevInit = /** @type {number} */ nextInit + 2;
         // @ts-ignore
         const newInit = (prevInit + nextInit) / 2;
-        combat1.setInitiative(id2, newInit);
+        combat.setInitiative(id1, newInit);
     }
-    #onResizeStart(event3) {
-        event3.preventDefault();
+    #onResizeStart(event5) {
+        event5.preventDefault();
         window.addEventListener("mousemove", this._resizeHook);
         window.addEventListener("mouseup", this._resizeEndHook);
     }
-    #onResize(event4) {
-        event4.preventDefault();
+    #onResize(event6) {
+        event6.preventDefault();
         if (!this.moveTick) return;
-        let maxHeight = event4.clientY - (this.position.top ?? 0);
+        let maxHeight = event6.clientY - (this.position.top ?? 0);
         if (this.isReversed) maxHeight = -(maxHeight - this.minHeight);
         maxHeight = Math.max(maxHeight, this.minHeight);
         this.#calculateHeight(maxHeight);
@@ -438,51 +453,51 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         if (maxHeight >= expected) maxHeight = undefined;
         this.maxHeight = maxHeight;
     }
-    #onResizeEnd(event5) {
-        event5.preventDefault();
+    #onResizeEnd(event7) {
+        event7.preventDefault();
         window.removeEventListener("mousemove", this._resizeHook);
         window.removeEventListener("mouseup", this._resizeEndHook);
     }
-    #onDragStart(event6) {
-        event6.preventDefault();
+    #onDragStart(event8) {
+        event8.preventDefault();
         this.isDragging = true;
         this._initialPosition = duplicate(this.position);
         this._initialPointer = {
-            x: event6.clientX,
-            y: event6.clientY
+            x: event8.clientX,
+            y: event8.clientY
         };
         window.addEventListener("mousemove", this._dragHook);
         window.addEventListener("mouseup", this._dragEndHook);
     }
-    #onDrag(event7) {
-        event7.preventDefault();
+    #onDrag(event9) {
+        event9.preventDefault();
         if (!this.moveTick) return;
         const pos = this._initialPosition;
         const cursor = this._initialPointer;
-        const left = (pos.left ?? 0) + (event7.clientX - cursor.x);
+        const left = (pos.left ?? 0) + (event9.clientX - cursor.x);
         if (this.isReversed) this.setPosition({
             left: left,
-            bottom: (pos.bottom ?? 0) - (event7.clientY - cursor.y)
+            bottom: (pos.bottom ?? 0) - (event9.clientY - cursor.y)
         });
         else this.setPosition({
             left: left,
-            top: (pos.top ?? 0) + (event7.clientY - cursor.y)
+            top: (pos.top ?? 0) + (event9.clientY - cursor.y)
         });
         this._coordsDebounce();
     }
-    #onDragEnd(event8) {
-        event8.preventDefault();
+    #onDragEnd(event10) {
+        event10.preventDefault();
         this.isDragging = false;
         this.#calculateHeight();
         window.removeEventListener("mousemove", this._dragHook);
         window.removeEventListener("mouseup", this._dragEndHook);
     }
-    #onTokenHover(token, hovered) {
-        const combatant2 = token.combatant;
-        if (!combatant2) return;
+    #onTokenHover(token1, hovered) {
+        const combatant3 = token1.combatant;
+        if (!combatant3) return;
         const combatants1 = this.combatantElements;
         combatants1.removeClass("hovered");
-        if (hovered) combatants1.filter(`[data-combatant-id="${combatant2.id}"]`).addClass("hovered");
+        if (hovered) combatants1.filter(`[data-combatant-id="${combatant3.id}"]`).addClass("hovered");
     }
     #setExpanded() {
         (0, $b29eb7e0eb12ddbc$export$61fd6f1ddd0c20e2)("expanded", !this.isExpanded ? "false" : this.maxHeight || "true");
@@ -622,6 +637,12 @@ Hooks.once("init", ()=>{
         default: false
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "target",
+        config: true,
+        type: Boolean,
+        default: true
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "hp",
         config: true,
         type: String,
@@ -659,9 +680,10 @@ Hooks.once("ready", ()=>{
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize")) $b013a5dd6d18443e$var$immobilizeHooks(true);
 });
 function $b013a5dd6d18443e$var$immobilizeHooks(immobilize) {
-    if (game.user.isGM) return;
-    const method = immobilize ? "on" : "off";
-    Hooks[method]("preUpdateToken", (0, $66d137fe0087513e$export$9e2622decb731a81));
+    if (!game.user.isGM) {
+        const method = immobilize ? "on" : "off";
+        Hooks[method]("preUpdateToken", (0, $66d137fe0087513e$export$9e2622decb731a81));
+    } else $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
 }
 function $b013a5dd6d18443e$var$createTracker() {
     if ($b013a5dd6d18443e$export$1bb3d147765683cf) return;

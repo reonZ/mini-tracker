@@ -91,9 +91,13 @@ Enable or disable the mini tracker for the user.
 
 Set the amount of time (in milliseconds) before the tracker starts expands on mouse hover.
 
-## Allow End Turn
+## End Turn
 
 Should the players be able to end their own turn.
+
+## Target Token
+
+Allow players to target a token from the tracker, this can be extra useful for systems that hide tokens but still display combatants in the tracker.
 
 ## System HP Path
 

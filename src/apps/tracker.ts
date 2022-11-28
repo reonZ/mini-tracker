@@ -163,12 +163,12 @@ export class MiniTracker extends Application {
             return { hasCombat: false }
         }
 
-        const currentCombatant = combat.combatant
-        const canHideNames = canNamesBeHidden()
-        const allowEndTurn = getSetting<boolean>('turn')
-        const immobilize = getSetting<boolean>('immobilize')
-
         const isGM = game.user.isGM
+        const currentCombatant = combat.combatant
+        const hideNames = canNamesBeHidden()
+        const endTurn = getSetting<boolean>('turn')
+        const immobilize = getSetting<boolean>('immobilize')
+        const target = !isGM && getSetting<boolean>('target')
         const combatants = combat.combatants
         const showHp = getSetting('hp')
 
@@ -191,7 +191,7 @@ export class MiniTracker extends Application {
             turn.freed = !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed')
             turn.canImmobilize = combatant !== currentCombatant
 
-            if (canHideNames && !turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
+            if (hideNames && !turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
             if (x.active) active = true
 
             return turn
@@ -213,12 +213,13 @@ export class MiniTracker extends Application {
 
         return {
             ...data,
-            canHideNames,
+            canHideNames: hideNames,
             innerCss: innerCss.join(' '),
-            allowEndTurn,
+            allowEndTurn: endTurn,
             isCurrentTurn: !currentCombatant?.isOwner,
             immobilize,
             showHp,
+            target,
         }
     }
 
@@ -276,6 +277,8 @@ export class MiniTracker extends Application {
 
         $html.find('[data-control=trackerReverse]').on('click', () => (this.isReversed = !this.isReversed))
         $html.find('[data-control=trackerExpand]').on('click', () => (this.isExpanded = !this.isExpanded))
+
+        $html.find('[data-control=targetCombatant]').on('click', this.#onTarget.bind(this))
 
         $html.find('.combat-control').on('click', tracker._onCombatControl.bind(tracker))
         $html.find('.combatant-control').on('click', tracker._onCombatantControl.bind(tracker))
@@ -341,24 +344,39 @@ export class MiniTracker extends Application {
         this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())
     }
 
-    #onToggleImmobilized(event: JQuery.ClickEvent<any, any, HTMLElement>) {
-        event.preventDefault()
-
+    #getCombatantFromEvent(event: JQuery.ClickEvent<any, any, HTMLElement>) {
         const $combatant = $(event.currentTarget).closest('.combatant')
         const id = $combatant.attr('data-combatant-id')!
-        const combat = ui.combat.viewed
-        const combatant = combat?.combatants.get(id)
+        return ui.combat.viewed?.combatants.get(id)
+    }
 
+    #onTarget(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+        event.preventDefault()
+
+        const combatant = this.#getCombatantFromEvent(event)
+        const token = combatant?.token
+
+        if (!token) return
+
+        const current = Array.from(game.user.targets).map(x => x.id)
+        const targets = event.shiftKey ? current : current.filter(x => x === token.id)
+        const index = targets.indexOf(token.id)
+
+        if (index !== -1) targets.splice(index, 1)
+        else targets.push(token.id)
+
+        game.user.updateTokenTargets(targets)
+    }
+
+    #onToggleImmobilized(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+        event.preventDefault()
+        const combatant = this.#getCombatantFromEvent(event)
         if (combatant) toggleFreed(combatant)
     }
 
     async #togglePlayersCanSeeName(event: JQuery.ClickEvent<any, any, HTMLElement>) {
         event.preventDefault()
-
-        const $combatant = $(event.currentTarget).closest('.combatant')
-        const id = $combatant.attr('data-combatant-id')!
-        const combatant = ui.combat.viewed?.combatants.get(id)
-
+        const combatant = this.#getCombatantFromEvent(event)
         if (combatant) togglePlayersSeeName(combatant)
     }
 

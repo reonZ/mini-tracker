@@ -46,7 +46,7 @@
                         <a class="combatant-control{{#if this.hidden}} active{{/if}}" data-control="toggleHidden">
                             <i class="fas fa-eye-slash"></i>
                         </a>
-                        {{#if (and @root.canHideNames (not this.hasPlayerOwner))}}
+                        {{#if (and @root.hideNames (not this.hasPlayerOwner))}}
                         <a
                             class="combatant-control{{#if this.playersCanSeeName}} active{{/if}}"
                             data-control="toggle-name-visibility"
@@ -71,6 +71,12 @@
                         {{#if this.canPing}}
                         <a class="combatant-control" data-control="pingCombatant">
                             <i class="fa-solid fa-bullseye-arrow"></i>
+                        </a>
+                        {{/if}}
+                        <!--  -->
+                        {{#if @root.target}}
+                        <a class="combatant-control" data-control="targetCombatant">
+                            <i class="fa-solid fa-street-view"></i>
                         </a>
                         {{/if}}
                         <div class="__effects">
@@ -123,7 +129,7 @@
             </a>
             {{/if}}
         </footer>
-        {{else if allowEndTurn}}
+        {{else if endTurn}}
         <footer>
             <a class="combat-control{{#unless isCurrentTurn}} disabled{{/unless}}" data-control="nextTurn">
                 {{localize 'COMBAT.TurnEnd'}}

@@ -61,6 +61,13 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'target',
+        config: true,
+        type: Boolean,
+        default: true,
+    })
+
+    registerSetting({
         name: 'hp',
         config: true,
         type: String,
