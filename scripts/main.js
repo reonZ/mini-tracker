@@ -275,15 +275,17 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             css.push("active");
             combatant.css = css.join(" ");
         }
+        const reversed = this.isReversed;
         const innerCss = /** @type {string[]} */ [];
         if (this.isExpanded) innerCss.push("expanded");
-        if (this.isReversed) innerCss.push("reversed");
+        if (reversed && !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("fake-reversed")) innerCss.push("reversed");
         return {
             ...data,
             canHideNames: hideNames,
             innerCss: innerCss.join(" "),
             allowEndTurn: endTurn,
             isCurrentTurn: !currentCombatant?.isOwner,
+            arrow: reversed ? "up" : "down",
             immobilize: immobilize,
             showHp: showHp,
             target: target
@@ -616,6 +618,15 @@ Hooks.once("init", ()=>{
         scope: "client",
         type: Boolean,
         default: false
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "fake-reversed",
+        scope: "client",
+        type: Boolean,
+        default: false,
+        onChange: ()=>{
+            $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+        }
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "coords",

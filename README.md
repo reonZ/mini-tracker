@@ -22,6 +22,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Pan to Token](#pan-to-token)
     -   [Select Token](#select-token)
     -   [Open Sheet](#open-sheet)
+-   [Secret](#secret)
 
 # Displayed when needed
 
@@ -122,3 +123,15 @@ Should the token of the current combatant be automatically selected. This option
 ## Open Sheet
 
 Should the sheet of the current combatant be automatically opened. This option is only for the GM.
+
+# Secret
+
+A hidden setting has been added to allow the tracker to be expanded upward without changing its UI, this setting will not appear anywhere accessible because it messes up with a few of the core feature of the tracker (because the header is not opposite to the part that is supposed to shrink anymore).
+
+To change this setting, simply open your browser devtools (F12) and in the console type:
+
+    game.settings.set('mini-tracker', 'fake-reversed', true)
+
+To return to the normal behavior simply type:
+
+    game.settings.set('mini-tracker', 'fake-reversed', false)
