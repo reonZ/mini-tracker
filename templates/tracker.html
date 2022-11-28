@@ -54,15 +54,25 @@
                             <i class="fa-solid fa-signature"></i>
                         </a>
                         {{/if}}
+                        <!--  -->
+                        {{#if (and @root.immobilize this.hasPlayerOwner)}}
+                        <a
+                            class="combatant-control{{#if this.freed}} active{{/if}}{{#unless this.canImmobilize}} disabled{{/unless}}"
+                            data-control="toggleImmobilized"
+                        >
+                            <i class="fa-solid fa-person-running"></i>
+                        </a>
+                        {{/if}}
                         <a class="combatant-control{{#if this.defeated}} active{{/if}}" data-control="toggleDefeated">
                             <i class="fas fa-skull"></i>
                         </a>
-                        {{/if}} {{#if this.canPing}}
+                        {{/if}}
+                        <!--  -->
+                        {{#if this.canPing}}
                         <a class="combatant-control" data-control="pingCombatant">
                             <i class="fa-solid fa-bullseye-arrow"></i>
                         </a>
                         {{/if}}
-
                         <div class="__effects">
                             {{#each this.effects}}
                             <img src="{{this}}" />

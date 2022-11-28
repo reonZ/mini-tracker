@@ -3,6 +3,7 @@
         "reverse": "Toggle Orientation",
         "expand": "Expand List",
         "unknown": "Unknown",
+        "immobilized": "You cannot move this token at this moment.",
         "settings": {
             "enabled": {
                 "name": "Enabled",
@@ -31,6 +32,10 @@
             "hp": {
                 "name": "System HP Path",
                 "hint": "If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM."
+            },
+            "immobilize": {
+                "name": "Prevent Movement",
+                "hint": "When enabled, players will only be able to move their tokens during their turn."
             }
         }
     }

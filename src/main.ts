@@ -1,8 +1,9 @@
 import { getSetting, registerSetting } from './@utils/foundry/settings'
 import { MiniTracker } from './apps/tracker'
 import { thirdPartyInitialization } from './third'
+import { preUpdateToken } from './token'
 
-let tracker: MiniTracker | null = null
+export let tracker: MiniTracker | null = null
 
 Hooks.once('init', () => {
     // CLIENT SETTINGS
@@ -67,6 +68,14 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'immobilize',
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: immobilizeHooks,
+    })
+
+    registerSetting({
         name: 'pan',
         config: true,
         type: Boolean,
@@ -92,7 +101,14 @@ Hooks.once('init', () => {
 
 Hooks.once('ready', () => {
     if (getSetting('enabled')) createTracker()
+    if (getSetting('immobilize')) immobilizeHooks(true)
 })
+
+function immobilizeHooks(immobilize: unknown) {
+    if (game.user.isGM) return
+    const method = immobilize ? 'on' : 'off'
+    Hooks[method]('preUpdateToken', preUpdateToken)
+}
 
 function createTracker() {
     if (tracker) return

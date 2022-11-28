@@ -1,6 +1,7 @@
+import { getFlag } from '~src/@utils/foundry/flags'
 import { templatePath } from '~src/@utils/foundry/path'
 import { getSetting, setSetting } from '~src/@utils/foundry/settings'
-import { canNamesBeHidden, getName, playersSeeName, togglePlayersSeeName } from '~src/combatant'
+import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/third'
 
 export class MiniTracker extends Application {
@@ -162,9 +163,10 @@ export class MiniTracker extends Application {
             return { hasCombat: false }
         }
 
+        const currentCombatant = combat.combatant
         const canHideNames = canNamesBeHidden()
         const allowEndTurn = getSetting<boolean>('turn')
-        const isCurrentTurn = !!combat.combatant?.isOwner
+        const immobilize = getSetting<boolean>('immobilize')
 
         const isGM = game.user.isGM
         const combatants = combat.combatants
@@ -175,11 +177,20 @@ export class MiniTracker extends Application {
 
         data.turns = data.turns.map(x => {
             const combatant = combatants.get(x.id)!
-            const turn = x as CombatTrackerTurn & { hasPlayerOwner: boolean; playersCanSeeName: boolean; hp?: number | boolean }
+            const turn = x as CombatTrackerTurn & {
+                hasPlayerOwner: boolean
+                playersCanSeeName: boolean
+                hp?: number | boolean
+                freed: boolean
+                canImmobilize: boolean
+            }
 
             turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`)
             turn.hasPlayerOwner = combatant.hasPlayerOwner
             turn.playersCanSeeName = playersSeeName(combatant)
+            turn.freed = !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed')
+            turn.canImmobilize = combatant !== currentCombatant
+
             if (canHideNames && !turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
             if (x.active) active = true
 
@@ -205,19 +216,24 @@ export class MiniTracker extends Application {
             canHideNames,
             innerCss: innerCss.join(' '),
             allowEndTurn,
-            isCurrentTurn,
+            isCurrentTurn: !currentCombatant?.isOwner,
+            immobilize,
             showHp,
         }
     }
 
+    #onRender() {
+        this.render()
+    }
+
     render(force?: boolean, options?: any) {
         const combat = ui.combat.viewed
-
+        const isGM = game.user.isGM
         const combatId = combat?.id ?? ''
         const combatant = combat?.combatant
         const token = combatant?.token
 
-        if (game.user.isGM && this._lastCombat === combatId && combatant && this._lastCombatant !== combatant.id) {
+        if (isGM && this._lastCombat === combatId && combatant && this._lastCombatant !== combatant.id) {
             if (token && getSetting('pan') && combatant.visible) {
                 canvas.animatePan({ x: token.x, y: token.y })
             }
@@ -227,6 +243,10 @@ export class MiniTracker extends Application {
                 const sheet = combatant.actor?.sheet
                 if (sheet && getSetting('sheet')) sheet.render(true)
             }
+        }
+
+        if (isGM && combat && (this._lastCombat !== combatId || (combatant && this._lastCombatant !== combatant.id))) {
+            resetFreed(combat)
         }
 
         this._lastCombat = combatId
@@ -270,6 +290,8 @@ export class MiniTracker extends Application {
         this.#makeSortable()
 
         $html.find('[data-control=trackerSettings]').on('click', () => new CombatTrackerConfig().render(true))
+
+        $html.find('[data-control="toggleImmobilized"]').on('click', this.#onToggleImmobilized.bind(this))
 
         if (canNamesBeHidden() && thirdPartyToggleSeeName) {
             $html.find('[data-control=toggle-name-visibility]').on('click', this.#togglePlayersCanSeeName.bind(this))
@@ -319,9 +341,19 @@ export class MiniTracker extends Application {
         this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())
     }
 
+    #onToggleImmobilized(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+        event.preventDefault()
+
+        const $combatant = $(event.currentTarget).closest('.combatant')
+        const id = $combatant.attr('data-combatant-id')!
+        const combat = ui.combat.viewed
+        const combatant = combat?.combatants.get(id)
+
+        if (combatant) toggleFreed(combatant)
+    }
+
     async #togglePlayersCanSeeName(event: JQuery.ClickEvent<any, any, HTMLElement>) {
         event.preventDefault()
-        if (!game.user.isGM) return
 
         const $combatant = $(event.currentTarget).closest('.combatant')
         const id = $combatant.attr('data-combatant-id')!
@@ -403,10 +435,6 @@ export class MiniTracker extends Application {
 
         window.removeEventListener('mousemove', this._resizeHook)
         window.removeEventListener('mouseup', this._resizeEndHook)
-    }
-
-    #onRender() {
-        this.render()
     }
 
     #onDragStart(event: JQuery.MouseDownEvent) {

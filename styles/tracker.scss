@@ -82,6 +82,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
+
             > li {
                 line-height: var(--sidebar-item-height);
                 border-top: 1px solid transparent;
@@ -90,6 +91,7 @@
                 grid-template-columns: var(--sidebar-item-height) auto 50px;
                 gap: 4px;
                 padding-left: 4px;
+
                 > img {
                     height: var(--sidebar-item-height);
                     width: var(--sidebar-item-height);
@@ -97,6 +99,7 @@
                     object-position: 50% 0;
                     border: none;
                 }
+
                 .__details {
                     overflow: hidden;
                     text-shadow: 1px 1px 4px var(--color-shadow-dark);
@@ -104,6 +107,7 @@
                     flex-direction: column;
                     flex-wrap: nowrap;
                     padding-top: 1px;
+
                     h4 {
                         white-space: nowrap;
                         overflow: hidden;
@@ -111,6 +115,7 @@
                         line-height: 28px;
                         margin: 0;
                     }
+
                     .__icons {
                         display: flex;
                         flex-wrap: nowrap;
@@ -120,12 +125,21 @@
                         line-height: 20px;
                         color: var(--color-text-dark-5);
                         gap: 3px;
-                        > a.active {
-                            color: var(--color-text-light-1);
+
+                        > a {
+                            &.active {
+                                color: var(--color-text-light-1);
+                            }
+
+                            &.disabled {
+                                pointer-events: none;
+                            }
                         }
+
                         .__effects {
                             height: 20px;
                             overflow: hidden;
+
                             > img {
                                 width: 16px;
                                 height: 16px;

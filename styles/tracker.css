@@ -129,6 +129,9 @@
 #lvk-mini-tracker .__inner > ol > li .__details .__icons > a.active {
   color: var(--color-text-light-1);
 }
+#lvk-mini-tracker .__inner > ol > li .__details .__icons > a.disabled {
+  pointer-events: none;
+}
 #lvk-mini-tracker .__inner > ol > li .__details .__icons .__effects {
   height: 20px;
   overflow: hidden;
