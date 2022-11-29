@@ -264,42 +264,42 @@ export class MiniTracker extends Application {
         return super.close()
     }
 
-    activateListeners($html: JQuery) {
+    activateListeners(html: JQuery) {
         const combat = ui.combat.viewed
         if (!combat || !this.innerElement.length) return
 
         const tracker = ui.combat
 
-        $html.find('.draggable').on('mousedown', this.#onDragStart.bind(this))
-        $html.find('.__resizer').on('mousedown', this.#onResizeStart.bind(this))
+        html.find('.draggable').on('mousedown', this.#onDragStart.bind(this))
+        html.find('.__resizer').on('mousedown', this.#onResizeStart.bind(this))
 
-        const $list = $html.find('.__inner > ol')
-        $list.on('mouseenter', this.#onListHover.bind(this))
-        $list.on('mouseleave', this.#onListOut.bind(this))
+        const list = html.find('.__inner > ol')
+        list.on('mouseenter', this.#onListHover.bind(this))
+        html.on('mouseleave', this.#onListOut.bind(this))
 
-        $html.find('[data-control=trackerReverse]').on('click', () => (this.isReversed = !this.isReversed))
-        $html.find('[data-control=trackerExpand]').on('click', () => (this.isExpanded = !this.isExpanded))
+        html.find('[data-control=trackerReverse]').on('click', () => (this.isReversed = !this.isReversed))
+        html.find('[data-control=trackerExpand]').on('click', () => (this.isExpanded = !this.isExpanded))
 
-        $html.find('[data-control=targetCombatant]').on('click', this.#onTarget.bind(this))
+        html.find('[data-control=targetCombatant]').on('click', this.#onTarget.bind(this))
 
-        $html.find('.combat-control').on('click', tracker._onCombatControl.bind(tracker))
-        $html.find('.combatant-control').on('click', tracker._onCombatantControl.bind(tracker))
+        html.find('.combat-control').on('click', tracker._onCombatControl.bind(tracker))
+        html.find('.combatant-control').on('click', tracker._onCombatantControl.bind(tracker))
 
-        const combatants = $list.find('.combatant')
+        const combatants = list.find('.combatant')
         combatants.on('mouseenter', tracker._onCombatantHoverIn.bind(tracker))
         combatants.on('mouseleave', tracker._onCombatantHoverOut.bind(tracker))
 
         if (!game.user.isGM) return
 
-        this._contextMenu($html)
+        this._contextMenu(html)
         this.#makeSortable()
 
-        $html.find('[data-control=trackerSettings]').on('click', () => new CombatTrackerConfig().render(true))
+        html.find('[data-control=trackerSettings]').on('click', () => new CombatTrackerConfig().render(true))
 
-        $html.find('[data-control="toggleImmobilized"]').on('click', this.#onToggleImmobilized.bind(this))
+        html.find('[data-control="toggleImmobilized"]').on('click', this.#onToggleImmobilized.bind(this))
 
         if (canNamesBeHidden() && thirdPartyToggleSeeName) {
-            $html.find('[data-control=toggle-name-visibility]').on('click', this.#togglePlayersCanSeeName.bind(this))
+            html.find('[data-control=toggle-name-visibility]').on('click', this.#togglePlayersCanSeeName.bind(this))
         }
 
         combatants.on('click', tracker._onCombatantMouseDown.bind(tracker))
