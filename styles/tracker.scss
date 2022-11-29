@@ -87,12 +87,16 @@
                 line-height: var(--sidebar-item-height);
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
-                display: grid;
-                grid-template-columns: var(--sidebar-item-height) auto 50px;
+                display: flex;
                 gap: 4px;
                 padding-left: 4px;
 
+                &:hover {
+                    background: rgba(255, 255, 255, 0.08);
+                }
+
                 > img {
+                    flex: 0 0 var(--sidebar-item-height);
                     height: var(--sidebar-item-height);
                     width: var(--sidebar-item-height);
                     object-fit: cover;
@@ -101,6 +105,7 @@
                 }
 
                 .__details {
+                    flex: 1;
                     overflow: hidden;
                     text-shadow: 1px 1px 4px var(--color-shadow-dark);
                     display: flex;
@@ -150,15 +155,21 @@
                         }
                     }
                 }
+
                 .__initiative {
-                    text-align: center;
+                    flex: 0 0 62px;
+                    height: var(--sidebar-item-height);
+                    display: flex;
+                    justify-content: end;
+
+                    > * {
+                        display: flex;
+                        width: 40px;
+                        justify-content: center;
+                    }
 
                     > div {
-                        display: flex;
                         flex-direction: column;
-                        align-items: end;
-                        justify-content: center;
-                        height: 100%;
                         padding-right: 6px;
                     }
 
@@ -170,24 +181,18 @@
                             line-height: 1.5;
                             display: flex;
                             align-items: center;
+                            justify-content: end;
                             gap: 4px;
                         }
                     }
 
                     .__roll {
-                        display: block;
                         height: 100%;
-                        width: 100%;
                         background: url(/icons/svg/d20.svg) no-repeat 50% 50%;
                         background-size: 32px;
 
                         &:hover {
                             background-image: url(/icons/svg/d20-highlight.svg);
-                        }
-                    }
-                    input {
-                        &:focus {
-                            box-shadow: 0 0 5px var(--color-border-light-tertiary);
                         }
                     }
                 }
