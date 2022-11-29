@@ -229,6 +229,11 @@ export class MiniTracker extends Application {
         this.render()
     }
 
+    protected async _render(force?: boolean | undefined, options?: RenderOptions | undefined): Promise<void> {
+        await super._render(force, options)
+        Hooks.callAll('renderMiniTracker', this, this.element)
+    }
+
     render(force?: boolean, options?: any) {
         const combat = ui.combat.viewed
         const isGM = game.user.isGM
@@ -258,10 +263,12 @@ export class MiniTracker extends Application {
         return super.render(force, options)
     }
 
-    close() {
+    async close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
+        const result = await super.close(options)
         Hooks.off('renderCombatTracker', this._renderHook)
         Hooks.off('hoverToken', this._hoverHook)
-        return super.close()
+        Hooks.call(`closeMiniTracker`, this, this.element)
+        return result
     }
 
     activateListeners(html: JQuery) {
