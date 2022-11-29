@@ -294,6 +294,10 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     #onRender() {
         this.render();
     }
+    async _render(force, options) {
+        await super._render(force, options);
+        Hooks.callAll("renderMiniTracker", this, this.element);
+    }
     render(force, options) {
         const combat = ui.combat.viewed;
         const isGM = game.user.isGM;
@@ -318,34 +322,36 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         this._lastCombatant = combatant?.id ?? "";
         return super.render(force, options);
     }
-    close() {
+    async close(options) {
+        const result = await super.close(options);
         Hooks.off("renderCombatTracker", this._renderHook);
         Hooks.off("hoverToken", this._hoverHook);
-        return super.close();
+        Hooks.call(`closeMiniTracker`, this, this.element);
+        return result;
     }
-    activateListeners($html) {
+    activateListeners(html) {
         const combat = ui.combat.viewed;
         if (!combat || !this.innerElement.length) return;
         const tracker = ui.combat;
-        $html.find(".draggable").on("mousedown", this.#onDragStart.bind(this));
-        $html.find(".__resizer").on("mousedown", this.#onResizeStart.bind(this));
-        const $list = $html.find(".__inner > ol");
-        $list.on("mouseenter", this.#onListHover.bind(this));
-        $list.on("mouseleave", this.#onListOut.bind(this));
-        $html.find("[data-control=trackerReverse]").on("click", ()=>this.isReversed = !this.isReversed);
-        $html.find("[data-control=trackerExpand]").on("click", ()=>this.isExpanded = !this.isExpanded);
-        $html.find("[data-control=targetCombatant]").on("click", this.#onTarget.bind(this));
-        $html.find(".combat-control").on("click", tracker._onCombatControl.bind(tracker));
-        $html.find(".combatant-control").on("click", tracker._onCombatantControl.bind(tracker));
-        const combatants = $list.find(".combatant");
+        html.find(".draggable").on("mousedown", this.#onDragStart.bind(this));
+        html.find(".__resizer").on("mousedown", this.#onResizeStart.bind(this));
+        const list = html.find(".__inner > ol");
+        list.on("mouseenter", this.#onListHover.bind(this));
+        html.on("mouseleave", this.#onListOut.bind(this));
+        html.find("[data-control=trackerReverse]").on("click", ()=>this.isReversed = !this.isReversed);
+        html.find("[data-control=trackerExpand]").on("click", ()=>this.isExpanded = !this.isExpanded);
+        html.find("[data-control=targetCombatant]").on("click", this.#onTarget.bind(this));
+        html.find(".combat-control").on("click", tracker._onCombatControl.bind(tracker));
+        html.find(".combatant-control").on("click", tracker._onCombatantControl.bind(tracker));
+        const combatants = list.find(".combatant");
         combatants.on("mouseenter", tracker._onCombatantHoverIn.bind(tracker));
         combatants.on("mouseleave", tracker._onCombatantHoverOut.bind(tracker));
         if (!game.user.isGM) return;
-        this._contextMenu($html);
+        this._contextMenu(html);
         this.#makeSortable();
-        $html.find("[data-control=trackerSettings]").on("click", ()=>new CombatTrackerConfig().render(true));
-        $html.find('[data-control="toggleImmobilized"]').on("click", this.#onToggleImmobilized.bind(this));
-        if ((0, $cde63defe07c1790$export$63e364ad1cb51f52)() && (0, $7dfb009370bda395$export$9bbc5a3a539b2a19)) $html.find("[data-control=toggle-name-visibility]").on("click", this.#togglePlayersCanSeeName.bind(this));
+        html.find("[data-control=trackerSettings]").on("click", ()=>new CombatTrackerConfig().render(true));
+        html.find('[data-control="toggleImmobilized"]').on("click", this.#onToggleImmobilized.bind(this));
+        if ((0, $cde63defe07c1790$export$63e364ad1cb51f52)() && (0, $7dfb009370bda395$export$9bbc5a3a539b2a19)) html.find("[data-control=toggle-name-visibility]").on("click", this.#togglePlayersCanSeeName.bind(this));
         combatants.on("click", tracker._onCombatantMouseDown.bind(tracker));
     }
     setPosition({ left: left , top: top , bottom: bottom  }) {
