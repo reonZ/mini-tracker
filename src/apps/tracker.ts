@@ -3,6 +3,7 @@ import { templatePath } from '~src/@utils/foundry/path'
 import { getSetting, setSetting } from '~src/@utils/foundry/settings'
 import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/third'
+import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
 
 export class MiniTracker extends Application {
     private _isExpanded: boolean
@@ -167,7 +168,7 @@ export class MiniTracker extends Application {
         const currentCombatant = combat.combatant
         const hideNames = canNamesBeHidden()
         const endTurn = getSetting<boolean>('turn')
-        const immobilize = getSetting<boolean>('immobilize')
+        const immobilize = getSetting<boolean>('immobilize') && !hasMTB()
         const target = !isGM && getSetting<boolean>('target')
         const combatants = combat.combatants
         const showHp = getSetting<string>('hp')
@@ -231,6 +232,7 @@ export class MiniTracker extends Application {
 
     protected async _render(force?: boolean | undefined, options?: RenderOptions | undefined): Promise<void> {
         await super._render(force, options)
+        if (game.user.isGM && showOnTrackerMTB()) cloneIcons(this.listElement)
         Hooks.callAll('renderMiniTracker', this, this.element)
     }
 
@@ -303,7 +305,9 @@ export class MiniTracker extends Application {
 
         html.find('[data-control=trackerSettings]').on('click', () => new CombatTrackerConfig().render(true))
 
-        html.find('[data-control="toggleImmobilized"]').on('click', this.#onToggleImmobilized.bind(this))
+        if (!hasMTB()) {
+            html.find('[data-control="toggleImmobilized"]').on('click', this.#onToggleImmobilized.bind(this))
+        }
 
         if (canNamesBeHidden() && thirdPartyToggleSeeName) {
             html.find('[data-control=toggle-name-visibility]').on('click', this.#togglePlayersCanSeeName.bind(this))

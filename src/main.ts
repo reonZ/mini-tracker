@@ -1,6 +1,7 @@
 import { getSetting, registerSetting } from './@utils/foundry/settings'
 import { MiniTracker } from './apps/tracker'
 import { thirdPartyInitialization } from './third'
+import { hasMTB } from './thirds/mtb'
 import { preUpdateToken } from './token'
 
 export let tracker: MiniTracker | null = null
@@ -136,6 +137,7 @@ function refreshTracker(actor: Actor, data: DocumentUpdateData<Actor>) {
 }
 
 function immobilizeHooks(immobilize: unknown) {
+    if (hasMTB()) return
     if (!game.user.isGM) {
         const method = immobilize ? 'on' : 'off'
         Hooks[method]('preUpdateToken', preUpdateToken)

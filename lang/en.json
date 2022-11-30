@@ -35,7 +35,7 @@
             },
             "immobilize": {
                 "name": "Prevent Movement",
-                "hint": "When enabled, players will only be able to move their tokens during their turn."
+                "hint": "When enabled, players will only be able to move their tokens during their turn. This setting will not do anything if the module Monk's TokenBar is present to avoid conflict."
             },
             "target": {
                 "name": "Target Token",

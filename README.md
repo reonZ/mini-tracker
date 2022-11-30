@@ -72,6 +72,10 @@ If enabled, this module can prevent players from being able to move tokens on th
 
 Combatant tokens will by default be prevented from moving when out of turn. A new ![](./readme//immobilize.webp) icon is added to allow the GM to "free" a combatant token until the end of the current turn.
 
+## Monk's TokenBar
+
+The module `Monk's TokenBar` already provides a better version of this feature, therefore, if present, its feature will be used instead and the ![](./readme//immobilize.webp) will toggle its state.
+
 # Hide creatures name
 
 If a recognized module/system allowing hidding creatures names is found, the name of the creatures will be hidden from the players when appropriate.
@@ -110,7 +114,7 @@ If set with an actor system path, will display the current hp of combatants in t
 
 ## Prevent Movement
 
-When enabled, players will only be able to move their token during their turn. Or when the GM allows it.
+When enabled, players will only be able to move their token during their turn. Or when the GM allows it. This setting will not do anything if the module Monk's TokenBar is present to avoid conflict.
 
 ## Pan to Token
 
