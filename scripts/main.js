@@ -136,6 +136,29 @@ function $cde63defe07c1790$export$125ec828e2461284(combatant) {
 
 
 
+
+const $8925e622526f4c62$var$MODULE_ID = "monks-tokenbar";
+function $8925e622526f4c62$export$9166f1d492e4980c() {
+    return !!(0, $f13521bdeed07ab3$export$90835e7e06f4e75b)($8925e622526f4c62$var$MODULE_ID);
+}
+function $8925e622526f4c62$export$7e36d6922fe269d0(list) {
+    const ol = ui.combat.element.find("#combat-tracker");
+    const combatants = ol.find('.combatant:has([data-control="toggleMovement"])');
+    combatants.each(function() {
+        const li = $(this);
+        const id = li.attr("data-combatant-id");
+        const icon = li.find('[data-control="toggleMovement"]');
+        const clone = icon.clone(true);
+        clone.on("click", ()=>icon.toggleClass("active"));
+        icon.on("click", ()=>clone.toggleClass("active"));
+        list.find(`[data-combatant-id="${id}"] [data-control="toggleDefeated"]`).before(clone);
+    });
+}
+function $8925e622526f4c62$export$713ee79f92d45175() {
+    return $8925e622526f4c62$export$9166f1d492e4980c() && !!game.settings.get($8925e622526f4c62$var$MODULE_ID, "show-on-tracker");
+}
+
+
 class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     _initialPointer = {
         x: 0,
@@ -249,7 +272,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const currentCombatant = combat.combatant;
         const hideNames = (0, $cde63defe07c1790$export$63e364ad1cb51f52)();
         const endTurn = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("turn");
-        const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize");
+        const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize") && !(0, $8925e622526f4c62$export$9166f1d492e4980c)();
         const target = !isGM && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("target");
         const combatants = combat.combatants;
         const showHp = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp");
@@ -296,6 +319,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     }
     async _render(force, options) {
         await super._render(force, options);
+        if (game.user.isGM && (0, $8925e622526f4c62$export$713ee79f92d45175)()) (0, $8925e622526f4c62$export$7e36d6922fe269d0)(this.listElement);
         Hooks.callAll("renderMiniTracker", this, this.element);
     }
     render(force, options) {
@@ -350,7 +374,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         this._contextMenu(html);
         this.#makeSortable();
         html.find("[data-control=trackerSettings]").on("click", ()=>new CombatTrackerConfig().render(true));
-        html.find('[data-control="toggleImmobilized"]').on("click", this.#onToggleImmobilized.bind(this));
+        if (!(0, $8925e622526f4c62$export$9166f1d492e4980c)()) html.find('[data-control="toggleImmobilized"]').on("click", this.#onToggleImmobilized.bind(this));
         if ((0, $cde63defe07c1790$export$63e364ad1cb51f52)() && (0, $7dfb009370bda395$export$9bbc5a3a539b2a19)) html.find("[data-control=toggle-name-visibility]").on("click", this.#togglePlayersCanSeeName.bind(this));
         combatants.on("click", tracker._onCombatantMouseDown.bind(tracker));
     }
@@ -566,6 +590,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
 
 
 
+
 function $d20bc07084c62caf$export$5e14cdade93d6f7b(str, arg1, arg2, arg3) {
     const type = typeof arg1 === "string" ? arg1 : "info";
     const data = typeof arg1 === "object" ? arg1 : typeof arg2 === "object" ? arg2 : undefined;
@@ -709,6 +734,7 @@ function $b013a5dd6d18443e$var$refreshTracker(actor, data) {
     if (hasHp) $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
 }
 function $b013a5dd6d18443e$var$immobilizeHooks(immobilize) {
+    if ((0, $8925e622526f4c62$export$9166f1d492e4980c)()) return;
     if (!game.user.isGM) {
         const method = immobilize ? "on" : "off";
         Hooks[method]("preUpdateToken", (0, $66d137fe0087513e$export$9e2622decb731a81));
