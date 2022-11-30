@@ -23,6 +23,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Select Token](#select-token)
     -   [Open Sheet](#open-sheet)
 -   [Secret](#secret)
+-   [Localization](#localization)
 
 # Displayed when needed
 
@@ -139,3 +140,8 @@ To change this setting, simply open your browser devtools (F12) and in the conso
 To return to the normal behavior simply type:
 
     game.settings.set('mini-tracker', 'fake-reversed', false)
+
+# Localization
+
+-   English
+-   Spanish thanks to [lozanoje](https://github.com/lozanoje)
