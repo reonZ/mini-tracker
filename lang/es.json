@@ -1,0 +1,50 @@
+{
+    "I18N": {
+        "LANGUAGE": "Espanol",
+        "MAINTAINERS": "@Viriato139ac#0342"
+    },
+    "mini-tracker": {
+        "reverse": "Conmutar orientación",
+        "expand": "Expandir lista",
+        "unknown": "Desconocido",
+        "immobilized": "En este momento no puede mover este icono",
+        "settings": {
+            "enabled": {
+                "name": "Habilitar",
+                "hint": "Habilitar/deshabilitar mini asistente de combate"
+            },
+            "pan": {
+                "name": "Centrarse en el icono",
+                "hint": "¿Debe la cámara centrarse en el icono del contendiente actual? Opción solo para el GM"
+            },
+            "delay": {
+                "name": "Retraso en expandir",
+                "hint": "Tiempo en milisegundos antes de que el asistente se expanda al pasar el ratón"
+            },
+            "select": {
+                "name": "Seleccionar icono",
+                "hint": "Seleccionar icono del contendiente actual. Opción solo para el GM"
+            },
+            "sheet": {
+                "name": "Abrir hoja",
+                "hint": "¿Debe la hoja del contendiente actual abrirse automáticamente? Opción solo para el GM"
+            },
+            "turn": {
+                "name": "Finalizar turno",
+                "hint": "¿Pueden los jugadores finalizar sus turnos?"
+            },
+            "hp": {
+                "name": "Ruta a los PVs",
+                "hint": "Si se especifica la ruta en el sistema de un actor, se mostrarán los PVs actuales de los contendientes en el asistente. Opción solo para el GM"
+            },
+            "immobilize": {
+                "name": "Restringir movimiento",
+                "hint": "Cuando se habilite, los jugadores solo podrán mover sus iconos durante su turno"
+            },
+            "target": {
+                "name": "Objetivos desde el asistente",
+                "hint": "Permite a los jugadores seleccionar objetivo desde el asistente, útil especialmente en sistemas que oculten iconos pero que sigan mostrando a los contendientes en el asistente"
+            }
+        }
+    }
+}
