@@ -3,7 +3,7 @@ import { getModule } from '~src/@utils/foundry/module'
 const MODULE_ID = 'monks-tokenbar'
 
 export function hasMTB() {
-    return !!getModule(MODULE_ID)
+    return getModule(MODULE_ID)?.active
 }
 
 export function cloneIcons(list: JQuery) {
