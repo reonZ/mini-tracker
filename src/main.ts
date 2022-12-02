@@ -1,5 +1,7 @@
+import { getSettingLocalizationPath } from './@utils/foundry/path'
 import { getSetting, registerSetting } from './@utils/foundry/settings'
 import { MiniTracker } from './apps/tracker'
+import { renderCombatTrackerConfig } from './config'
 import { thirdPartyInitialization } from './third'
 import { hasMTB } from './thirds/mtb'
 import { preUpdateToken } from './token'
@@ -29,6 +31,15 @@ Hooks.once('init', () => {
         default: 250,
     })
 
+    registerSetting({
+        name: 'dead',
+        scope: 'client',
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: refreshTracker,
+    })
+
     // CLIENT HIDDEN SETTINGS
 
     registerSetting({
@@ -43,9 +54,7 @@ Hooks.once('init', () => {
         scope: 'client',
         type: Boolean,
         default: false,
-        onChange: () => {
-            tracker?.render()
-        },
+        onChange: refreshTracker,
     })
 
     registerSetting({
@@ -124,16 +133,22 @@ Hooks.once('ready', () => {
     if (getSetting('hp')) hpHooks(true)
 })
 
-function hpHooks(show: unknown) {
-    if (!game.user.isGM) return
-    const method = show ? 'on' : 'off'
-    Hooks[method]('updateActor', refreshTracker)
+Hooks.on('renderCombatTrackerConfig', renderCombatTrackerConfig)
+
+function refreshTracker() {
     tracker?.render()
 }
 
-function refreshTracker(actor: Actor, data: DocumentUpdateData<Actor>) {
+function hpHooks(show: unknown) {
+    if (!game.user.isGM) return
+    const method = show ? 'on' : 'off'
+    Hooks[method]('updateActor', updateActor)
+    refreshTracker()
+}
+
+function updateActor(actor: Actor, data: DocumentUpdateData<Actor>) {
     const hasHp = hasProperty(data, 'system.attributes.hp.value')
-    if (hasHp) tracker?.render()
+    if (hasHp) refreshTracker()
 }
 
 function immobilizeHooks(immobilize: unknown) {
@@ -142,7 +157,7 @@ function immobilizeHooks(immobilize: unknown) {
         const method = immobilize ? 'on' : 'off'
         Hooks[method]('preUpdateToken', preUpdateToken)
     } else {
-        tracker?.render()
+        refreshTracker()
     }
 }
 

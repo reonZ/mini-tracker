@@ -172,11 +172,14 @@ export class MiniTracker extends Application {
         const target = !isGM && getSetting<boolean>('target')
         const combatants = combat.combatants
         const showHp = getSetting<string>('hp')
+        const hideDefeated = getSetting<boolean>('dead')
 
         let active = false
         let data = await ui.combat.getData()
 
         data.turns = data.turns.map(x => {
+            if (hideDefeated && x.defeated) return undefined as unknown as CombatTrackerTurn
+
             const combatant = combatants.get(x.id)!
             const turn = x as CombatTrackerTurn & {
                 hasPlayerOwner: boolean

@@ -101,6 +101,14 @@ Enable or disable the mini tracker for the user.
 
 Set the amount of time (in milliseconds) before the tracker starts expands on mouse hover.
 
+## Hide Defeated? (client)
+
+Should non player-owned defeated combatants be hidden from the tracker?
+
+![](./readme/config.webp)
+
+The setting is also present in the `Combat Tracket Settings` window for the GM.
+
 ## End Turn
 
 Should the players be able to end their own turn.

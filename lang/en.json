@@ -40,6 +40,10 @@
             "target": {
                 "name": "Target Token",
                 "hint": "Allow players to target a token from the tracker, this can be extra useful for systems that hide tokens but still display combatants in the tracker."
+            },
+            "dead": {
+                "name": "Hide Defeated?",
+                "hint": "Should non player-owned defeated combatants be hidden from the tracker?"
             }
         }
     }
