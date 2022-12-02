@@ -25,6 +25,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Open Sheet](#open-sheet)
 -   [Secret](#secret)
 -   [Localization](#localization)
+-   [CHANGELOGS](#changelogs)
 
 # Displayed when needed
 
@@ -154,3 +155,7 @@ To return to the normal behavior simply type:
 
 -   English
 -   Spanish thanks to [lozanoje](https://github.com/lozanoje)
+
+# CHANGELOGS
+
+You can see the changelogs [HERE](./CHANGELOG.md)
