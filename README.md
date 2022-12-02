@@ -15,6 +15,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
 -   [Settings](#settings)
     -   [Enabled (client)](#enabled-client)
     -   [Hover Delay (client)](#hover-delay-client)
+    -   [Hide Defeated (client)](#hide-defeated-client)
     -   [End Turn](#end-turn)
     -   [Target Token](#target-token)
     -   [System HP Path](#system-hp-path)
