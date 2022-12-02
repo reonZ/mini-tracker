@@ -279,9 +279,9 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const hideDefeated = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead");
         let active = false;
         let data = await ui.combat.getData();
-        data.turns = data.turns.map((x)=>{
-            if (hideDefeated && x.defeated) return undefined;
+        data.turns = data.turns.reduce((acc, x)=>{
             const combatant = combatants.get(x.id);
+            if (hideDefeated && x.defeated && !combatant.hasPlayerOwner) return acc;
             const turn = x;
             turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`);
             turn.hasPlayerOwner = combatant.hasPlayerOwner;
@@ -290,8 +290,12 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             turn.canImmobilize = combatant !== currentCombatant;
             if (hideNames && !turn.playersCanSeeName && !isGM) turn.name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
             if (x.active) active = true;
-            return turn;
-        });
+            acc.push(turn);
+            return acc;
+        }, []);
+        if (!data.turns.some((x)=>x.owner)) return {
+            hasCombat: false
+        };
         if (!active) {
             const active1 = Math.min(data.turn ?? 0, data.turns.length - 1);
             const combatant = data.turns[active1];
