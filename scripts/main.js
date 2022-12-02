@@ -139,7 +139,7 @@ function $cde63defe07c1790$export$125ec828e2461284(combatant) {
 
 const $8925e622526f4c62$var$MODULE_ID = "monks-tokenbar";
 function $8925e622526f4c62$export$9166f1d492e4980c() {
-    return !!(0, $f13521bdeed07ab3$export$90835e7e06f4e75b)($8925e622526f4c62$var$MODULE_ID);
+    return (0, $f13521bdeed07ab3$export$90835e7e06f4e75b)($8925e622526f4c62$var$MODULE_ID)?.active;
 }
 function $8925e622526f4c62$export$7e36d6922fe269d0(list) {
     const ol = ui.combat.element.find("#combat-tracker");
@@ -276,9 +276,11 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const target = !isGM && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("target");
         const combatants = combat.combatants;
         const showHp = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp");
+        const hideDefeated = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead");
         let active = false;
         let data = await ui.combat.getData();
         data.turns = data.turns.map((x)=>{
+            if (hideDefeated && x.defeated) return undefined;
             const combatant = combatants.get(x.id);
             const turn = x;
             turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`);
@@ -589,6 +591,30 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
 
 
 
+function $c04235eee8e32194$export$6ab464d7cd6b504d(config, html) {
+    $c04235eee8e32194$var$injectHTML(html);
+    $c04235eee8e32194$var$addEvents(html);
+    html.css("height", "auto");
+}
+function $c04235eee8e32194$var$addEvents(html) {
+    html.find('input[name="hideDeads"]').on("change", function() {
+        const checked = $(this).is(":checked");
+        (0, $b29eb7e0eb12ddbc$export$61fd6f1ddd0c20e2)("dead", checked);
+    });
+}
+function $c04235eee8e32194$var$injectHTML(html) {
+    const checked = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead") ? "checked" : "";
+    let content = '<div class="form-group">';
+    content += `<label>${(0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("settings.dead.name")}</label>`;
+    content += `<input type="checkbox" name="hideDeads" ${checked}>`;
+    content += `<p class="notes">${(0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("settings.dead.hint")}</p>`;
+    content += "</div>";
+    html.find(".form-group").last().after(content);
+}
+
+
+
+
 
 
 function $d20bc07084c62caf$export$5e14cdade93d6f7b(str, arg1, arg2, arg3) {
@@ -643,6 +669,14 @@ Hooks.once("init", ()=>{
         type: Number,
         default: 250
     });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "dead",
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: $b013a5dd6d18443e$var$refreshTracker
+    });
     // CLIENT HIDDEN SETTINGS
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "reversed",
@@ -655,9 +689,7 @@ Hooks.once("init", ()=>{
         scope: "client",
         type: Boolean,
         default: false,
-        onChange: ()=>{
-            $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
-        }
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "coords",
@@ -723,22 +755,26 @@ Hooks.once("ready", ()=>{
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize")) $b013a5dd6d18443e$var$immobilizeHooks(true);
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp")) $b013a5dd6d18443e$var$hpHooks(true);
 });
+Hooks.on("renderCombatTrackerConfig", (0, $c04235eee8e32194$export$6ab464d7cd6b504d));
+function $b013a5dd6d18443e$var$refreshTracker() {
+    $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+}
 function $b013a5dd6d18443e$var$hpHooks(show) {
     if (!game.user.isGM) return;
     const method = show ? "on" : "off";
-    Hooks[method]("updateActor", $b013a5dd6d18443e$var$refreshTracker);
-    $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+    Hooks[method]("updateActor", $b013a5dd6d18443e$var$updateActor);
+    $b013a5dd6d18443e$var$refreshTracker();
 }
-function $b013a5dd6d18443e$var$refreshTracker(actor, data) {
+function $b013a5dd6d18443e$var$updateActor(actor, data) {
     const hasHp = hasProperty(data, "system.attributes.hp.value");
-    if (hasHp) $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+    if (hasHp) $b013a5dd6d18443e$var$refreshTracker();
 }
 function $b013a5dd6d18443e$var$immobilizeHooks(immobilize) {
     if ((0, $8925e622526f4c62$export$9166f1d492e4980c)()) return;
     if (!game.user.isGM) {
         const method = immobilize ? "on" : "off";
         Hooks[method]("preUpdateToken", (0, $66d137fe0087513e$export$9e2622decb731a81));
-    } else $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
+    } else $b013a5dd6d18443e$var$refreshTracker();
 }
 function $b013a5dd6d18443e$var$createTracker() {
     if ($b013a5dd6d18443e$export$1bb3d147765683cf) return;
