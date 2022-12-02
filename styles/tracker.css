@@ -1,6 +1,6 @@
 #lvk-mini-tracker {
   position: fixed;
-  width: 280px;
+  width: 300px;
   z-index: 50;
   font-size: 14px;
   --sidebar-item-height: 48px;

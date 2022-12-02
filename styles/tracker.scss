@@ -1,14 +1,17 @@
 #lvk-mini-tracker {
     position: fixed;
-    width: 280px;
+    width: 300px;
     z-index: 50;
+
     font-size: 14px;
     --sidebar-item-height: 48px;
     --font-size-14: 14px;
+
     a.disabled {
         color: grey;
         pointer-events: none;
     }
+
     .__inner {
         position: relative;
         border: 1px solid var(--color-border-dark);
