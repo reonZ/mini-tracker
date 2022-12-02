@@ -15,10 +15,10 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
 -   [Settings](#settings)
     -   [Enabled (client)](#enabled-client)
     -   [Hover Delay (client)](#hover-delay-client)
-    -   [Hide Defeated (client)](#hide-defeated-client)
     -   [End Turn](#end-turn)
     -   [Target Token](#target-token)
     -   [System HP Path](#system-hp-path)
+    -   [Hide Defeated](#hide-defeated)
     -   [Prevent Movement](#prevent-movement)
     -   [Pan to Token](#pan-to-token)
     -   [Select Token](#select-token)
@@ -102,14 +102,6 @@ Enable or disable the mini tracker for the user.
 
 Set the amount of time (in milliseconds) before the tracker starts expands on mouse hover.
 
-## Hide Defeated? (client)
-
-Should non player-owned defeated combatants be hidden from the tracker?
-
-![](./readme/config.webp)
-
-The setting is also present in the `Combat Tracket Settings` window for the GM.
-
 ## End Turn
 
 Should the players be able to end their own turn.
@@ -121,6 +113,14 @@ Allow players to target a token from the tracker, this can be extra useful for s
 ## System HP Path
 
 If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM.
+
+## Hide Defeated?
+
+Should non player-owned defeated combatants be hidden from the tracker?
+
+![](./readme/config.webp)
+
+The setting is also present in the `Combat Tracket Settings` window.
 
 ## Prevent Movement
 
