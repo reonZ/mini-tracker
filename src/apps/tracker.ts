@@ -224,7 +224,7 @@ export class MiniTracker extends Application {
 
         return {
             ...data,
-            canHideNames: hideNames,
+            hideNames,
             innerCss: innerCss.join(' '),
             allowEndTurn: endTurn,
             isCurrentTurn: !currentCombatant?.isOwner,
