@@ -31,15 +31,6 @@ Hooks.once('init', () => {
         default: 250,
     })
 
-    registerSetting({
-        name: 'dead',
-        scope: 'client',
-        config: true,
-        type: Boolean,
-        default: false,
-        onChange: refreshTracker,
-    })
-
     // CLIENT HIDDEN SETTINGS
 
     registerSetting({
@@ -93,6 +84,14 @@ Hooks.once('init', () => {
         type: String,
         default: 'attributes.hp.value',
         onChange: hpHooks,
+    })
+
+    registerSetting({
+        name: 'dead',
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: refreshTracker,
     })
 
     registerSetting({

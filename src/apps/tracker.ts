@@ -1,6 +1,6 @@
 import { getFlag } from '~src/@utils/foundry/flags'
 import { templatePath } from '~src/@utils/foundry/path'
-import { getSetting, setSetting } from '~src/@utils/foundry/settings'
+import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
 import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
@@ -172,7 +172,7 @@ export class MiniTracker extends Application {
         const target = !isGM && getSetting<boolean>('target')
         const combatants = combat.combatants
         const showHp = getSetting<string>('hp')
-        const hideDefeated = getSetting<boolean>('dead')
+        const hideDefeated = getSetting<boolean>('dead') && getCombatTrackerConfig().skipDefeated
 
         let active = false
         let data = await ui.combat.getData()
@@ -218,7 +218,7 @@ export class MiniTracker extends Application {
         }
 
         const reversed = this.isReversed
-        const innerCss = /** @type {string[]} */ []
+        const innerCss = []
         if (this.isExpanded) innerCss.push('expanded')
         if (reversed && !getSetting('fake-reversed')) innerCss.push('reversed')
 
