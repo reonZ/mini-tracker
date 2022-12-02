@@ -38,6 +38,9 @@ function $b29eb7e0eb12ddbc$export$cd2f7161e4d70860(options) {
     options.icon = options.icon ?? "fas fa-cogs";
     game.settings.registerMenu((0, $1623e5e7c705b7c7$export$2e2bcd8739ae039), name, options);
 }
+function $b29eb7e0eb12ddbc$export$8cb4a6769fa1780e() {
+    return game.settings.get("core", "combatTrackerConfig");
+}
 
 
 
@@ -276,7 +279,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const target = !isGM && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("target");
         const combatants = combat.combatants;
         const showHp = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp");
-        const hideDefeated = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead");
+        const hideDefeated = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead") && (0, $b29eb7e0eb12ddbc$export$8cb4a6769fa1780e)().skipDefeated;
         let active = false;
         let data = await ui.combat.getData();
         data.turns = data.turns.reduce((acc, x)=>{
@@ -305,7 +308,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             combatant.css = css.join(" ");
         }
         const reversed = this.isReversed;
-        const innerCss = /** @type {string[]} */ [];
+        const innerCss = [];
         if (this.isExpanded) innerCss.push("expanded");
         if (reversed && !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("fake-reversed")) innerCss.push("reversed");
         return {
@@ -673,14 +676,6 @@ Hooks.once("init", ()=>{
         type: Number,
         default: 250
     });
-    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
-        name: "dead",
-        scope: "client",
-        config: true,
-        type: Boolean,
-        default: false,
-        onChange: $b013a5dd6d18443e$var$refreshTracker
-    });
     // CLIENT HIDDEN SETTINGS
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "reversed",
@@ -726,6 +721,13 @@ Hooks.once("init", ()=>{
         type: String,
         default: "attributes.hp.value",
         onChange: $b013a5dd6d18443e$var$hpHooks
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "dead",
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "immobilize",
