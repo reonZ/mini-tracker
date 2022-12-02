@@ -177,10 +177,11 @@ export class MiniTracker extends Application {
         let active = false
         let data = await ui.combat.getData()
 
-        data.turns = data.turns.map(x => {
-            if (hideDefeated && x.defeated) return undefined as unknown as CombatTrackerTurn
-
+        data.turns = data.turns.reduce((acc, x) => {
             const combatant = combatants.get(x.id)!
+
+            if (hideDefeated && x.defeated && !combatant.hasPlayerOwner) return acc
+
             const turn = x as CombatTrackerTurn & {
                 hasPlayerOwner: boolean
                 playersCanSeeName: boolean
@@ -198,8 +199,13 @@ export class MiniTracker extends Application {
             if (hideNames && !turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
             if (x.active) active = true
 
-            return turn
-        })
+            acc.push(turn)
+            return acc
+        }, [] as CombatTrackerTurn[])
+
+        if (!data.turns.some(x => x.owner)) {
+            return { hasCombat: false }
+        }
 
         if (!active) {
             const active = Math.min(data.turn ?? 0, data.turns.length - 1)
