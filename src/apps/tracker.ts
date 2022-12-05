@@ -1,7 +1,7 @@
 import { getFlag } from '~src/@utils/foundry/flags'
 import { templatePath } from '~src/@utils/foundry/path'
 import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
-import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
+import { addClass, canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
 
@@ -196,7 +196,11 @@ export class MiniTracker extends Application {
             turn.freed = !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed')
             turn.canImmobilize = combatant !== currentCombatant
 
-            if (hideNames && !turn.playersCanSeeName && !isGM) turn.name = getName(combatant)
+            if (hideNames && !turn.playersCanSeeName) {
+                if (!isGM) turn.name = getName(combatant)
+                else if (getSetting('dim')) addClass(turn, 'anonymous')
+            }
+
             if (x.active) active = true
 
             acc.push(turn)
@@ -210,11 +214,8 @@ export class MiniTracker extends Application {
         if (!active) {
             const active = Math.min(data.turn ?? 0, data.turns.length - 1)
             const combatant = data.turns[active]
-            const css = combatant.css ? combatant.css.split(' ') : []
-
             combatant.active = true
-            css.push('active')
-            combatant.css = css.join(' ')
+            addClass(combatant, 'active')
         }
 
         const reversed = this.isReversed

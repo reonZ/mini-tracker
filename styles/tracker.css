@@ -181,6 +181,9 @@
 #lvk-mini-tracker .__inner > ol > li .__initiative .__roll:hover {
   background-image: url(/icons/svg/d20-highlight.svg);
 }
+#lvk-mini-tracker .__inner > ol > li.anonymous {
+  color: var(--color-text-light-7);
+}
 #lvk-mini-tracker .__inner > ol > li.hidden {
   color: var(--color-text-light-7);
 }

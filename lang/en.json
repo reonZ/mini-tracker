@@ -44,6 +44,10 @@
             "dead": {
                 "name": "Hide Defeated?",
                 "hint": "Should non player-owned defeated combatants be hidden from the tracker? The core setting 'Skip Defeated?' needs to be enabled."
+            },
+            "dim": {
+                "name": "Dim Anonymous",
+                "hint": "When enabled, names will be dimmed out to put an accent on the fact that it is hidden from players."
             }
         }
     }

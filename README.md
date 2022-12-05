@@ -25,7 +25,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Open Sheet](#open-sheet)
 -   [Secret](#secret)
 -   [Localization](#localization)
--   [CHANGELOGS](#changelogs)
+-   [CHANGELOG](#changelog)
 
 # Displayed when needed
 
@@ -115,6 +115,10 @@ Allow players to target a token from the tracker, this can be extra useful for s
 
 If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM.
 
+## Dim Anonymous
+
+When enabled, names will be dimmed out to put an accent on the fact that it is hidden from players.
+
 ## Hide Defeated?
 
 Should non player-owned defeated combatants be hidden from the tracker?
@@ -156,6 +160,6 @@ To return to the normal behavior simply type:
 -   English
 -   Spanish thanks to [lozanoje](https://github.com/lozanoje)
 
-# CHANGELOGS
+# CHANGELOG
 
-You can see the changelogs [HERE](./CHANGELOG.md)
+You can see the changelog [HERE](./CHANGELOG.md)

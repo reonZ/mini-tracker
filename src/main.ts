@@ -87,6 +87,14 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'dim',
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: refreshTracker,
+    })
+
+    registerSetting({
         name: 'dead',
         config: true,
         type: Boolean,

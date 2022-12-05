@@ -75,6 +75,7 @@
                 }
             }
         }
+
         > ol {
             position: relative;
             scrollbar-width: thin;
@@ -199,15 +200,22 @@
                         }
                     }
                 }
-            }
-            > li.hidden {
-                color: var(--color-text-light-7);
-                img {
-                    opacity: 0.3;
+
+                &.anonymous {
+                    color: var(--color-text-light-7);
                 }
-            }
-            > li.defeated {
-                color: #b32019;
+
+                &.hidden {
+                    color: var(--color-text-light-7);
+
+                    img {
+                        opacity: 0.3;
+                    }
+                }
+
+                &.defeated {
+                    color: #b32019;
+                }
             }
         }
         .__resizer {

@@ -33,3 +33,9 @@ export function toggleFreed(combatant: Combatant) {
     const immobilized = getFlag<boolean>(combatant, 'freed')
     setFlag(combatant, 'freed', !immobilized)
 }
+
+export function addClass(combatant: CombatTrackerTurn, cssClass: string) {
+    const css = combatant.css ? combatant.css.split(' ') : []
+    css.push(cssClass)
+    combatant.css = css.join(' ')
+}
