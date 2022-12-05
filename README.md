@@ -14,6 +14,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Modules](#modules)
 -   [Settings](#settings)
     -   [Enabled (client)](#enabled-client)
+    -   [Expand on Hover](#expand-on-hover-client)
     -   [Hover Delay (client)](#hover-delay-client)
     -   [End Turn](#end-turn)
     -   [Target Token](#target-token)
@@ -99,6 +100,10 @@ It will also add a new <img src="./readme/toggle.webp"> icon to show the GM the 
 ## Enabled (client)
 
 Enable or disable the mini tracker for the user.
+
+## Expand on Hover (client)
+
+When enabled, the tracker will expand when hovering over the combatant.
 
 ## Hover Delay (client)
 

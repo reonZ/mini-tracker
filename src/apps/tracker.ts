@@ -547,7 +547,7 @@ export class MiniTracker extends Application {
     }
 
     #onListHover() {
-        if (this.isExpanded) return
+        if (this.isExpanded || !getSetting('hover')) return
         const delay = getSetting<number>('delay')
         if (delay) this._listHoverHook = setTimeout(() => this.#expandList(), delay)
         else this.#expandList()

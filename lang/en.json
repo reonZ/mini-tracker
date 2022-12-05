@@ -13,6 +13,10 @@
                 "name": "Pan to Token",
                 "hint": "Should the camera pan to the token of the current combatant. This option is only for the GM."
             },
+            "hover": {
+                "name": "Expand on Hover",
+                "hint": "When enabled, the tracker will expand when hovering over the combatant."
+            },
             "delay": {
                 "name": "Hover Delay",
                 "hint": "Time in milliseconds before the tracker expands on mouse hover."

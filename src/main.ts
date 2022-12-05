@@ -24,6 +24,14 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'hover',
+        scope: 'client',
+        config: true,
+        type: Boolean,
+        default: true,
+    })
+
+    registerSetting({
         name: 'delay',
         scope: 'client',
         config: true,

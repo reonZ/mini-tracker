@@ -1,3 +1,7 @@
+# 1.8.5
+
+-   added a setting to allow the tracker to expand on hover
+
 # 1.8.4
 
 -   added a setting to dim out anonymous names on the GM client
