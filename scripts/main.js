@@ -564,7 +564,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         });
     }
     #onListHover() {
-        if (this.isExpanded) return;
+        if (this.isExpanded || !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hover")) return;
         const delay = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("delay");
         if (delay) this._listHoverHook = setTimeout(()=>this.#expandList(), delay);
         else this.#expandList();
@@ -677,6 +677,13 @@ Hooks.once("init", ()=>{
             if (enabled) $b013a5dd6d18443e$var$createTracker();
             else $b013a5dd6d18443e$var$closeTracker();
         }
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "hover",
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: true
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "delay",
