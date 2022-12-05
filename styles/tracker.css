@@ -181,16 +181,18 @@
 #lvk-mini-tracker .__inner > ol > li .__initiative .__roll:hover {
   background-image: url(/icons/svg/d20-highlight.svg);
 }
-#lvk-mini-tracker .__inner > ol > li.anonymous {
+#lvk-mini-tracker .__inner > ol > li.anonymous .__details h4 {
   color: var(--color-text-light-7);
 }
-#lvk-mini-tracker .__inner > ol > li.hidden {
+#lvk-mini-tracker .__inner > ol > li.hidden .__details h4,
+#lvk-mini-tracker .__inner > ol > li.hidden .__initiative {
   color: var(--color-text-light-7);
 }
 #lvk-mini-tracker .__inner > ol > li.hidden img {
   opacity: 0.3;
 }
-#lvk-mini-tracker .__inner > ol > li.defeated {
+#lvk-mini-tracker .__inner > ol > li.defeated .__details h4,
+#lvk-mini-tracker .__inner > ol > li.defeated .__initiative {
   color: #b32019;
 }
 #lvk-mini-tracker .__inner .__resizer {

@@ -202,11 +202,18 @@
                 }
 
                 &.anonymous {
-                    color: var(--color-text-light-7);
+                    .__details {
+                        h4 {
+                            color: var(--color-text-light-7);
+                        }
+                    }
                 }
 
                 &.hidden {
-                    color: var(--color-text-light-7);
+                    .__details h4,
+                    .__initiative {
+                        color: var(--color-text-light-7);
+                    }
 
                     img {
                         opacity: 0.3;
@@ -214,7 +221,10 @@
                 }
 
                 &.defeated {
-                    color: #b32019;
+                    .__details h4,
+                    .__initiative {
+                        color: #b32019;
+                    }
                 }
             }
         }
