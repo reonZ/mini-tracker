@@ -126,7 +126,7 @@ Should non player-owned defeated combatants be hidden from the tracker?
 
 ![](./readme/config.webp)
 
-The setting is also present in the `Combat Tracket Settings` window.
+The setting is also present in the `Combat Tracker Settings` window.
 
 ## Prevent Movement
 
