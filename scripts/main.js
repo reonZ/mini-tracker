@@ -11,6 +11,9 @@ function $ee65ef5b7d5dd2ef$export$79b67f6e2f31449(...path) {
 function $ee65ef5b7d5dd2ef$export$bdd507c72609c24e(...path) {
     return `modules/${0, $1623e5e7c705b7c7$export$2e2bcd8739ae039}/templates/${path.join("/")}`;
 }
+function $ee65ef5b7d5dd2ef$export$6d1a79e7c04100c2(...path) {
+    return `modules/${0, $1623e5e7c705b7c7$export$2e2bcd8739ae039}/images/${path.join("/")}`;
+}
 
 
 function $b29eb7e0eb12ddbc$export$8206e8d612b3e63(key) {
@@ -135,6 +138,11 @@ function $cde63defe07c1790$export$e257c0cfb0291b6d(combat) {
 function $cde63defe07c1790$export$125ec828e2461284(combatant) {
     const immobilized = (0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
     (0, $53cf1f1c9c92715e$export$5e165df1e30a1331)(combatant, "freed", !immobilized);
+}
+function $cde63defe07c1790$export$d2cf6cd1dc7067d3(combatant, cssClass) {
+    const css = combatant.css ? combatant.css.split(" ") : [];
+    css.push(cssClass);
+    combatant.css = css.join(" ");
 }
 
 
@@ -291,7 +299,10 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             turn.playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
             turn.freed = !immobilize || combatant === currentCombatant || !!(0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
             turn.canImmobilize = combatant !== currentCombatant;
-            if (hideNames && !turn.playersCanSeeName && !isGM) turn.name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
+            if (hideNames && !turn.playersCanSeeName) {
+                if (!isGM) turn.name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
+                else if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dim")) (0, $cde63defe07c1790$export$d2cf6cd1dc7067d3)(turn, "anonymous");
+            }
             if (x.active) active = true;
             acc.push(turn);
             return acc;
@@ -302,10 +313,8 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         if (!active) {
             const active1 = Math.min(data.turn ?? 0, data.turns.length - 1);
             const combatant = data.turns[active1];
-            const css = combatant.css ? combatant.css.split(" ") : [];
             combatant.active = true;
-            css.push("active");
-            combatant.css = css.join(" ");
+            (0, $cde63defe07c1790$export$d2cf6cd1dc7067d3)(combatant, "active");
         }
         const reversed = this.isReversed;
         const innerCss = [];
@@ -721,6 +730,13 @@ Hooks.once("init", ()=>{
         type: String,
         default: "attributes.hp.value",
         onChange: $b013a5dd6d18443e$var$hpHooks
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "dim",
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "dead",

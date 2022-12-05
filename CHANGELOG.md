@@ -1,3 +1,7 @@
+# 1.8.4
+
+-   added a setting to dim out anonymous names on the GM client
+
 # 1.8.3
 
 -   fixed a mistake that prevented the anonymous icon to be displayed
@@ -21,7 +25,7 @@
 
 # 1.6.6
 
--   if the module `Monk's TokenBar` is present, its movement restriction system will be used instead and the icon on the mini tracker will toggle it.
+-   if the module `Monk's TokenBar` is present, its movement restriction system will be used instead and the icon on the mini tracker will toggle it
 
 # 1.6.5
 
