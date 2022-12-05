@@ -18,6 +18,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [End Turn](#end-turn)
     -   [Target Token](#target-token)
     -   [System HP Path](#system-hp-path)
+    -   [Dim Anonymous](#dim-anonymous)
     -   [Hide Defeated](#hide-defeated)
     -   [Prevent Movement](#prevent-movement)
     -   [Pan to Token](#pan-to-token)
