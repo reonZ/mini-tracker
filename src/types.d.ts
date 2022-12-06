@@ -12,3 +12,26 @@ declare interface CombatTrackerTemplateDataTurn {
 interface ApplicationPosition {
     bottom?: number
 }
+
+interface Turn {
+    id: string
+    css: string
+    name: string
+    img: string
+    hidden: boolean
+    hasPlayerOwner: boolean
+    playersCanSeeName: boolean
+    freed: boolean
+    canImmobilize: boolean
+    defeated: boolean
+    canPing: boolean
+    effects: Array<{ icon: string; name: string }>
+    hasRolled: boolean
+    initiative: number | null
+    owner: boolean
+    hpValue?: number
+    hpMax?: number
+    hpHue?: number
+
+    active: boolean
+}

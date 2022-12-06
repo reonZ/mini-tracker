@@ -1,7 +1,7 @@
 import { getFlag } from '~src/@utils/foundry/flags'
 import { templatePath } from '~src/@utils/foundry/path'
 import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
-import { addClass, canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
+import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
 
@@ -166,81 +166,118 @@ export class MiniTracker extends Application {
 
         const isGM = game.user.isGM
         const currentCombatant = combat.combatant
-        const hideNames = canNamesBeHidden()
+        const showHp = getSetting<boolean>('showHp')
+        const hpValuePath = getSetting<string>('hpValue')
+        const hpMaxPath = getSetting<string>('hpMax')
         const endTurn = getSetting<boolean>('turn')
+        const reversed = this.isReversed
+        const hideNames = canNamesBeHidden()
         const immobilize = getSetting<boolean>('immobilize') && !hasMTB()
-        const target = !isGM && getSetting<boolean>('target')
-        const combatants = combat.combatants
+        const sceneId = canvas.scene?.id
+        const canPing = game.user.hasPermission('PING_CANVAS')
         const hideDefeated = getSetting<boolean>('dead') && getCombatTrackerConfig().skipDefeated
-        const hpValue = getSetting<string>('hpValue')
-        const hpMax = getSetting<string>('hpMax')
+        const dim = getSetting<boolean>('dim')
 
-        let active = false
-        let data = await ui.combat.getData()
+        let hasActive = false
+        let hasDecimals = false
 
-        data.turns = data.turns.reduce((acc, x) => {
-            const combatant = combatants.get(x.id)!
+        const turns: Turn[] = []
+        for (const [i, combatant] of combat.turns.entries()) {
+            if (hideDefeated && combatant.defeated && !combatant.hasPlayerOwner) continue
 
-            if (hideDefeated && x.defeated && !combatant.hasPlayerOwner) return acc
+            let defeated = combatant.isDefeated
 
-            const turn = x as CombatTrackerTurn & {
-                hasPlayerOwner: boolean
-                playersCanSeeName: boolean
-                hpValue?: number
-                hpMax?: number
-                hpHue: number
-                freed: boolean
-                canImmobilize: boolean
+            const effects = new Map()
+            if (combatant.actor) {
+                for (const effect of combatant.actor.temporaryEffects) {
+                    if (effect.getFlag('core', 'statusId') === CONFIG.specialStatusEffects.DEFEATED) defeated = true
+                    else if (effect.icon) effects.set(effect.id, { icon: effect.icon, name: effect.label })
+                }
             }
 
-            turn.hpValue = !!hpValue ? getProperty(combatant, `actor.system.${hpValue}`) : undefined
-            turn.hpMax = !!hpMax ? getProperty(combatant, `actor.system.${hpMax}`) : undefined
-            if (turn.hpValue !== undefined && turn.hpMax !== undefined) {
-                turn.hpHue = (turn.hpValue / turn.hpMax) * 122 + 3
+            const hpValue = !!hpValuePath ? getProperty<number | undefined>(combatant, `actor.system.${hpValuePath}`) : undefined
+            const hpMax = !!hpMaxPath ? getProperty<number | undefined>(combatant, `actor.system.${hpMaxPath}`) : undefined
+
+            let hpHue
+            if (hpValue !== undefined && hpMax !== undefined) {
+                hpHue = (hpValue / hpMax) * 122 + 3
             }
 
-            turn.hasPlayerOwner = combatant.hasPlayerOwner
-            turn.playersCanSeeName = playersSeeName(combatant)
-            turn.freed = !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed')
-            turn.canImmobilize = combatant !== currentCombatant
+            const initiative = combatant.initiative
+            const hasRolled = initiative !== null
+            if (hasRolled && !Number.isInteger(initiative)) hasDecimals = true
 
-            if (hideNames && !turn.playersCanSeeName) {
-                if (!isGM) turn.name = getName(combatant)
-                else if (getSetting('dim')) addClass(turn, 'anonymous')
+            const active = i === combat.turn
+            if (active) hasActive = true
+
+            let name = combatant.name
+            const playersCanSeeName = playersSeeName(combatant)
+
+            const hidden = combatant.hidden
+
+            const css = []
+            if (active) css.push('active')
+            if (hidden) css.push('hidden')
+            if (defeated) css.push('defeated')
+            if (hideNames && !playersCanSeeName) {
+                if (!isGM) name = getName(combatant)
+                else if (dim) css.push('anonymous')
             }
 
-            if (x.active) active = true
+            const turn: Turn = {
+                id: combatant.id,
+                css: css.join(' '),
+                name,
+                img: await ui.combat._getCombatantThumbnail(combatant),
+                hidden,
+                hasPlayerOwner: combatant.hasPlayerOwner,
+                playersCanSeeName,
+                freed: !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed'),
+                canImmobilize: combatant !== currentCombatant,
+                defeated,
+                canPing: canPing && combatant.sceneId === sceneId,
+                effects: Array.from(effects.values()),
+                hasRolled,
+                initiative,
+                owner: combatant.isOwner,
+                hpValue,
+                hpMax,
+                hpHue,
+                active,
+            }
 
-            acc.push(turn)
-            return acc
-        }, [] as CombatTrackerTurn[])
+            turns.push(turn)
+        }
 
-        if (!data.turns.some(x => x.owner)) {
+        if (!turns.some(x => x.owner)) {
             return { hasCombat: false }
         }
 
-        if (!active) {
-            const active = Math.min(data.turn ?? 0, data.turns.length - 1)
-            const combatant = data.turns[active]
+        if (!hasActive) {
+            const active = Math.min(combat.turn ?? 0, turns.length - 1)
+            const combatant = turns[active]
             combatant.active = true
-            addClass(combatant, 'active')
+            const css = combatant.css ? combatant.css.split(' ') : []
+            css.push('active')
+            combatant.css = css.join(' ')
         }
 
-        const reversed = this.isReversed
         const innerCss = []
         if (this.isExpanded) innerCss.push('expanded')
         if (reversed && !getSetting('fake-reversed')) innerCss.push('reversed')
 
         return {
-            ...data,
+            isGM,
+            turns,
+            endTurn,
+            showHp,
             hideNames,
-            innerCss: innerCss.join(' '),
-            allowEndTurn: endTurn,
-            isCurrentTurn: !currentCombatant?.isOwner,
-            arrow: reversed ? 'up' : 'down',
             immobilize,
-            showHp: !!hpValue,
-            target,
+            hasCombat: true,
+            round: combat.round,
+            arrow: reversed ? 'up' : 'down',
+            innerCss: innerCss.join(' '),
+            isCurrentTurn: !currentCombatant?.isOwner,
         }
     }
 
