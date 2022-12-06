@@ -94,7 +94,7 @@
                 <div class="__initiative">
                     {{#if this.hasRolled}} {{#if @root.showHp}}
                     <span>{{this.initiative}} <i class="fas fa-dice-d20"></i></span>
-                    {{#if (and (or @root.isGM this.hasPlayerOwner) (ne this.hpValue undefined))}}
+                    {{#if this.showHp}}
                     <span class="hp{{#unless (eq this.hpMax undefined)}} colored{{/unless}}" style="--hp-hue: {{this.hpHue}};">
                         {{this.hpValue}}
                         <i class="fas fa-heart"></i>

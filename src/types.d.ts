@@ -27,11 +27,13 @@ interface Turn {
     canPing: boolean
     effects: Array<{ icon: string; name: string }>
     hasRolled: boolean
-    initiative: number | null
+    initiative: string | number | null
     owner: boolean
     hpValue?: number
     hpMax?: number
     hpHue?: number
-
+    showHp: boolean
     active: boolean
 }
+
+type ShowHP = 'none' | 'friendly' | 'gm' | 'all'

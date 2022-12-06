@@ -166,7 +166,7 @@ export class MiniTracker extends Application {
 
         const isGM = game.user.isGM
         const currentCombatant = combat.combatant
-        const showHp = getSetting<boolean>('showHp')
+        const showHp = getSetting<ShowHP>('showHp')
         const hpValuePath = getSetting<string>('hpValue')
         const hpMaxPath = getSetting<string>('hpMax')
         const endTurn = getSetting<boolean>('turn')
@@ -214,6 +214,7 @@ export class MiniTracker extends Application {
             const playersCanSeeName = playersSeeName(combatant)
 
             const hidden = combatant.hidden
+            const hasPlayerOwner = combatant.hasPlayerOwner
 
             const css = []
             if (active) css.push('active')
@@ -230,7 +231,7 @@ export class MiniTracker extends Application {
                 name,
                 img: await ui.combat._getCombatantThumbnail(combatant),
                 hidden,
-                hasPlayerOwner: combatant.hasPlayerOwner,
+                hasPlayerOwner,
                 playersCanSeeName,
                 freed: !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed'),
                 canImmobilize: combatant !== currentCombatant,
@@ -244,6 +245,10 @@ export class MiniTracker extends Application {
                 hpMax,
                 hpHue,
                 active,
+                showHp:
+                    hpValue !== undefined &&
+                    showHp !== 'none' &&
+                    (isGM || showHp === 'all' || (showHp === 'friendly' && hasPlayerOwner)),
             }
 
             turns.push(turn)
@@ -266,13 +271,19 @@ export class MiniTracker extends Application {
         if (this.isExpanded) innerCss.push('expanded')
         if (reversed && !getSetting('fake-reversed')) innerCss.push('reversed')
 
+        const precision = CONFIG.Combat.initiative.decimals
+        turns.forEach(combatant => {
+            if (combatant.initiative === null) return
+            combatant.initiative = (combatant.initiative as number).toFixed(hasDecimals ? precision : 0)
+        })
+
         return {
             isGM,
             turns,
             endTurn,
-            showHp,
             hideNames,
             immobilize,
+            showHp: showHp === 'all' || showHp === 'friendly' || (showHp === 'gm' && isGM),
             hasCombat: true,
             round: combat.round,
             arrow: reversed ? 'up' : 'down',
