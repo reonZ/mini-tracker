@@ -277,7 +277,7 @@ export class MiniTracker extends Application {
             round: combat.round,
             arrow: reversed ? 'up' : 'down',
             innerCss: innerCss.join(' '),
-            isCurrentTurn: !currentCombatant?.isOwner,
+            isCurrentTurn: currentCombatant?.isOwner,
         }
     }
 

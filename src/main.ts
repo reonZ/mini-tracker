@@ -76,6 +76,7 @@ Hooks.once('init', () => {
         config: true,
         type: Boolean,
         default: false,
+        onChange: refreshTracker,
     })
 
     registerSetting({
