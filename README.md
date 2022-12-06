@@ -19,7 +19,7 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Expand on Hover](#expand-on-hover-client)
     -   [Hover Delay (client)](#hover-delay-client)
     -   [End Turn](#end-turn)
-    -   [Target Token](#target-token)
+    -   [Show HP](#show-hp)
     -   [HP Value Path](#hp-value-path)
     -   [HP Max Path](#hp-max-path)
     -   [Dim Anonymous](#dim-anonymous)
@@ -116,9 +116,14 @@ Set the amount of time (in milliseconds) before the tracker starts expands on mo
 
 Should the players be able to end their own turn.
 
-## Target Token
+## Show HP
 
-Allow players to target a token from the tracker, this can be extra useful for systems that hide tokens but still display combatants in the tracker.
+Select the requirement to display HP in the tracker.
+
+-   `Do not show` will never show the HP
+-   `GM only` will only show the HP on the GM client
+-   `Allies only` will show HP for player-owned combatants to the players, GM will see all the HP.
+-   `Everybody` will show HP of all the combatants to players and GM alike.
 
 ## HP Value Path
 

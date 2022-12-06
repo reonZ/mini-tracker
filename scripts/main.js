@@ -30,6 +30,10 @@ function $b29eb7e0eb12ddbc$export$3bfe3819d89751f0(options) {
         options.name = (0, $ee65ef5b7d5dd2ef$export$f6ed52839c6955bc)(name, "name");
         options.hint = (0, $ee65ef5b7d5dd2ef$export$f6ed52839c6955bc)(name, "hint");
     }
+    if (Array.isArray(options.choices)) options.choices = options.choices.reduce((choices, choice)=>{
+        choices[choice] = (0, $ee65ef5b7d5dd2ef$export$f6ed52839c6955bc)(name, "choices", choice);
+        return choices;
+    }, {});
     game.settings.register((0, $1623e5e7c705b7c7$export$2e2bcd8739ae039), name, options);
 }
 function $b29eb7e0eb12ddbc$export$cd2f7161e4d70860(options) {
@@ -60,6 +64,14 @@ function $53cf1f1c9c92715e$export$5e165df1e30a1331(doc, key, value) {
 }
 
 
+
+
+function $35d82509d9a35aad$export$2d59ca22077f6eab(x) {
+    return x * x;
+}
+function $35d82509d9a35aad$export$887f6c7954385bcf(x) {
+    return 1 - Math.cos(x * Math.PI / 2);
+}
 
 
 
@@ -138,11 +150,6 @@ function $cde63defe07c1790$export$e257c0cfb0291b6d(combat) {
 function $cde63defe07c1790$export$125ec828e2461284(combatant) {
     const immobilized = (0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
     (0, $53cf1f1c9c92715e$export$5e165df1e30a1331)(combatant, "freed", !immobilized);
-}
-function $cde63defe07c1790$export$d2cf6cd1dc7067d3(combatant, cssClass) {
-    const css = combatant.css ? combatant.css.split(" ") : [];
-    css.push(cssClass);
-    combatant.css = css.join(" ");
 }
 
 
@@ -281,58 +288,110 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         };
         const isGM = game.user.isGM;
         const currentCombatant = combat.combatant;
-        const hideNames = (0, $cde63defe07c1790$export$63e364ad1cb51f52)();
+        const showHp = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("showHp");
+        const hpValuePath = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpValue");
+        const hpMaxPath = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpMax");
         const endTurn = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("turn");
+        const reversed = this.isReversed;
+        const hideNames = (0, $cde63defe07c1790$export$63e364ad1cb51f52)();
         const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize") && !(0, $8925e622526f4c62$export$9166f1d492e4980c)();
-        const target = !isGM && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("target");
-        const combatants = combat.combatants;
+        const sceneId = canvas.scene?.id;
+        const canPing = game.user.hasPermission("PING_CANVAS");
         const hideDefeated = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead") && (0, $b29eb7e0eb12ddbc$export$8cb4a6769fa1780e)().skipDefeated;
-        const hpValue = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpValue");
-        const hpMax = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpMax");
-        let active = false;
-        let data = await ui.combat.getData();
-        data.turns = data.turns.reduce((acc, x)=>{
-            const combatant = combatants.get(x.id);
-            if (hideDefeated && x.defeated && !combatant.hasPlayerOwner) return acc;
-            const turn = x;
-            turn.hpValue = !!hpValue ? getProperty(combatant, `actor.system.${hpValue}`) : undefined;
-            turn.hpMax = !!hpMax ? getProperty(combatant, `actor.system.${hpMax}`) : undefined;
-            if (turn.hpValue !== undefined && turn.hpMax !== undefined) turn.hpHue = turn.hpValue / turn.hpMax * 122 + 3;
-            turn.hasPlayerOwner = combatant.hasPlayerOwner;
-            turn.playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
-            turn.freed = !immobilize || combatant === currentCombatant || !!(0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
-            turn.canImmobilize = combatant !== currentCombatant;
-            if (hideNames && !turn.playersCanSeeName) {
-                if (!isGM) turn.name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
-                else if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dim")) (0, $cde63defe07c1790$export$d2cf6cd1dc7067d3)(turn, "anonymous");
+        const dim = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dim");
+        let hasActive = false;
+        let hasDecimals = false;
+        const turns = [];
+        for (const [i, combatant] of combat.turns.entries()){
+            if (hideDefeated && combatant.defeated && !combatant.hasPlayerOwner) continue;
+            let defeated = combatant.isDefeated;
+            const effects = new Map();
+            if (combatant.actor) for (const effect of combatant.actor.temporaryEffects){
+                if (effect.getFlag("core", "statusId") === CONFIG.specialStatusEffects.DEFEATED) defeated = true;
+                else if (effect.icon) effects.set(effect.id, {
+                    icon: effect.icon,
+                    name: effect.label
+                });
             }
-            if (x.active) active = true;
-            acc.push(turn);
-            return acc;
-        }, []);
-        if (!data.turns.some((x)=>x.owner)) return {
+            const hpValue = !!hpValuePath ? getProperty(combatant, `actor.system.${hpValuePath}`) : undefined;
+            const hpMax = !!hpMaxPath ? getProperty(combatant, `actor.system.${hpMaxPath}`) : undefined;
+            let hpHue;
+            if (hpValue !== undefined && hpMax !== undefined) {
+                const x = hpValue / hpMax;
+                hpHue = (0, $35d82509d9a35aad$export$2d59ca22077f6eab)(x) * 122 + 3;
+            }
+            const initiative = combatant.initiative;
+            const hasRolled = initiative !== null;
+            if (hasRolled && !Number.isInteger(initiative)) hasDecimals = true;
+            const active = i === combat.turn;
+            if (active) hasActive = true;
+            let name = combatant.name;
+            const playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
+            const hidden = combatant.hidden;
+            const hasPlayerOwner = combatant.hasPlayerOwner;
+            const css = [];
+            if (active) css.push("active");
+            if (hidden) css.push("hidden");
+            if (defeated) css.push("defeated");
+            if (hideNames && !playersCanSeeName) {
+                if (!isGM) name = (0, $cde63defe07c1790$export$7d9f7e9c1c02b41e)(combatant);
+                else if (dim) css.push("anonymous");
+            }
+            const turn = {
+                id: combatant.id,
+                css: css.join(" "),
+                name: name,
+                img: await ui.combat._getCombatantThumbnail(combatant),
+                hidden: hidden,
+                hasPlayerOwner: hasPlayerOwner,
+                playersCanSeeName: playersCanSeeName,
+                freed: !immobilize || combatant === currentCombatant || !!(0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed"),
+                canImmobilize: combatant !== currentCombatant,
+                defeated: defeated,
+                canPing: canPing && combatant.sceneId === sceneId,
+                effects: Array.from(effects.values()),
+                hasRolled: hasRolled,
+                initiative: initiative,
+                owner: combatant.isOwner,
+                hpValue: hpValue,
+                hpMax: hpMax,
+                hpHue: hpHue,
+                active: active,
+                showHp: hpValue !== undefined && showHp !== "none" && (isGM || showHp === "all" || showHp === "friendly" && hasPlayerOwner)
+            };
+            turns.push(turn);
+        }
+        if (!turns.some((x)=>x.owner)) return {
             hasCombat: false
         };
-        if (!active) {
-            const active1 = Math.min(data.turn ?? 0, data.turns.length - 1);
-            const combatant = data.turns[active1];
-            combatant.active = true;
-            (0, $cde63defe07c1790$export$d2cf6cd1dc7067d3)(combatant, "active");
+        if (!hasActive) {
+            const active1 = Math.min(combat.turn ?? 0, turns.length - 1);
+            const combatant1 = turns[active1];
+            combatant1.active = true;
+            const css1 = combatant1.css ? combatant1.css.split(" ") : [];
+            css1.push("active");
+            combatant1.css = css1.join(" ");
         }
-        const reversed = this.isReversed;
         const innerCss = [];
         if (this.isExpanded) innerCss.push("expanded");
         if (reversed && !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("fake-reversed")) innerCss.push("reversed");
+        const precision = CONFIG.Combat.initiative.decimals;
+        turns.forEach((combatant)=>{
+            if (combatant.initiative === null) return;
+            combatant.initiative = combatant.initiative.toFixed(hasDecimals ? precision : 0);
+        });
         return {
-            ...data,
+            isGM: isGM,
+            turns: turns,
+            endTurn: endTurn,
             hideNames: hideNames,
-            innerCss: innerCss.join(" "),
-            allowEndTurn: endTurn,
-            isCurrentTurn: !currentCombatant?.isOwner,
-            arrow: reversed ? "up" : "down",
             immobilize: immobilize,
-            showHp: !!hpValue,
-            target: target
+            showHp: showHp === "all" || showHp === "friendly" || showHp === "gm" && isGM,
+            hasCombat: true,
+            round: combat.round,
+            arrow: reversed ? "up" : "down",
+            innerCss: innerCss.join(" "),
+            isCurrentTurn: currentCombatant?.isOwner
         };
     }
     #onRender() {
@@ -726,20 +785,28 @@ Hooks.once("init", ()=>{
         name: "turn",
         config: true,
         type: Boolean,
-        default: false
+        default: false,
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
-        name: "target",
+        name: "showHp",
         config: true,
-        type: Boolean,
-        default: true
+        type: String,
+        default: "friendly",
+        choices: [
+            "none",
+            "gm",
+            "friendly",
+            "all"
+        ],
+        onChange: $b013a5dd6d18443e$var$hpHooks
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "hpValue",
         config: true,
         type: String,
         default: "attributes.hp.value",
-        onChange: $b013a5dd6d18443e$var$hpHooks
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "hpMax",

@@ -1,3 +1,15 @@
+# 1.10.0
+
+-   refactor of combat data gathering, allows for easier implementation of features
+-   always show the initiative icon if hp is supposed to be shown
+-   reorganized color priorities for the initiative block
+-   added a `Show HP` setting to select the requirement to display HP in the tracker
+-   remove the `Target Token` setting, it is always available
+-   fixed players end turn
+-   added tooltips to all control icons
+-   added tooltips to all effects icons
+-   now uses an ease-in-quad to calculate the color of the hp instead of a linear progression
+
 # 1.9.0
 
 -   added a setting for `HP Max Path` to color code the displayed hp depending on ratio current/max hp
