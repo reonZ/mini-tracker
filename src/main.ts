@@ -84,7 +84,7 @@ Hooks.once('init', () => {
         config: true,
         type: String,
         default: 'friendly',
-        choices: ['none', 'friendly', 'gm', 'all'],
+        choices: ['none', 'gm', 'friendly', 'all'],
         onChange: hpHooks,
     })
 
