@@ -1,6 +1,7 @@
 import { getFlag } from '~src/@utils/foundry/flags'
 import { templatePath } from '~src/@utils/foundry/path'
 import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
+import { easeInQuad } from '~src/@utils/math'
 import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
@@ -200,7 +201,8 @@ export class MiniTracker extends Application {
 
             let hpHue
             if (hpValue !== undefined && hpMax !== undefined) {
-                hpHue = (hpValue / hpMax) * 122 + 3
+                const x = hpValue / hpMax
+                hpHue = easeInQuad(x) * 122 + 3
             }
 
             const initiative = combatant.initiative
