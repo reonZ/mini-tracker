@@ -117,9 +117,13 @@ Should the players be able to end their own turn.
 
 Allow players to target a token from the tracker, this can be extra useful for systems that hide tokens but still display combatants in the tracker.
 
-## System HP Path
+## HP Value Path
 
-If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM.
+If set with an actor system path, will display the current hp of combatants in the tracker.
+
+## HP Max Path
+
+If set with an actor system path, will color code the hp on the tracker depending on the ratio current/max HP. This requires a valid path for HP value too.
 
 ## Dim Anonymous
 

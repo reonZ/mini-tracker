@@ -286,15 +286,18 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize") && !(0, $8925e622526f4c62$export$9166f1d492e4980c)();
         const target = !isGM && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("target");
         const combatants = combat.combatants;
-        const showHp = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp");
         const hideDefeated = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("dead") && (0, $b29eb7e0eb12ddbc$export$8cb4a6769fa1780e)().skipDefeated;
+        const hpValue = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpValue");
+        const hpMax = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpMax");
         let active = false;
         let data = await ui.combat.getData();
         data.turns = data.turns.reduce((acc, x)=>{
             const combatant = combatants.get(x.id);
             if (hideDefeated && x.defeated && !combatant.hasPlayerOwner) return acc;
             const turn = x;
-            turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`);
+            turn.hpValue = !!hpValue ? getProperty(combatant, `actor.system.${hpValue}`) : undefined;
+            turn.hpMax = !!hpMax ? getProperty(combatant, `actor.system.${hpMax}`) : undefined;
+            if (turn.hpValue !== undefined && turn.hpMax !== undefined) turn.hpHue = turn.hpValue / turn.hpMax * 122 + 3;
             turn.hasPlayerOwner = combatant.hasPlayerOwner;
             turn.playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
             turn.freed = !immobilize || combatant === currentCombatant || !!(0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
@@ -328,7 +331,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             isCurrentTurn: !currentCombatant?.isOwner,
             arrow: reversed ? "up" : "down",
             immobilize: immobilize,
-            showHp: showHp,
+            showHp: !!hpValue,
             target: target
         };
     }
@@ -732,11 +735,18 @@ Hooks.once("init", ()=>{
         default: true
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
-        name: "hp",
+        name: "hpValue",
         config: true,
         type: String,
         default: "attributes.hp.value",
         onChange: $b013a5dd6d18443e$var$hpHooks
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "hpMax",
+        config: true,
+        type: String,
+        default: "attributes.hp.max",
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "dim",
@@ -782,21 +792,22 @@ Hooks.once("init", ()=>{
 Hooks.once("ready", ()=>{
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("enabled")) $b013a5dd6d18443e$var$createTracker();
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize")) $b013a5dd6d18443e$var$immobilizeHooks(true);
-    if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hp")) $b013a5dd6d18443e$var$hpHooks(true);
+    if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpValue")) $b013a5dd6d18443e$var$hpHooks(true);
 });
 Hooks.on("renderCombatTrackerConfig", (0, $c04235eee8e32194$export$6ab464d7cd6b504d));
 function $b013a5dd6d18443e$var$refreshTracker() {
     $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
 }
 function $b013a5dd6d18443e$var$hpHooks(show) {
-    if (!game.user.isGM) return;
     const method = show ? "on" : "off";
     Hooks[method]("updateActor", $b013a5dd6d18443e$var$updateActor);
     $b013a5dd6d18443e$var$refreshTracker();
 }
 function $b013a5dd6d18443e$var$updateActor(actor, data) {
-    const hasHp = hasProperty(data, "system.attributes.hp.value");
-    if (hasHp) $b013a5dd6d18443e$var$refreshTracker();
+    const hpValue = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpValue");
+    const hpMax = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpMax");
+    if (hpValue !== undefined && hasProperty(data, `system.${hpValue}`)) return $b013a5dd6d18443e$var$refreshTracker();
+    if (hpMax !== undefined && hasProperty(data, `system.${hpMax}`)) return $b013a5dd6d18443e$var$refreshTracker();
 }
 function $b013a5dd6d18443e$var$immobilizeHooks(immobilize) {
     if ((0, $8925e622526f4c62$export$9166f1d492e4980c)()) return;

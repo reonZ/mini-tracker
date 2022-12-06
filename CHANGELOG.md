@@ -1,3 +1,10 @@
+# 1.9.0
+
+-   added a setting for `HP Max Path` to color code the displayed hp depending on ratio current/max hp
+-   players will now see the hp of other player-owned combatants
+-   fixed an issue with the dim color spilling over the initiative block
+-   fixed an issue with actor update checking
+
 # 1.8.5
 
 -   added a setting to allow the tracker to expand on hover
