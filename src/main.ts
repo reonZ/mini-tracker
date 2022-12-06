@@ -79,10 +79,12 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
-        name: 'target',
+        name: 'showHp',
         config: true,
-        type: Boolean,
-        default: true,
+        type: String,
+        default: 'friendly',
+        choices: ['none', 'friendly', 'gm', 'all'],
+        onChange: hpHooks,
     })
 
     registerSetting({
@@ -90,7 +92,7 @@ Hooks.once('init', () => {
         config: true,
         type: String,
         default: 'attributes.hp.value',
-        onChange: hpHooks,
+        onChange: refreshTracker,
     })
 
     registerSetting({

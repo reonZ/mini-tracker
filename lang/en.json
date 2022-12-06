@@ -4,6 +4,15 @@
         "expand": "Expand List",
         "unknown": "Unknown",
         "immobilized": "You cannot move this token at this moment.",
+        "target": "Target Token",
+        "anonymous": {
+            "show": "Show name to players",
+            "hide": "Hide name from players"
+        },
+        "movement": {
+            "free": "Free movement",
+            "lock": "Lock Movement"
+        },
         "settings": {
             "enabled": {
                 "name": "Enabled",
@@ -33,6 +42,16 @@
                 "name": "End Turn",
                 "hint": "Should the players be able to end their own turn."
             },
+            "showHp": {
+                "name": "Show HP",
+                "hint": "Select the requirement to display HP in the tracker.",
+                "choices": {
+                    "none": "Do not show",
+                    "gm": "GM only",
+                    "friendly": "Allies only",
+                    "all": "Everybody"
+                }
+            },
             "hpValue": {
                 "name": "HP Value Path",
                 "hint": "If set with an actor system path, will display the current hp of combatants in the tracker."
@@ -44,10 +63,6 @@
             "immobilize": {
                 "name": "Prevent Movement",
                 "hint": "When enabled, players will only be able to move their tokens during their turn. This setting will not do anything if the module Monk's TokenBar is present to avoid conflict."
-            },
-            "target": {
-                "name": "Target Token",
-                "hint": "Allow players to target a token from the tracker, this can be extra useful for systems that hide tokens but still display combatants in the tracker."
             },
             "dead": {
                 "name": "Hide Defeated?",
