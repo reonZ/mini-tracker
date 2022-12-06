@@ -33,9 +33,13 @@
                 "name": "End Turn",
                 "hint": "Should the players be able to end their own turn."
             },
-            "hp": {
-                "name": "System HP Path",
-                "hint": "If set with an actor system path, will display the current hp of combatants in the tracker. This option is only for the GM."
+            "hpValue": {
+                "name": "HP Value Path",
+                "hint": "If set with an actor system path, will display the current hp of combatants in the tracker."
+            },
+            "hpMax": {
+                "name": "HP Max Path",
+                "hint": "If set with an actor system path, will color code the hp on the tracker depending on the ratio current/max HP. This requires a valid path for HP value too."
             },
             "immobilize": {
                 "name": "Prevent Movement",

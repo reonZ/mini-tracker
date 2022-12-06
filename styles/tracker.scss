@@ -199,13 +199,15 @@
                             background-image: url(/icons/svg/d20-highlight.svg);
                         }
                     }
+
+                    .hp.colored {
+                        color: hsl(var(--hp-hue) 75% 40%);
+                    }
                 }
 
                 &.anonymous {
-                    .__details {
-                        h4 {
-                            color: var(--color-text-light-7);
-                        }
+                    .__details h4 {
+                        color: var(--color-text-light-7);
                     }
                 }
 

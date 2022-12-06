@@ -1,4 +1,3 @@
-import { getSettingLocalizationPath } from './@utils/foundry/path'
 import { getSetting, registerSetting } from './@utils/foundry/settings'
 import { MiniTracker } from './apps/tracker'
 import { renderCombatTrackerConfig } from './config'
@@ -87,11 +86,19 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
-        name: 'hp',
+        name: 'hpValue',
         config: true,
         type: String,
         default: 'attributes.hp.value',
         onChange: hpHooks,
+    })
+
+    registerSetting({
+        name: 'hpMax',
+        config: true,
+        type: String,
+        default: 'attributes.hp.max',
+        onChange: refreshTracker,
     })
 
     registerSetting({
@@ -145,7 +152,7 @@ Hooks.once('init', () => {
 Hooks.once('ready', () => {
     if (getSetting('enabled')) createTracker()
     if (getSetting('immobilize')) immobilizeHooks(true)
-    if (getSetting('hp')) hpHooks(true)
+    if (getSetting('hpValue')) hpHooks(true)
 })
 
 Hooks.on('renderCombatTrackerConfig', renderCombatTrackerConfig)
@@ -155,15 +162,16 @@ function refreshTracker() {
 }
 
 function hpHooks(show: unknown) {
-    if (!game.user.isGM) return
     const method = show ? 'on' : 'off'
     Hooks[method]('updateActor', updateActor)
     refreshTracker()
 }
 
 function updateActor(actor: Actor, data: DocumentUpdateData<Actor>) {
-    const hasHp = hasProperty(data, 'system.attributes.hp.value')
-    if (hasHp) refreshTracker()
+    const hpValue = getSetting<string>('hpValue')
+    const hpMax = getSetting<string>('hpMax')
+    if (hpValue !== undefined && hasProperty(data, `system.${hpValue}`)) return refreshTracker()
+    if (hpMax !== undefined && hasProperty(data, `system.${hpMax}`)) return refreshTracker()
 }
 
 function immobilizeHooks(immobilize: unknown) {

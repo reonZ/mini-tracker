@@ -171,8 +171,9 @@ export class MiniTracker extends Application {
         const immobilize = getSetting<boolean>('immobilize') && !hasMTB()
         const target = !isGM && getSetting<boolean>('target')
         const combatants = combat.combatants
-        const showHp = getSetting<string>('hp')
         const hideDefeated = getSetting<boolean>('dead') && getCombatTrackerConfig().skipDefeated
+        const hpValue = getSetting<string>('hpValue')
+        const hpMax = getSetting<string>('hpMax')
 
         let active = false
         let data = await ui.combat.getData()
@@ -185,12 +186,19 @@ export class MiniTracker extends Application {
             const turn = x as CombatTrackerTurn & {
                 hasPlayerOwner: boolean
                 playersCanSeeName: boolean
-                hp?: number | boolean
+                hpValue?: number
+                hpMax?: number
+                hpHue: number
                 freed: boolean
                 canImmobilize: boolean
             }
 
-            turn.hp = !!showHp && getProperty(combatant, `actor.system.${showHp}`)
+            turn.hpValue = !!hpValue ? getProperty(combatant, `actor.system.${hpValue}`) : undefined
+            turn.hpMax = !!hpMax ? getProperty(combatant, `actor.system.${hpMax}`) : undefined
+            if (turn.hpValue !== undefined && turn.hpMax !== undefined) {
+                turn.hpHue = (turn.hpValue / turn.hpMax) * 122 + 3
+            }
+
             turn.hasPlayerOwner = combatant.hasPlayerOwner
             turn.playersCanSeeName = playersSeeName(combatant)
             turn.freed = !immobilize || combatant === currentCombatant || !!getFlag(combatant, 'freed')
@@ -231,7 +239,7 @@ export class MiniTracker extends Application {
             isCurrentTurn: !currentCombatant?.isOwner,
             arrow: reversed ? 'up' : 'down',
             immobilize,
-            showHp,
+            showHp: !!hpValue,
             target,
         }
     }
