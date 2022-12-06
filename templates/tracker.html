@@ -43,41 +43,38 @@
 
                     <div class="__icons">
                         {{#if @root.user.isGM}}
-                        <a class="combatant-control{{#if this.hidden}} active{{/if}}" data-control="toggleHidden">
-                            <i class="fas fa-eye-slash"></i>
-                        </a>
-                        {{#if (and @root.hideNames (not this.hasPlayerOwner))}}
-                        <a
-                            class="combatant-control{{#if this.playersCanSeeName}} active{{/if}}"
-                            data-control="toggle-name-visibility"
-                        >
-                            <i class="fa-solid fa-signature"></i>
-                        </a>
+                            <a class="combatant-control{{#if this.hidden}} active{{/if}}" data-control="toggleHidden">
+                                <i class="fas fa-eye-slash"></i>
+                            </a>
+                            {{#if (and @root.hideNames (not this.hasPlayerOwner))}}
+                            <a
+                                class="combatant-control{{#if this.playersCanSeeName}} active{{/if}}"
+                                data-control="toggle-name-visibility"
+                            >
+                                <i class="fa-solid fa-signature"></i>
+                            </a>
+                            {{/if}}
+                            {{#if (and @root.immobilize this.hasPlayerOwner)}}
+                            <a
+                                class="combatant-control{{#if this.freed}} active{{/if}}{{#unless this.canImmobilize}} disabled{{/unless}}"
+                                data-control="toggleImmobilized"
+                            >
+                                <i class="fa-solid fa-person-running"></i>
+                            </a>
+                            {{/if}}
+                            <a class="combatant-control{{#if this.defeated}} active{{/if}}" data-control="toggleDefeated">
+                                <i class="fas fa-skull"></i>
+                            </a>
                         {{/if}}
-                        <!--  -->
-                        {{#if (and @root.immobilize this.hasPlayerOwner)}}
-                        <a
-                            class="combatant-control{{#if this.freed}} active{{/if}}{{#unless this.canImmobilize}} disabled{{/unless}}"
-                            data-control="toggleImmobilized"
-                        >
-                            <i class="fa-solid fa-person-running"></i>
-                        </a>
-                        {{/if}}
-                        <a class="combatant-control{{#if this.defeated}} active{{/if}}" data-control="toggleDefeated">
-                            <i class="fas fa-skull"></i>
-                        </a>
-                        {{/if}}
-                        <!--  -->
                         {{#if this.canPing}}
-                        <a class="combatant-control" data-control="pingCombatant">
-                            <i class="fa-solid fa-bullseye-arrow"></i>
-                        </a>
+                            <a class="combatant-control" data-control="pingCombatant">
+                                <i class="fa-solid fa-bullseye-arrow"></i>
+                            </a>
                         {{/if}}
-                        <!--  -->
                         {{#if @root.target}}
-                        <a class="combatant-control" data-control="targetCombatant">
-                            <i class="fa-solid fa-street-view"></i>
-                        </a>
+                            <a class="combatant-control" data-control="targetCombatant">
+                                <i class="fa-solid fa-street-view"></i>
+                            </a>
                         {{/if}}
                         <div class="__effects">
                             {{#each this.effects}}
@@ -89,24 +86,19 @@
 
                 <div class="__initiative">
                     {{#if this.hasRolled}}
-                    <!--  -->
-                    {{#if (and (or @root.user.isGM this.hasPlayerOwner) (ne this.hpValue undefined))}}
-                    <div>
-                        <span>{{this.initiative}} <i class="fas fa-dice-d20"></i></span>
-                        <span
-                            class="hp{{#unless (eq this.hpMax undefined)}} colored{{/unless}}"
-                            style="--hp-hue: {{this.hpHue}};"
-                        >
-                            {{this.hpValue}}
-                            <i class="fas fa-heart"></i>
-                        </span>
-                    </div>
-                    {{else}}
-                    <span>{{this.initiative}}</span>
-                    {{/if}}
-                    <!--  -->
+                        {{#if @root.showHp}}
+                            <span>{{this.initiative}} <i class="fas fa-dice-d20"></i></span>
+                            {{#if (and (or @root.user.isGM this.hasPlayerOwner) (ne this.hpValue undefined))}}
+                            <span class="hp{{#unless (eq this.hpMax undefined)}} colored{{/unless}}" style="--hp-hue: {{this.hpHue}};">
+                                {{this.hpValue}}
+                                <i class="fas fa-heart"></i>
+                            </span>
+                            {{/if}}
+                        {{else}}
+                        <span>{{this.initiative}}</span>
+                        {{/if}}
                     {{else if this.owner}}
-                    <a class="__roll combatant-control" data-control="rollInitiative"></a>
+                        <a class="__roll combatant-control" data-control="rollInitiative"></a>
                     {{/if}}
                 </div>
             </li>
