@@ -303,12 +303,13 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         let hasDecimals = false;
         const turns = [];
         for (const [i, combatant] of combat.turns.entries()){
+            if (!combatant.visible) continue;
             if (hideDefeated && combatant.defeated && !combatant.hasPlayerOwner) continue;
             let defeated = combatant.isDefeated;
             const effects = new Map();
             if (combatant.actor) for (const effect of combatant.actor.temporaryEffects){
                 if (effect.getFlag("core", "statusId") === CONFIG.specialStatusEffects.DEFEATED) defeated = true;
-                else if (effect.icon) effects.set(effect.id, {
+                else if (effect.icon) effects.set(effect.icon, {
                     icon: effect.icon,
                     name: effect.label
                 });

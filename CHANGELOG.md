@@ -1,3 +1,10 @@
+# 1.10.1
+
+-   cleaned up old application prefix (tracker id is now just `mini-tracker`)
+-   fixed bug showing invisible combatants to players
+-   fixed a bug for effects without ID
+-   pushed foundry version minimum to `10.291`
+
 # 1.10.0
 
 -   refactor of combat data gathering, allows for easier implementation of features
