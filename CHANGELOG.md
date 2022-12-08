@@ -1,3 +1,7 @@
+# 1.10.2
+
+-   spanish localization updated thanks to [lozanoje](https://github.com/lozanoje)
+
 # 1.10.1
 
 -   cleaned up old application prefix (tracker id is now just `mini-tracker`)
