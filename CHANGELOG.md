@@ -14,7 +14,7 @@
 -   remove the `Target Token` setting, it is always available
 -   fixed players end turn
 -   added tooltips to all control icons
--   added tooltips to all effects icons
+-   added tooltips to effects icons when possible
 -   now uses an ease-in-quad to calculate the color of the hp instead of a linear progression
 
 # 1.9.0
