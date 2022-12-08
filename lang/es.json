@@ -8,6 +8,15 @@
         "expand": "Expandir lista",
         "unknown": "Desconocido",
         "immobilized": "En este momento no puede mover este icono",
+        "target": "Establecer icono como objetivo",
+        "anonymous": {
+            "show": "Mostrar nombre a jugadores",
+            "hide": "Ocultar nombre a jugadores"
+        },
+        "movement": {
+            "free": "Movimiento libre",
+            "lock": "Bloquear movimiento"
+        },
         "settings": {
             "enabled": {
                 "name": "Habilitar",
@@ -16,6 +25,10 @@
             "pan": {
                 "name": "Centrarse en el icono",
                 "hint": "¿Debe la cámara centrarse en el icono del contendiente actual? Opción solo para el GM"
+            },
+            "hover": {
+                "name": "Expandir al pasar el ratón",
+                "hint": "Al habilitarlo, el asistente se expandirá cuando se pase el ratón sobre un contendiente"
             },
             "delay": {
                 "name": "Retraso en expandir",
@@ -33,17 +46,35 @@
                 "name": "Finalizar turno",
                 "hint": "¿Pueden los jugadores finalizar sus turnos?"
             },
-            "hp": {
-                "name": "Ruta a los PVs",
-                "hint": "Si se especifica la ruta en el sistema de un actor, se mostrarán los PVs actuales de los contendientes en el asistente. Opción solo para el GM"
+            "showHp": {
+                "name": "Mostrar PVs",
+                "hint": "Seleccione a quién mostrar los PVs en el asistente",
+                "choices": {
+                    "none": "No mostrar",
+                    "gm": "Solo a GMs",
+                    "friendly": "Solo a los aliados",
+                    "all": "A todo el mundo"
+                }
+            },
+            "hpValue": {
+                "name": "Ruta a los PVs actuales",
+                "hint": "Si se especifica la ruta en el sistema de un actor, se mostrarán los PVs actuales de los contendientes en el asistente"
+            },
+            "hpMax": {
+                "name": "Ruta a los PVs máximos",
+                "hint": "Si se especifica la ruta en el sistema de un actor, se mostrará un código de colores basado en la razón entre PVs actuales/máximos. Requiere que se establezca también la ruta de los puntos de vida actuales"
             },
             "immobilize": {
                 "name": "Restringir movimiento",
                 "hint": "Cuando se habilite, los jugadores solo podrán mover sus iconos durante su turno"
             },
-            "target": {
-                "name": "Objetivos desde el asistente",
-                "hint": "Permite a los jugadores seleccionar objetivo desde el asistente, útil especialmente en sistemas que oculten iconos pero que sigan mostrando a los contendientes en el asistente"
+            "dead": {
+                "name": "¿Ocultar derrotados?",
+                "hint": "¿Deben ocultarse en el asistente los contendientes no controlados por los jugadores? Se necesita habilitar el ajuste del programa base '¿Saltar derrotados?'"
+            },
+            "dim": {
+                "name": "Atenuar anónimos",
+                "hint": "Al habilitarlo, se atenuarán los nombres para hacer notar que están ocultos a los jugadores"
             }
         }
     }
