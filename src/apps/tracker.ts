@@ -3,7 +3,7 @@ import { templatePath } from '~src/@utils/foundry/path'
 import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
 import { easeInQuad } from '~src/@utils/math'
 import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
-import { thirdPartyToggleSeeName } from '~src/third'
+import { thirdPartyToggleSeeName } from '~src/@utils/anonymous/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
 
 export class MiniTracker extends Application {

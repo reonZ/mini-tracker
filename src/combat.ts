@@ -1,7 +1,12 @@
 import { getFlag, setFlag } from './@utils/foundry/flags'
 import { localize } from './@utils/foundry/i18n'
 import { flagsUpdatePath } from './@utils/foundry/path'
-import { thirdPartyCanNamesBeHidden, thirdPartyGetName, thirdPartyPlayersSeeName, thirdPartyToggleSeeName } from './third'
+import {
+    thirdPartyCanNamesBeHidden,
+    thirdPartyGetName,
+    thirdPartyPlayersSeeName,
+    thirdPartyToggleSeeName,
+} from './@utils/anonymous/third'
 
 export function canNamesBeHidden() {
     return thirdPartyCanNamesBeHidden?.() ?? false

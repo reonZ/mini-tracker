@@ -1,7 +1,7 @@
 import { getSetting, registerSetting } from './@utils/foundry/settings'
 import { MiniTracker } from './apps/tracker'
 import { renderCombatTrackerConfig } from './config'
-import { thirdPartyInitialization } from './third'
+import { thirdPartyInitialization } from './@utils/anonymous/third'
 import { hasMTB } from './thirds/mtb'
 import { preUpdateToken } from './token'
 
