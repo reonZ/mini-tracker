@@ -5,6 +5,7 @@ import { easeInQuad } from '~src/@utils/math'
 import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/@utils/anonymous/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
+import { getSameCombatants } from '~src/@utils/foundry/combatant'
 
 export class MiniTracker extends Application {
     private _isExpanded: boolean
@@ -459,7 +460,13 @@ export class MiniTracker extends Application {
     async #togglePlayersCanSeeName(event: JQuery.ClickEvent<any, any, HTMLElement>) {
         event.preventDefault()
         const combatant = this.#getCombatantFromEvent(event)
-        if (combatant) togglePlayersSeeName(combatant)
+        if (!combatant) return
+
+        if (event.shiftKey && combatant.actor && combatant.actor.isToken && game.combat?.scene) {
+            getSameCombatants(combatant).forEach(togglePlayersSeeName)
+        } else {
+            togglePlayersSeeName(combatant)
+        }
     }
 
     #makeSortable() {
