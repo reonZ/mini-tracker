@@ -1,3 +1,7 @@
+# 1.11.0
+
+-   holding `shift` while toggling a name will toggle the names of all the combatants with the same actor
+
 # 1.10.2
 
 -   spanish localization updated thanks to [lozanoje](https://github.com/lozanoje)

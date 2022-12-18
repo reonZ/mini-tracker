@@ -90,6 +90,8 @@ If a recognized module/system allowing hidding creatures names is found, the nam
 
 It will also add a new <img src="./readme/toggle.webp"> icon to show the GM the current state, also allowing its toggle if possible.
 
+If `shift` is held while toggling a combatant name, all the combatants with the same original actor will have their name toggled instead. This only applies to the combatants of the current combat.
+
 ## Systems
 
 -   [Pathfinder Second Edition (Official)](https://foundryvtt.com/packages/pf2e)
@@ -110,7 +112,7 @@ When enabled, the tracker will expand when hovering over the combatant.
 
 ## Hover Delay (client)
 
-Set the amount of time (in milliseconds) before the tracker starts expands on mouse hover.
+Set the amount of time (in milliseconds) before the tracker starts expanding on mouse hover.
 
 ## End Turn
 
@@ -122,7 +124,7 @@ Select the requirement to display HP in the tracker.
 
 -   `Do not show` will never show the HP
 -   `GM only` will only show the HP on the GM client
--   `Allies only` will show HP for player-owned combatants to the players, GM will see all the HP.
+-   `Allies only` will show HP of player-owned combatants to the players, GM will see all the HP.
 -   `Everybody` will show HP of all the combatants to players and GM alike.
 
 ## HP Value Path

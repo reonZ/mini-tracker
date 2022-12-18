@@ -9,6 +9,7 @@ function $ee65ef5b7d5dd2ef$export$79b67f6e2f31449(...path) {
     return `flags.${0, $1623e5e7c705b7c7$export$2e2bcd8739ae039}.${path.join("/")}`;
 }
 function $ee65ef5b7d5dd2ef$export$bdd507c72609c24e(...path) {
+    path = path.filter((x)=>typeof x === "string");
     return `modules/${0, $1623e5e7c705b7c7$export$2e2bcd8739ae039}/templates/${path.join("/")}`;
 }
 function $ee65ef5b7d5dd2ef$export$6d1a79e7c04100c2(...path) {
@@ -82,7 +83,15 @@ function $889355b5c39241f1$export$b3bd0bc58e36cd63(key, data) {
     return game.i18n.localize(key);
 }
 function $889355b5c39241f1$export$a2435eff6fb7f6c1(subKey) {
-    return (key, data)=>$889355b5c39241f1$export$b3bd0bc58e36cd63(`${subKey}.${key}`, data);
+    const fn = (key, data)=>$889355b5c39241f1$export$b3bd0bc58e36cd63(`${subKey}.${key}`, data);
+    Object.defineProperty(fn, "key", {
+        get () {
+            return subKey;
+        },
+        enumerable: false,
+        configurable: false
+    });
+    return fn;
 }
 
 
@@ -99,42 +108,42 @@ function $f13521bdeed07ab3$export$d60ce5b76fc8cf55(id) {
 }
 
 
-function $10108fa426e02920$export$7916f20e7c73fc4d() {
+function $086e6267a7752cb9$export$7916f20e7c73fc4d() {
     if (game.system.id !== "pf2e") return false;
     if (game.settings.settings.has("pf2e.metagame.tokenSetsNameVisibility")) return !!game.settings.get("pf2e", "metagame.tokenSetsNameVisibility");
     return !!game.settings.get("pf2e", "metagame_tokenSetsNameVisibility");
 }
 
 
-let $7dfb009370bda395$export$5042a3656e88d24d;
-let $7dfb009370bda395$export$285c0cb5c375b7d4;
-let $7dfb009370bda395$export$9bbc5a3a539b2a19;
-let $7dfb009370bda395$export$b4561321dc7efd9;
-function $7dfb009370bda395$export$3f54c3168907b251() {
+let $bbc50b467aca4d3d$export$5042a3656e88d24d;
+let $bbc50b467aca4d3d$export$285c0cb5c375b7d4;
+let $bbc50b467aca4d3d$export$9bbc5a3a539b2a19;
+let $bbc50b467aca4d3d$export$b4561321dc7efd9;
+function $bbc50b467aca4d3d$export$3f54c3168907b251() {
     const anonymous = (0, $f13521bdeed07ab3$export$d60ce5b76fc8cf55)("anonymous");
     if (anonymous) {
-        $7dfb009370bda395$export$5042a3656e88d24d = ()=>true;
-        $7dfb009370bda395$export$285c0cb5c375b7d4 = anonymous.playersSeeName;
-        $7dfb009370bda395$export$9bbc5a3a539b2a19 = anonymous.toggleSeeName;
-        $7dfb009370bda395$export$b4561321dc7efd9 = anonymous.getName;
+        $bbc50b467aca4d3d$export$5042a3656e88d24d = ()=>true;
+        $bbc50b467aca4d3d$export$285c0cb5c375b7d4 = anonymous.playersSeeName;
+        $bbc50b467aca4d3d$export$9bbc5a3a539b2a19 = anonymous.toggleSeeName;
+        $bbc50b467aca4d3d$export$b4561321dc7efd9 = anonymous.getName;
     } else if (game.system.id === "pf2e") {
-        $7dfb009370bda395$export$5042a3656e88d24d = (0, $10108fa426e02920$export$7916f20e7c73fc4d);
-        $7dfb009370bda395$export$285c0cb5c375b7d4 = (combatant)=>combatant.playersCanSeeName;
+        $bbc50b467aca4d3d$export$5042a3656e88d24d = (0, $086e6267a7752cb9$export$7916f20e7c73fc4d);
+        $bbc50b467aca4d3d$export$285c0cb5c375b7d4 = (combatant)=>combatant.playersCanSeeName;
     }
 }
 
 
 function $cde63defe07c1790$export$63e364ad1cb51f52() {
-    return (0, $7dfb009370bda395$export$5042a3656e88d24d)?.() ?? false;
+    return (0, $bbc50b467aca4d3d$export$5042a3656e88d24d)?.() ?? false;
 }
 function $cde63defe07c1790$export$7fd1aaec5430227(combatant) {
-    return combatant.hasPlayerOwner || ((0, $7dfb009370bda395$export$285c0cb5c375b7d4)?.(combatant) ?? true);
+    return combatant.hasPlayerOwner || ((0, $bbc50b467aca4d3d$export$285c0cb5c375b7d4)?.(combatant) ?? true);
 }
 function $cde63defe07c1790$export$8205bd1e39ea3d14(combatant) {
-    return (0, $7dfb009370bda395$export$9bbc5a3a539b2a19)?.(combatant);
+    return (0, $bbc50b467aca4d3d$export$9bbc5a3a539b2a19)?.(combatant);
 }
 function $cde63defe07c1790$export$7d9f7e9c1c02b41e(combatant) {
-    return (0, $7dfb009370bda395$export$b4561321dc7efd9)?.(combatant) ?? (0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("unknown");
+    return (0, $bbc50b467aca4d3d$export$b4561321dc7efd9)?.(combatant) ?? (0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("unknown");
 }
 function $cde63defe07c1790$export$3304653039f8a03d(combat) {
     const flag = (0, $ee65ef5b7d5dd2ef$export$79b67f6e2f31449)("freed");
@@ -174,6 +183,11 @@ function $8925e622526f4c62$export$7e36d6922fe269d0(list) {
 }
 function $8925e622526f4c62$export$713ee79f92d45175() {
     return $8925e622526f4c62$export$9166f1d492e4980c() && !!game.settings.get($8925e622526f4c62$var$MODULE_ID, "show-on-tracker");
+}
+
+
+function $fe536384d13f1c00$export$3dc64c70f98db3f5(combatant) {
+    return combatant.combat.turns.filter((x)=>x.actorId === combatant.actorId);
 }
 
 
@@ -456,7 +470,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         this.#makeSortable();
         html.find("[data-control=trackerSettings]").on("click", ()=>new CombatTrackerConfig().render(true));
         if (!(0, $8925e622526f4c62$export$9166f1d492e4980c)()) html.find('[data-control="toggleImmobilized"]').on("click", this.#onToggleImmobilized.bind(this));
-        if ((0, $cde63defe07c1790$export$63e364ad1cb51f52)() && (0, $7dfb009370bda395$export$9bbc5a3a539b2a19)) html.find("[data-control=toggle-name-visibility]").on("click", this.#togglePlayersCanSeeName.bind(this));
+        if ((0, $cde63defe07c1790$export$63e364ad1cb51f52)() && (0, $bbc50b467aca4d3d$export$9bbc5a3a539b2a19)) html.find("[data-control=toggle-name-visibility]").on("click", this.#togglePlayersCanSeeName.bind(this));
         combatants.on("click", tracker._onCombatantMouseDown.bind(tracker));
     }
     setPosition({ left: left , top: top , bottom: bottom  }) {
@@ -517,7 +531,9 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     async #togglePlayersCanSeeName(event3) {
         event3.preventDefault();
         const combatant2 = this.#getCombatantFromEvent(event3);
-        if (combatant2) (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant2);
+        if (!combatant2) return;
+        if (event3.shiftKey && combatant2.actor && combatant2.actor.isToken && game.combat?.scene) (0, $fe536384d13f1c00$export$3dc64c70f98db3f5)(combatant2).forEach((0, $cde63defe07c1790$export$8205bd1e39ea3d14));
+        else (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant2);
     }
     #makeSortable() {
         this._sortable = new Sortable(this.listElement[0], {
@@ -855,7 +871,7 @@ Hooks.once("init", ()=>{
         type: Boolean,
         default: false
     });
-    (0, $7dfb009370bda395$export$3f54c3168907b251)();
+    (0, $bbc50b467aca4d3d$export$3f54c3168907b251)();
 });
 Hooks.once("ready", ()=>{
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("enabled")) $b013a5dd6d18443e$var$createTracker();
