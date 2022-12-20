@@ -76,27 +76,6 @@ function $35d82509d9a35aad$export$887f6c7954385bcf(x) {
 
 
 
-
-function $889355b5c39241f1$export$b3bd0bc58e36cd63(key, data) {
-    key = `${0, $1623e5e7c705b7c7$export$2e2bcd8739ae039}.${key}`;
-    if (data) return game.i18n.format(key, data);
-    return game.i18n.localize(key);
-}
-function $889355b5c39241f1$export$a2435eff6fb7f6c1(subKey) {
-    const fn = (key, data)=>$889355b5c39241f1$export$b3bd0bc58e36cd63(`${subKey}.${key}`, data);
-    Object.defineProperty(fn, "key", {
-        get () {
-            return subKey;
-        },
-        enumerable: false,
-        configurable: false
-    });
-    return fn;
-}
-
-
-
-
 function $f13521bdeed07ab3$export$90835e7e06f4e75b(id) {
     return game.modules.get(id);
 }
@@ -133,6 +112,26 @@ function $bbc50b467aca4d3d$export$3f54c3168907b251() {
 }
 
 
+
+
+function $889355b5c39241f1$export$b3bd0bc58e36cd63(key, data) {
+    key = `${0, $1623e5e7c705b7c7$export$2e2bcd8739ae039}.${key}`;
+    if (data) return game.i18n.format(key, data);
+    return game.i18n.localize(key);
+}
+function $889355b5c39241f1$export$a2435eff6fb7f6c1(subKey) {
+    const fn = (key, data)=>$889355b5c39241f1$export$b3bd0bc58e36cd63(`${subKey}.${key}`, data);
+    Object.defineProperty(fn, "key", {
+        get () {
+            return subKey;
+        },
+        enumerable: false,
+        configurable: false
+    });
+    return fn;
+}
+
+
 function $cde63defe07c1790$export$63e364ad1cb51f52() {
     return (0, $bbc50b467aca4d3d$export$5042a3656e88d24d)?.() ?? false;
 }
@@ -144,17 +143,6 @@ function $cde63defe07c1790$export$8205bd1e39ea3d14(combatant) {
 }
 function $cde63defe07c1790$export$7d9f7e9c1c02b41e(combatant) {
     return (0, $bbc50b467aca4d3d$export$b4561321dc7efd9)?.(combatant) ?? (0, $889355b5c39241f1$export$b3bd0bc58e36cd63)("unknown");
-}
-function $cde63defe07c1790$export$3304653039f8a03d(combat) {
-    const flag = (0, $ee65ef5b7d5dd2ef$export$79b67f6e2f31449)("freed");
-    const updates = combat.combatants.map((x)=>({
-            _id: x._id,
-            [flag]: false
-        }));
-    combat.updateEmbeddedDocuments("Combatant", updates);
-}
-function $cde63defe07c1790$export$e257c0cfb0291b6d(combat) {
-    if (combat === ui.combat.viewed) $cde63defe07c1790$export$3304653039f8a03d(combat);
 }
 function $cde63defe07c1790$export$125ec828e2461284(combatant) {
     const immobilized = (0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed");
@@ -209,13 +197,17 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         this._dragging = false;
         this._lastCombat = "";
         this._lastCombatant = "";
+        this._lastTurn = -1;
         this._lastMoveTime = 0;
         this._dragHook = this.#onDrag.bind(this);
         this._dragEndHook = this.#onDragEnd.bind(this);
         this._resizeHook = this.#onResize.bind(this);
         this._resizeEndHook = this.#onResizeEnd.bind(this);
-        this._renderHook = Hooks.on("renderCombatTracker", this.#onRender.bind(this));
-        this._hoverHook = Hooks.on("hoverToken", this.#onTokenHover.bind(this));
+        this._hooks = [
+            Hooks.on("renderCombatTracker", this.#onRender.bind(this)),
+            Hooks.on("hoverToken", this.#onTokenHover.bind(this)),
+            Hooks.on("preCreateCombatant", this.#onPreCreateCombatant.bind(this))
+        ];
         this._coordsDebounce = debounce(this.#setCoords, 1000);
         this._expandedDebounce = debounce(this.#setExpanded, 1000);
         this._initialPosition = this.position;
@@ -422,8 +414,13 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const isGM = game.user.isGM;
         const combatId = combat?.id ?? "";
         const combatant = combat?.combatant;
-        const token = combatant?.token;
-        if (isGM && this._lastCombat === combatId && combatant && this._lastCombatant !== combatant.id) {
+        const mtb = (0, $8925e622526f4c62$export$9166f1d492e4980c)();
+        const reveal = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("reveal");
+        const revealToken = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("revealToken");
+        const diffCombatant = this._lastCombatant !== combatant?.id;
+        const diffTurn = combat?.turn !== this._lastTurn;
+        if (isGM && this._lastCombat === combatId && combatant && diffCombatant && diffTurn) {
+            const token = combatant?.token;
             if (token && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("pan") && combatant.visible) canvas.animatePan({
                 x: token.x,
                 y: token.y
@@ -436,15 +433,37 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
                 if (sheet && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("sheet")) sheet.render(true);
             }
         }
-        if (isGM && combat && (this._lastCombat !== combatId || combatant && this._lastCombatant !== combatant.id)) (0, $cde63defe07c1790$export$3304653039f8a03d)(combat);
+        if (isGM && combat && (this._lastCombat !== combatId || combatant && diffCombatant && diffTurn) && (!mtb || reveal)) {
+            const flag = (0, $ee65ef5b7d5dd2ef$export$79b67f6e2f31449)("freed");
+            const updates = combat.turns.reduce((combatants, combatant, i)=>{
+                let updated = false;
+                const update = {
+                    _id: combatant.id
+                };
+                if (reveal && i === combat.turn && combatant.hidden) {
+                    if (revealToken) combatant.token?.update({
+                        hidden: false
+                    });
+                    update.hidden = false;
+                    updated = true;
+                }
+                if (!mtb && (0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed")) {
+                    update[flag] = false;
+                    updated = true;
+                }
+                if (updated) combatants.push(update);
+                return combatants;
+            }, []);
+            if (updates.length) combat.updateEmbeddedDocuments("Combatant", updates);
+        }
         this._lastCombat = combatId;
         this._lastCombatant = combatant?.id ?? "";
+        this._lastTurn = combat?.turn ?? -1;
         return super.render(force, options);
     }
     async close(options) {
         const result = await super.close(options);
-        Hooks.off("renderCombatTracker", this._renderHook);
-        Hooks.off("hoverToken", this._hoverHook);
+        this._hooks.forEach((x)=>Hooks.off("any", x));
         Hooks.call(`closeMiniTracker`, this, this.element);
         return result;
     }
@@ -506,6 +525,12 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     _contextMenu($html) {
         this._menu = ContextMenu.create(this, $html, ".combatant", ui.combat._getEntryContextOptions());
     }
+    #onPreCreateCombatant(combatant, data, context) {
+        if (context.temporary || !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hide") || combatant.hasPlayerOwner) return;
+        combatant.updateSource({
+            hidden: true
+        });
+    }
     #getCombatantFromEvent(event) {
         const $combatant = $(event.currentTarget).closest(".combatant");
         const id = $combatant.attr("data-combatant-id");
@@ -513,8 +538,8 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     }
     #onTarget(event1) {
         event1.preventDefault();
-        const combatant = this.#getCombatantFromEvent(event1);
-        const token = combatant?.token;
+        const combatant1 = this.#getCombatantFromEvent(event1);
+        const token = combatant1?.token;
         if (!token) return;
         const current = Array.from(game.user.targets).map((x)=>x.id);
         const targets = event1.shiftKey ? current : current.filter((x)=>x === token.id);
@@ -525,15 +550,15 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
     }
     #onToggleImmobilized(event2) {
         event2.preventDefault();
-        const combatant1 = this.#getCombatantFromEvent(event2);
-        if (combatant1) (0, $cde63defe07c1790$export$125ec828e2461284)(combatant1);
+        const combatant2 = this.#getCombatantFromEvent(event2);
+        if (combatant2) (0, $cde63defe07c1790$export$125ec828e2461284)(combatant2);
     }
     async #togglePlayersCanSeeName(event3) {
         event3.preventDefault();
-        const combatant2 = this.#getCombatantFromEvent(event3);
-        if (!combatant2) return;
-        if (event3.shiftKey && combatant2.actor && combatant2.actor.isToken && game.combat?.scene) (0, $fe536384d13f1c00$export$3dc64c70f98db3f5)(combatant2).forEach((0, $cde63defe07c1790$export$8205bd1e39ea3d14));
-        else (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant2);
+        const combatant3 = this.#getCombatantFromEvent(event3);
+        if (!combatant3) return;
+        if (event3.shiftKey && combatant3.actor && combatant3.actor.isToken && game.combat?.scene) (0, $fe536384d13f1c00$export$3dc64c70f98db3f5)(combatant3).forEach((0, $cde63defe07c1790$export$8205bd1e39ea3d14));
+        else (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant3);
     }
     #makeSortable() {
         this._sortable = new Sortable(this.listElement[0], {
@@ -622,11 +647,11 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         window.removeEventListener("mouseup", this._dragEndHook);
     }
     #onTokenHover(token1, hovered) {
-        const combatant3 = token1.combatant;
-        if (!combatant3) return;
+        const combatant4 = token1.combatant;
+        if (!combatant4) return;
         const combatants1 = this.combatantElements;
         combatants1.removeClass("hovered");
-        if (hovered) combatants1.filter(`[data-combatant-id="${combatant3.id}"]`).addClass("hovered");
+        if (hovered) combatants1.filter(`[data-combatant-id="${combatant4.id}"]`).addClass("hovered");
     }
     #setExpanded() {
         (0, $b29eb7e0eb12ddbc$export$61fd6f1ddd0c20e2)("expanded", !this.isExpanded ? "false" : this.maxHeight || "true");
@@ -845,6 +870,24 @@ Hooks.once("init", ()=>{
         type: Boolean,
         default: false,
         onChange: $b013a5dd6d18443e$var$refreshTracker
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "hide",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "reveal",
+        config: true,
+        type: Boolean,
+        default: false
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "revealToken",
+        config: true,
+        type: Boolean,
+        default: true
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "immobilize",
