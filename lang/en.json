@@ -71,6 +71,18 @@
             "dim": {
                 "name": "Dim Anonymous",
                 "hint": "When enabled, names will be dimmed out to put an accent on the fact that it is hidden from players."
+            },
+            "hide": {
+                "name": "Hide Combatants",
+                "hint": "Should non player-owned combatants be hidden when added to the combat."
+            },
+            "reveal": {
+                "name": "Reveal Combatants",
+                "hint": "Should hidden combatants be revealed when their turn comes."
+            },
+            "revealToken": {
+                "name": "Reveal Tokens",
+                "hint": "Should combatants tokens also be revealed when their turn comes. 'Reveal Combatants' must be enabled."
             }
         }
     }

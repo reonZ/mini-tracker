@@ -121,6 +121,27 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'hide',
+        config: true,
+        type: Boolean,
+        default: false,
+    })
+
+    registerSetting({
+        name: 'reveal',
+        config: true,
+        type: Boolean,
+        default: false,
+    })
+
+    registerSetting({
+        name: 'revealToken',
+        config: true,
+        type: Boolean,
+        default: true,
+    })
+
+    registerSetting({
         name: 'immobilize',
         config: true,
         type: Boolean,

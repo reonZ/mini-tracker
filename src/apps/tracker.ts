@@ -1,8 +1,8 @@
 import { getFlag } from '~src/@utils/foundry/flags'
-import { templatePath } from '~src/@utils/foundry/path'
+import { flagsUpdatePath, templatePath } from '~src/@utils/foundry/path'
 import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
 import { easeInQuad } from '~src/@utils/math'
-import { canNamesBeHidden, getName, playersSeeName, resetFreed, toggleFreed, togglePlayersSeeName } from '~src/combat'
+import { canNamesBeHidden, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '~src/combat'
 import { thirdPartyToggleSeeName } from '~src/@utils/anonymous/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
 import { getSameCombatants } from '~src/@utils/foundry/combatant'
@@ -28,9 +28,9 @@ export class MiniTracker extends Application {
     private _listHoverHook?: NodeJS.Timeout
     private _resizeHook: (event: MouseEvent) => void
     private _resizeEndHook: (event: MouseEvent) => void
-    private _renderHook: number
-    private _hoverHook: number
     private _sortable?: Sortable
+    private _hooks: number[]
+    private _lastTurn: number
 
     constructor() {
         super()
@@ -50,6 +50,7 @@ export class MiniTracker extends Application {
 
         this._lastCombat = ''
         this._lastCombatant = ''
+        this._lastTurn = -1
 
         this._lastMoveTime = 0
 
@@ -59,8 +60,11 @@ export class MiniTracker extends Application {
         this._resizeHook = this.#onResize.bind(this)
         this._resizeEndHook = this.#onResizeEnd.bind(this)
 
-        this._renderHook = Hooks.on('renderCombatTracker', this.#onRender.bind(this))
-        this._hoverHook = Hooks.on('hoverToken', this.#onTokenHover.bind(this))
+        this._hooks = [
+            Hooks.on('renderCombatTracker', this.#onRender.bind(this)),
+            Hooks.on('hoverToken', this.#onTokenHover.bind(this)),
+            Hooks.on('preCreateCombatant', this.#onPreCreateCombatant.bind(this)),
+        ]
 
         this._coordsDebounce = debounce(this.#setCoords, 1000)
         this._expandedDebounce = debounce(this.#setExpanded, 1000)
@@ -311,9 +315,15 @@ export class MiniTracker extends Application {
         const isGM = game.user.isGM
         const combatId = combat?.id ?? ''
         const combatant = combat?.combatant
-        const token = combatant?.token
+        const mtb = hasMTB()
+        const reveal = getSetting<boolean>('reveal')
+        const revealToken = getSetting<boolean>('revealToken')
+        const diffCombatant = this._lastCombatant !== combatant?.id
+        const diffTurn = combat?.turn !== this._lastTurn
 
-        if (isGM && this._lastCombat === combatId && combatant && this._lastCombatant !== combatant.id) {
+        if (isGM && this._lastCombat === combatId && combatant && diffCombatant && diffTurn) {
+            const token = combatant?.token
+
             if (token && getSetting('pan') && combatant.visible) {
                 canvas.animatePan({ x: token.x, y: token.y })
             }
@@ -325,20 +335,42 @@ export class MiniTracker extends Application {
             }
         }
 
-        if (isGM && combat && (this._lastCombat !== combatId || (combatant && this._lastCombatant !== combatant.id))) {
-            resetFreed(combat)
+        if (isGM && combat && (this._lastCombat !== combatId || (combatant && diffCombatant && diffTurn)) && (!mtb || reveal)) {
+            const flag = flagsUpdatePath('freed')
+
+            const updates = combat.turns.reduce((combatants, combatant, i) => {
+                let updated = false
+                const update = { _id: combatant.id } as Record<string, unknown> & { _id: string }
+
+                if (reveal && i === combat.turn && combatant.hidden) {
+                    if (revealToken) combatant.token?.update({ hidden: false })
+                    update.hidden = false
+                    updated = true
+                }
+
+                if (!mtb && getFlag<boolean>(combatant, 'freed')) {
+                    update[flag] = false
+                    updated = true
+                }
+
+                if (updated) combatants.push(update)
+
+                return combatants
+            }, [] as EmbeddedDocumentUpdateData<Combatant>[])
+
+            if (updates.length) combat.updateEmbeddedDocuments('Combatant', updates)
         }
 
         this._lastCombat = combatId
         this._lastCombatant = combatant?.id ?? ''
+        this._lastTurn = combat?.turn ?? -1
 
         return super.render(force, options)
     }
 
     async close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
         const result = await super.close(options)
-        Hooks.off('renderCombatTracker', this._renderHook)
-        Hooks.off('hoverToken', this._hoverHook)
+        this._hooks.forEach(x => Hooks.off('any', x))
         Hooks.call(`closeMiniTracker`, this, this.element)
         return result
     }
@@ -425,6 +457,12 @@ export class MiniTracker extends Application {
 
     _contextMenu($html: JQuery) {
         this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())
+    }
+
+    #onPreCreateCombatant(combatant: Combatant, data: DocumentUpdateData<Combatant>, context: DocumentModificationContext) {
+        if (context.temporary || !getSetting('hide') || combatant.hasPlayerOwner) return
+        combatant.updateSource({ hidden: true })
+        // data.hidden = true
     }
 
     #getCombatantFromEvent(event: JQuery.ClickEvent<any, any, HTMLElement>) {
