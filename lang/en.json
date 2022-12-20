@@ -83,6 +83,10 @@
             "revealToken": {
                 "name": "Reveal Tokens",
                 "hint": "Should combatants tokens also be revealed when their turn comes. 'Reveal Combatants' must be enabled."
+            },
+            "scale": {
+                "name": "Font Size",
+                "hint": "Changing the font size will scale the whole tracker with it."
             }
         }
     }

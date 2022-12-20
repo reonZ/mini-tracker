@@ -1,10 +1,10 @@
 #mini-tracker {
+  --font-size: 14px;
+  --sidebar-item-height: 3.42em;
   position: fixed;
-  width: 300px;
+  width: 21.42em;
   z-index: 50;
-  font-size: 14px;
-  --sidebar-item-height: 48px;
-  --font-size-14: 14px;
+  font-size: var(--font-size);
 }
 #mini-tracker a.disabled {
   color: grey;
@@ -23,14 +23,14 @@
 }
 #mini-tracker .__inner header {
   display: grid;
-  padding: 2px;
-  grid-template-columns: repeat(3, 24px) auto repeat(3, 24px);
+  padding: 0.14em;
+  grid-template-columns: repeat(3, 1.71em) auto repeat(3, 1.71em);
 }
 #mini-tracker .__inner header > * {
   width: 100%;
   height: 100%;
   text-align: center;
-  padding: 2px 0;
+  padding: 0.14em 0;
   flex: 0;
 }
 #mini-tracker .__inner header [data-control=rollAll] {
@@ -56,14 +56,14 @@
 }
 #mini-tracker .__inner footer {
   display: grid;
-  padding: 2px;
-  grid-template-columns: repeat(2, 24px) auto repeat(2, 24px);
+  padding: 0.14em;
+  grid-template-columns: repeat(2, 1.71em) auto repeat(2, 1.71em);
 }
 #mini-tracker .__inner footer > * {
   width: 100%;
   height: 100%;
   text-align: center;
-  padding: 2px 0;
+  padding: 0.14em 0;
   flex: 0;
 }
 #mini-tracker .__inner footer [data-control=startCombat] {
@@ -88,8 +88,8 @@
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
   display: flex;
-  gap: 4px;
-  padding-left: 4px;
+  gap: 0.28em;
+  padding-left: 0.28em;
 }
 #mini-tracker .__inner > ol > li:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -116,19 +116,19 @@
 #mini-tracker .__inner > ol > li .__details h4 {
   white-space: nowrap;
   overflow: hidden;
-  flex: 0 0 24px;
-  line-height: 28px;
+  flex: 0 0 1.71em;
+  line-height: 2em;
   margin: 0;
 }
 #mini-tracker .__inner > ol > li .__details .__icons {
   display: flex;
   flex-wrap: nowrap;
   overflow: hidden;
-  flex: 0 0 20px;
-  font-size: var(--font-size-14);
-  line-height: 20px;
+  flex: 0 0 1.42em;
+  font-size: var(--font-size);
+  line-height: 1.42em;
   color: var(--color-text-dark-5);
-  gap: 3px;
+  gap: 0.21em;
 }
 #mini-tracker .__inner > ol > li .__details .__icons > a.active {
   color: var(--color-text-light-1);
@@ -137,18 +137,18 @@
   pointer-events: none;
 }
 #mini-tracker .__inner > ol > li .__details .__icons .__effects {
-  height: 20px;
+  height: 1.424em;
   display: flex;
 }
 #mini-tracker .__inner > ol > li .__details .__icons .__effects > img {
-  width: 16px;
-  height: 16px;
+  width: 1.14em;
+  height: 1.14em;
   margin: 1px 0;
   border: none;
   border-radius: 0;
 }
 #mini-tracker .__inner > ol > li .__initiative {
-  flex: 0 0 62px;
+  flex: 0 0 4.42em;
   height: var(--sidebar-item-height);
   display: flex;
   flex-direction: column;
@@ -156,19 +156,19 @@
   justify-content: center;
 }
 #mini-tracker .__inner > ol > li .__initiative span {
-  font-size: var(--font-size-14);
+  font-size: var(--font-size);
   text-shadow: 1px 1px 4px var(--color-shadow-dark);
   line-height: 1.5;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding-right: 6px;
+  gap: 0.28em;
+  padding-right: 0.42em;
 }
 #mini-tracker .__inner > ol > li .__initiative .__roll {
   height: 100%;
   aspect-ratio: 1/1;
   background: url(/icons/svg/d20.svg) no-repeat 50% 50%;
-  background-size: 32px;
+  background-size: 2.28em;
 }
 #mini-tracker .__inner > ol > li .__initiative .__roll:hover {
   background-image: url(/icons/svg/d20-highlight.svg);

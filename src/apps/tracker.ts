@@ -297,6 +297,7 @@ export class MiniTracker extends Application {
             arrow: reversed ? 'up' : 'down',
             innerCss: innerCss.join(' '),
             isCurrentTurn: currentCombatant?.isOwner,
+            fontSize: getSetting<number>('scale'),
         }
     }
 
@@ -315,7 +316,7 @@ export class MiniTracker extends Application {
         const isGM = game.user.isGM
         const combatId = combat?.id ?? ''
         const combatant = combat?.combatant
-        const mtb = hasMTB()
+        const immobilize = getSetting<boolean>('immobilize') && !hasMTB()
         const reveal = getSetting<boolean>('reveal')
         const revealToken = getSetting<boolean>('revealToken')
         const diffCombatant = this._lastCombatant !== combatant?.id
@@ -335,7 +336,12 @@ export class MiniTracker extends Application {
             }
         }
 
-        if (isGM && combat && (this._lastCombat !== combatId || (combatant && diffCombatant && diffTurn)) && (!mtb || reveal)) {
+        if (
+            isGM &&
+            combat &&
+            (this._lastCombat !== combatId || (combatant && diffCombatant && diffTurn)) &&
+            (immobilize || reveal)
+        ) {
             const flag = flagsUpdatePath('freed')
 
             const updates = combat.turns.reduce((combatants, combatant, i) => {
@@ -348,7 +354,7 @@ export class MiniTracker extends Application {
                     updated = true
                 }
 
-                if (!mtb && getFlag<boolean>(combatant, 'freed')) {
+                if (immobilize && getFlag<boolean>(combatant, 'freed')) {
                     update[flag] = false
                     updated = true
                 }

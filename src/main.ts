@@ -23,6 +23,20 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'scale',
+        scope: 'client',
+        config: true,
+        type: Number,
+        default: 14,
+        range: {
+            min: 10,
+            max: 30,
+            step: 1,
+        },
+        onChange: refreshTracker,
+    })
+
+    registerSetting({
         name: 'hover',
         scope: 'client',
         config: true,
