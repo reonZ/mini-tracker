@@ -147,6 +147,18 @@ Should non player-owned defeated combatants be hidden from the tracker?
 
 The setting is also present in the `Combat Tracker Settings` window.
 
+## Hide Combatants
+
+Should non player-owned combatants be hidden when added to the combat. This is not linked to the token hidden state.
+
+## Reveal Combatants
+
+Should hidden combatants be revealed when their turn comes.
+
+## Reveal Tokens
+
+Should combatants tokens also be revealed when their turn comes. `Reveal Combatants` must be enabled.
+
 ## Prevent Movement
 
 When enabled, players will only be able to move their token during their turn. Or when the GM allows it. This setting will not do anything if the module Monk's TokenBar is present to avoid conflict.

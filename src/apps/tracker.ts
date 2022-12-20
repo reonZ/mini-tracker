@@ -462,7 +462,6 @@ export class MiniTracker extends Application {
     #onPreCreateCombatant(combatant: Combatant, data: DocumentUpdateData<Combatant>, context: DocumentModificationContext) {
         if (context.temporary || !getSetting('hide') || combatant.hasPlayerOwner) return
         combatant.updateSource({ hidden: true })
-        // data.hidden = true
     }
 
     #getCombatantFromEvent(event: JQuery.ClickEvent<any, any, HTMLElement>) {

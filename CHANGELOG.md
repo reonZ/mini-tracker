@@ -1,3 +1,9 @@
+# 1.12.0
+
+-   added `Hide Combatants` setting to automatically hide newly created combatants in the tracker
+-   added `Reveal Combatants` setting to automatically reveal hidden combatants when their turn comes
+-   added `Reveal Tokens` setting to also reveal the combatant token
+
 # 1.11.0
 
 -   holding `shift` while toggling a name will toggle the names of all the combatants with the same actor
