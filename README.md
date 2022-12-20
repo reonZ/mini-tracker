@@ -16,7 +16,8 @@ This module adds an extra floating `Combat Tracker` which provides new functiona
     -   [Modules](#modules)
 -   [Settings](#settings)
     -   [Enabled (client)](#enabled-client)
-    -   [Expand on Hover](#expand-on-hover-client)
+    -   [Font Size (client)](#font-size-client)
+    -   [Expand on Hover (client)](#expand-on-hover-client)
     -   [Hover Delay (client)](#hover-delay-client)
     -   [End Turn](#end-turn)
     -   [Show HP](#show-hp)
@@ -108,6 +109,10 @@ If `shift` is held while toggling a combatant name, all the combatants with the 
 ## Enabled (client)
 
 Enable or disable the mini tracker for the user.
+
+## Font Size (client)
+
+Changing the font size will scale the whole tracker with it.
 
 ## Expand on Hover (client)
 

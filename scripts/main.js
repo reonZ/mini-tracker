@@ -398,7 +398,8 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             round: combat.round,
             arrow: reversed ? "up" : "down",
             innerCss: innerCss.join(" "),
-            isCurrentTurn: currentCombatant?.isOwner
+            isCurrentTurn: currentCombatant?.isOwner,
+            fontSize: (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("scale")
         };
     }
     #onRender() {
@@ -414,7 +415,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const isGM = game.user.isGM;
         const combatId = combat?.id ?? "";
         const combatant = combat?.combatant;
-        const mtb = (0, $8925e622526f4c62$export$9166f1d492e4980c)();
+        const immobilize = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize") && !(0, $8925e622526f4c62$export$9166f1d492e4980c)();
         const reveal = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("reveal");
         const revealToken = (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("revealToken");
         const diffCombatant = this._lastCombatant !== combatant?.id;
@@ -433,7 +434,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
                 if (sheet && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("sheet")) sheet.render(true);
             }
         }
-        if (isGM && combat && (this._lastCombat !== combatId || combatant && diffCombatant && diffTurn) && (!mtb || reveal)) {
+        if (isGM && combat && (this._lastCombat !== combatId || combatant && diffCombatant && diffTurn) && (immobilize || reveal)) {
             const flag = (0, $ee65ef5b7d5dd2ef$export$79b67f6e2f31449)("freed");
             const updates = combat.turns.reduce((combatants, combatant, i)=>{
                 let updated = false;
@@ -447,7 +448,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
                     update.hidden = false;
                     updated = true;
                 }
-                if (!mtb && (0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed")) {
+                if (immobilize && (0, $53cf1f1c9c92715e$export$a19b74191e00c5e)(combatant, "freed")) {
                     update[flag] = false;
                     updated = true;
                 }
@@ -781,6 +782,19 @@ Hooks.once("init", ()=>{
             if (enabled) $b013a5dd6d18443e$var$createTracker();
             else $b013a5dd6d18443e$var$closeTracker();
         }
+    });
+    (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
+        name: "scale",
+        scope: "client",
+        config: true,
+        type: Number,
+        default: 14,
+        range: {
+            min: 10,
+            max: 30,
+            step: 1
+        },
+        onChange: $b013a5dd6d18443e$var$refreshTracker
     });
     (0, $b29eb7e0eb12ddbc$export$3bfe3819d89751f0)({
         name: "hover",

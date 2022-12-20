@@ -1,3 +1,7 @@
+# 1.13.0
+
+-   added `Font Size` setting, the entire tracker will scale with it
+
 # 1.12.0
 
 -   added `Hide Combatants` setting to automatically hide newly created combatants in the tracker
