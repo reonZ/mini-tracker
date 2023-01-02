@@ -136,7 +136,7 @@ function $cde63defe07c1790$export$63e364ad1cb51f52() {
     return (0, $bbc50b467aca4d3d$export$5042a3656e88d24d)?.() ?? false;
 }
 function $cde63defe07c1790$export$7fd1aaec5430227(combatant) {
-    return combatant.hasPlayerOwner || ((0, $bbc50b467aca4d3d$export$285c0cb5c375b7d4)?.(combatant) ?? true);
+    return combatant.actor?.hasPlayerOwner || ((0, $bbc50b467aca4d3d$export$285c0cb5c375b7d4)?.(combatant) ?? true);
 }
 function $cde63defe07c1790$export$8205bd1e39ea3d14(combatant) {
     return (0, $bbc50b467aca4d3d$export$9bbc5a3a539b2a19)?.(combatant);
@@ -310,7 +310,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         const turns = [];
         for (const [i, combatant] of combat.turns.entries()){
             if (!combatant.visible) continue;
-            if (hideDefeated && combatant.defeated && !combatant.hasPlayerOwner) continue;
+            if (hideDefeated && combatant.defeated && !combatant.actor?.hasPlayerOwner) continue;
             let defeated = combatant.isDefeated;
             const effects = new Map();
             if (combatant.actor) for (const effect of combatant.actor.temporaryEffects){
@@ -335,7 +335,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
             let name = combatant.name;
             const playersCanSeeName = (0, $cde63defe07c1790$export$7fd1aaec5430227)(combatant);
             const hidden = combatant.hidden;
-            const hasPlayerOwner = combatant.hasPlayerOwner;
+            const hasPlayerOwner = !!combatant.actor?.hasPlayerOwner;
             const css = [];
             if (active) css.push("active");
             if (hidden) css.push("hidden");
@@ -426,7 +426,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
                 x: token.x,
                 y: token.y
             });
-            if (combatant && !combatant.hasPlayerOwner) {
+            if (combatant && !combatant.actor?.hasPlayerOwner) {
                 if (token?.object && (0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("select")) token.object.control({
                     releaseOthers: true
                 });
@@ -527,7 +527,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         this._menu = ContextMenu.create(this, $html, ".combatant", ui.combat._getEntryContextOptions());
     }
     #onPreCreateCombatant(combatant, data, context) {
-        if (context.temporary || !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hide") || combatant.hasPlayerOwner) return;
+        if (context.temporary || !(0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hide") || combatant.actor?.hasPlayerOwner) return;
         combatant.updateSource({
             hidden: true
         });

@@ -1,3 +1,7 @@
+# 1.13.1
+
+-   fix a bug with `pf2e` lootable combatant permission
+
 # 1.13.0
 
 -   added `Font Size` setting, the entire tracker will scale with it
