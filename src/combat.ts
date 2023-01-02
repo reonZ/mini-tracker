@@ -12,7 +12,7 @@ export function canNamesBeHidden() {
 }
 
 export function playersSeeName(combatant: Combatant) {
-    return combatant.hasPlayerOwner || (thirdPartyPlayersSeeName?.(combatant) ?? true)
+    return combatant.actor?.hasPlayerOwner || (thirdPartyPlayersSeeName?.(combatant) ?? true)
 }
 
 export function togglePlayersSeeName(combatant: Combatant) {

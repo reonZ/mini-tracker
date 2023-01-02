@@ -190,7 +190,7 @@ export class MiniTracker extends Application {
         const turns: Turn[] = []
         for (const [i, combatant] of combat.turns.entries()) {
             if (!combatant.visible) continue
-            if (hideDefeated && combatant.defeated && !combatant.hasPlayerOwner) continue
+            if (hideDefeated && combatant.defeated && !combatant.actor?.hasPlayerOwner) continue
 
             let defeated = combatant.isDefeated
 
@@ -222,7 +222,7 @@ export class MiniTracker extends Application {
             const playersCanSeeName = playersSeeName(combatant)
 
             const hidden = combatant.hidden
-            const hasPlayerOwner = combatant.hasPlayerOwner
+            const hasPlayerOwner = !!combatant.actor?.hasPlayerOwner
 
             const css = []
             if (active) css.push('active')
@@ -328,7 +328,7 @@ export class MiniTracker extends Application {
             if (token && getSetting('pan') && combatant.visible) {
                 canvas.animatePan({ x: token.x, y: token.y })
             }
-            if (combatant && !combatant.hasPlayerOwner) {
+            if (combatant && !combatant.actor?.hasPlayerOwner) {
                 if (token?.object && getSetting('select')) token.object.control({ releaseOthers: true })
 
                 const sheet = combatant.actor?.sheet
@@ -466,7 +466,7 @@ export class MiniTracker extends Application {
     }
 
     #onPreCreateCombatant(combatant: Combatant, data: DocumentUpdateData<Combatant>, context: DocumentModificationContext) {
-        if (context.temporary || !getSetting('hide') || combatant.hasPlayerOwner) return
+        if (context.temporary || !getSetting('hide') || combatant.actor?.hasPlayerOwner) return
         combatant.updateSource({ hidden: true })
     }
 
