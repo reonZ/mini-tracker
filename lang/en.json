@@ -1,5 +1,6 @@
 {
     "mini-tracker": {
+        "sortable": "The dependency module 'SortableJS' is missing, the 'Mini Tracker' feature to rearrange combatant's initiative by dragging them is disabled.",
         "reverse": "Toggle Orientation",
         "expand": "Expand List",
         "unknown": "Unknown",

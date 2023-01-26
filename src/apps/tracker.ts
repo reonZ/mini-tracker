@@ -6,6 +6,7 @@ import { canNamesBeHidden, getName, playersSeeName, toggleFreed, togglePlayersSe
 import { thirdPartyToggleSeeName } from '~src/@utils/anonymous/third'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
 import { getSameCombatants } from '~src/@utils/foundry/combatant'
+import { isSortableActive } from '~src/module'
 
 export class MiniTracker extends Application {
     private _isExpanded: boolean
@@ -513,6 +514,7 @@ export class MiniTracker extends Application {
     }
 
     #makeSortable() {
+        if (!isSortableActive()) return
         this._sortable = new Sortable(this.listElement[0], {
             animation: 150,
             draggable: '.combatant',

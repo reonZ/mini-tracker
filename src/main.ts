@@ -4,6 +4,8 @@ import { renderCombatTrackerConfig } from './config'
 import { thirdPartyInitialization } from './@utils/anonymous/third'
 import { hasMTB } from './thirds/mtb'
 import { preUpdateToken } from './token'
+import { error } from './@utils/foundry/notifications'
+import { isSortableActive } from './module'
 
 export let tracker: MiniTracker | null = null
 
@@ -188,12 +190,19 @@ Hooks.once('init', () => {
 })
 
 Hooks.once('ready', () => {
+    if (game.user.isGM) checkForSortable()
+
     if (getSetting('enabled')) createTracker()
     if (getSetting('immobilize')) immobilizeHooks(true)
     if (getSetting('hpValue')) hpHooks(true)
 })
 
 Hooks.on('renderCombatTrackerConfig', renderCombatTrackerConfig)
+
+function checkForSortable() {
+    if (isSortableActive()) return
+    error('sortable', true)
+}
 
 function refreshTracker() {
     tracker?.render()

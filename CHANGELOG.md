@@ -1,3 +1,7 @@
+# 1.13.2
+
+-   will now check if the `SortableJS` module is active and display an error to the GM if not.
+
 # 1.13.1
 
 -   fix a bug with `pf2e` lootable combatant permission
