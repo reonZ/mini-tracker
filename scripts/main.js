@@ -1,4 +1,7 @@
 var $1623e5e7c705b7c7$export$2e2bcd8739ae039 = "mini-tracker";
+function $1623e5e7c705b7c7$export$9df79a01366f59fd() {
+    return game.modules.get("_sortablejs")?.active;
+}
 
 
 
@@ -177,6 +180,7 @@ function $8925e622526f4c62$export$713ee79f92d45175() {
 function $fe536384d13f1c00$export$3dc64c70f98db3f5(combatant) {
     return combatant.combat.turns.filter((x)=>x.actorId === combatant.actorId);
 }
+
 
 
 class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
@@ -562,6 +566,7 @@ class $dda4b68de52b8e2d$export$cd1fcfaee144ed0d extends Application {
         else (0, $cde63defe07c1790$export$8205bd1e39ea3d14)(combatant3);
     }
     #makeSortable() {
+        if (!(0, $1623e5e7c705b7c7$export$9df79a01366f59fd)()) return;
         this._sortable = new Sortable(this.listElement[0], {
             animation: 150,
             draggable: ".combatant",
@@ -769,6 +774,8 @@ function $66d137fe0087513e$export$9e2622decb731a81(token, data) {
 }
 
 
+
+
 let $b013a5dd6d18443e$export$1bb3d147765683cf = null;
 Hooks.once("init", ()=>{
     // CLIENT SETTINGS
@@ -931,11 +938,16 @@ Hooks.once("init", ()=>{
     (0, $bbc50b467aca4d3d$export$3f54c3168907b251)();
 });
 Hooks.once("ready", ()=>{
+    if (game.user.isGM) $b013a5dd6d18443e$var$checkForSortable();
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("enabled")) $b013a5dd6d18443e$var$createTracker();
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("immobilize")) $b013a5dd6d18443e$var$immobilizeHooks(true);
     if ((0, $b29eb7e0eb12ddbc$export$8206e8d612b3e63)("hpValue")) $b013a5dd6d18443e$var$hpHooks(true);
 });
 Hooks.on("renderCombatTrackerConfig", (0, $c04235eee8e32194$export$6ab464d7cd6b504d));
+function $b013a5dd6d18443e$var$checkForSortable() {
+    if ((0, $1623e5e7c705b7c7$export$9df79a01366f59fd)()) return;
+    (0, $d20bc07084c62caf$export$a3bc9b8ed74fc)("sortable", true);
+}
 function $b013a5dd6d18443e$var$refreshTracker() {
     $b013a5dd6d18443e$export$1bb3d147765683cf?.render();
 }
