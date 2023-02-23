@@ -84,6 +84,7 @@
   margin: 0;
 }
 #mini-tracker .__inner > ol > li {
+  position: relative;
   line-height: var(--sidebar-item-height);
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
@@ -93,6 +94,20 @@
 }
 #mini-tracker .__inner > ol > li:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+#mini-tracker .__inner > ol > li .targets {
+  position: absolute;
+  width: var(--sidebar-item-height);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1px;
+}
+#mini-tracker .__inner > ol > li .targets .target {
+  height: 0.58em;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  border: 1px solid white;
 }
 #mini-tracker .__inner > ol > li > img {
   flex: 0 0 var(--sidebar-item-height);

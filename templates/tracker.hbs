@@ -37,41 +37,34 @@
             {{#each turns}} {{#if this}}
             <li class="combatant {{this.css}}" data-combatant-id="{{this.id}}">
                 <img src="{{this.img}}" alt="{{this.name}}" />
+                <div class="targets">
+                    {{#each this.targeted}}
+                    <div class="target" style="background-color: {{this}};"></div>
+                    {{/each}}
+                </div>
 
                 <div class="__details">
                     <h4>{{this.name}}</h4>
 
                     <div class="__icons">
                         {{#if @root.isGM}}
-                        <a
-                            class="combatant-control{{#if this.hidden}} active{{/if}}"
-                            data-control="toggleHidden"
-                            data-tooltip="COMBAT.ToggleVis"
-                        >
+                        <a class="combatant-control{{#if this.hidden}} active{{/if}}" data-control="toggleHidden"
+                            data-tooltip="COMBAT.ToggleVis">
                             <i class="fas fa-eye-slash"></i>
                         </a>
                         {{#if (and @root.hideNames (not this.hasPlayerOwner))}}
-                        <a
-                            class="combatant-control{{#if this.playersCanSeeName}} active{{/if}}"
-                            data-control="toggle-name-visibility"
-                            data-tooltip="mini-tracker.anonymous.{{#if this.playersCanSeeName}}hide{{else}}show{{/if}}"
-                        >
+                        <a class="combatant-control{{#if this.playersCanSeeName}} active{{/if}}" data-control="toggle-name-visibility"
+                            data-tooltip="mini-tracker.anonymous.{{#if this.playersCanSeeName}}hide{{else}}show{{/if}}">
                             <i class="fa-solid fa-signature"></i>
                         </a>
                         {{/if}} {{#if (and @root.immobilize this.hasPlayerOwner)}}
-                        <a
-                            class="combatant-control{{#if this.freed}} active{{/if}}{{#unless this.canImmobilize}} disabled{{/unless}}"
-                            data-control="toggleImmobilized"
-                            data-tooltip="mini-tracker.movement.{{#if this.freed}}lock{{else}}free{{/if}}"
-                        >
+                        <a class="combatant-control{{#if this.freed}} active{{/if}}{{#unless this.canImmobilize}} disabled{{/unless}}"
+                            data-control="toggleImmobilized" data-tooltip="mini-tracker.movement.{{#if this.freed}}lock{{else}}free{{/if}}">
                             <i class="fa-solid fa-person-running"></i>
                         </a>
                         {{/if}}
-                        <a
-                            class="combatant-control{{#if this.defeated}} active{{/if}}"
-                            data-control="toggleDefeated"
-                            data-tooltip="COMBAT.ToggleDead"
-                        >
+                        <a class="combatant-control{{#if this.defeated}} active{{/if}}" data-control="toggleDefeated"
+                            data-tooltip="COMBAT.ToggleDead">
                             <i class="fas fa-skull"></i>
                         </a>
                         {{/if}} {{#if this.canPing}}

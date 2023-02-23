@@ -36,7 +36,7 @@ Hooks.once('init', () => {
         range: {
             min: 10,
             max: 30,
-            step: 1,
+            step: 2,
         },
         onChange: refreshTracker,
     })
@@ -195,9 +195,11 @@ Hooks.once('init', () => {
 Hooks.once('ready', () => {
     if (game.user.isGM) checkForSortable()
 
-    if (getSetting('enabled')) createTracker()
-    if (getSetting('immobilize')) immobilizeHooks(true)
-    if (getSetting('hpValue')) hpHooks(true)
+    setTimeout(() => {
+        if (getSetting('enabled')) createTracker()
+        if (getSetting('immobilize')) immobilizeHooks(true)
+        if (getSetting('hpValue')) hpHooks(true)
+    }, 1000)
 })
 
 Hooks.on('renderCombatTrackerConfig', renderCombatTrackerConfig)
@@ -208,7 +210,7 @@ function hpHooks(show: unknown) {
     refreshTracker()
 }
 
-function updateActor(actor: Actor, data: DocumentUpdateData<Actor>) {
+function updateActor(actor: Actor, data: DocumentUpdateData) {
     const hpValue = getSetting<string>('hpValue')
     const hpMax = getSetting<string>('hpMax')
     if (hpValue !== undefined && hasProperty(data, `system.${hpValue}`)) return refreshTracker()

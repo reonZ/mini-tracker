@@ -64,6 +64,7 @@ export class MiniTracker extends Application {
             Hooks.on('renderCombatTracker', this.#onRender.bind(this)),
             Hooks.on('hoverToken', this.#onTokenHover.bind(this)),
             Hooks.on('preCreateCombatant', this.#onPreCreateCombatant.bind(this)),
+            Hooks.on('targetToken', this.#onRender.bind(this)),
         ]
 
         this._coordsDebounce = debounce(this.#setCoords, 1000)
@@ -77,7 +78,7 @@ export class MiniTracker extends Application {
             ...super.defaultOptions,
             popOut: false,
             minimizable: false,
-            template: templatePath('tracker.html'),
+            template: templatePath('tracker.hbs'),
         }
     }
 
@@ -253,6 +254,12 @@ export class MiniTracker extends Application {
                 hpMax,
                 hpHue,
                 active,
+                targeted:
+                    // @ts-ignore
+                    combatant.token?.object.targeted
+                        .toObject()
+                        .filter(x => !x.isGM)
+                        .map(x => x.color) ?? [],
                 showHp:
                     hpValue !== undefined &&
                     showHp !== 'none' &&
