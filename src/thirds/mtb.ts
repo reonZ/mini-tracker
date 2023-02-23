@@ -1,4 +1,4 @@
-import { getModule } from '~src/@utils/foundry/module'
+import { getModule } from '@utils/foundry/module'
 
 const MODULE_ID = 'monks-tokenbar'
 

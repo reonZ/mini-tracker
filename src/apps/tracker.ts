@@ -1,12 +1,11 @@
-import { getFlag } from '~src/@utils/foundry/flags'
-import { flagsUpdatePath, templatePath } from '~src/@utils/foundry/path'
-import { getCombatTrackerConfig, getSetting, setSetting } from '~src/@utils/foundry/settings'
-import { easeInQuad } from '~src/@utils/math'
-import { canNamesBeHidden, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '~src/combat'
-import { thirdPartyToggleSeeName } from '~src/@utils/anonymous/third'
-import { cloneIcons, hasMTB, showOnTrackerMTB } from '~src/thirds/mtb'
-import { getSameCombatants } from '~src/@utils/foundry/combatant'
-import { isSortableActive } from '~src/module'
+import { getCombatTrackerConfig, getSetting, setSetting } from '@utils/foundry/settings'
+import { flagsUpdatePath, templatePath } from '@utils/foundry/path'
+import { cloneIcons, hasMTB, showOnTrackerMTB } from '@src/thirds/mtb'
+import { canNamesBeHidden, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '@src/combat'
+import { easeInQuad } from '@utils/math'
+import { getFlag } from '@utils/foundry/flags'
+import { thirdPartyToggleSeeName } from '@utils/anonymous/third'
+import { getSameCombatants } from '../../../../../../foundryVTT-projects/@utils/foundry/combatant'
 
 export class MiniTracker extends Application {
     private _isExpanded: boolean
@@ -269,7 +268,7 @@ export class MiniTracker extends Application {
 
         if (!hasActive) {
             const active = Math.min(combat.turn ?? 0, turns.length - 1)
-            const combatant = turns[active]
+            const combatant = turns[active]!
             combatant.active = true
             const css = combatant.css ? combatant.css.split(' ') : []
             css.push('active')
@@ -309,7 +308,6 @@ export class MiniTracker extends Application {
     protected async _render(force?: boolean | undefined, options?: RenderOptions | undefined): Promise<void> {
         await super._render(force, options)
         if (game.user.isGM && showOnTrackerMTB()) cloneIcons(this.listElement)
-        Hooks.callAll('renderMiniTracker', this, this.element)
     }
 
     render(force?: boolean, options?: any) {
@@ -378,7 +376,6 @@ export class MiniTracker extends Application {
     async close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
         const result = await super.close(options)
         this._hooks.forEach(x => Hooks.off('any', x))
-        Hooks.call(`closeMiniTracker`, this, this.element)
         return result
     }
 
@@ -426,7 +423,7 @@ export class MiniTracker extends Application {
     }
 
     setPosition({ left, top, bottom }: ApplicationPosition) {
-        const el = this.element[0]
+        const el = this.element[0]!
         const currentPosition = this.position
         const minHeight = this.minHeight
 
@@ -463,7 +460,7 @@ export class MiniTracker extends Application {
     }
 
     _contextMenu($html: JQuery) {
-        this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())
+        this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())!
     }
 
     #onPreCreateCombatant(combatant: Combatant, data: DocumentUpdateData<Combatant>, context: DocumentModificationContext) {
@@ -514,8 +511,8 @@ export class MiniTracker extends Application {
     }
 
     #makeSortable() {
-        if (!isSortableActive()) return
-        this._sortable = new Sortable(this.listElement[0], {
+        if (!game.modules.get('_sortablejs')?.active) return
+        this._sortable = new Sortable(this.listElement[0]!, {
             animation: 150,
             draggable: '.combatant',
             delay: 50,
@@ -698,7 +695,7 @@ export class MiniTracker extends Application {
         const list = this.listElement
         const height = list.innerHeight()!
         if (height === list.prop('scrollHeight')) return
-        const active = list.find('> .active')[0]
+        const active = list.find('> .active')[0]!
         list.scrollTop(active.offsetTop - height / 2 + active.offsetHeight / 2)
     }
 

@@ -9,6 +9,20 @@
             "discord": "Idle#3251"
         }
     ],
+    "esmodules": ["scripts/main.js"],
+    "compatibility": {
+        "minimum": "10.291",
+        "verified": "10"
+    },
+    "version": "1.13.2",
+    "manifestPlusVersion": "1.2.0",
+    "url": "https://github.com/reonZ/mini-tracker",
+    "readme": "https://github.com/reonZ/mini-tracker/blob/master/README.md",
+    "manifest": "https://raw.githubusercontent.com/reonZ/mini-tracker/master/module.json",
+    "download": "https://github.com/reonZ/mini-tracker/releases/download/1.13.2/module.zip",
+    "changelog": "https://github.com/reonZ/mini-tracker/blob/master/CHANGELOG.md",
+    "bugs": "https://github.com/reonZ/mini-tracker/issues",
+    "styles": ["styles/tracker.css"],
     "relationships": {
         "requires": [
             {
@@ -23,29 +37,6 @@
             "lang": "en",
             "name": "English",
             "path": "lang/en.json"
-        },
-        {
-            "lang": "es",
-            "name": "Español",
-            "path": "lang/es.json"
         }
-    ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
-    "styles": [
-        "styles/tracker.css"
-    ],
-    "compatibility": {
-        "minimum": "10.291",
-        "verified": "10"
-    },
-    "version": "1.13.2",
-    "manifestPlusVersion": "1.2.0",
-    "url": "https://github.com/reonZ/mini-tracker",
-    "readme": "https://github.com/reonZ/mini-tracker/blob/master/README.md",
-    "manifest": "https://raw.githubusercontent.com/reonZ/mini-tracker/master/module.json",
-    "download": "https://github.com/reonZ/mini-tracker/releases/download/1.13.2/module.zip",
-    "changelog": "https://github.com/reonZ/mini-tracker/releases",
-    "bugs": "https://github.com/reonZ/mini-tracker/issues"
+    ]
 }

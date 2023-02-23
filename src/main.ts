@@ -1,11 +1,14 @@
-import { getSetting, registerSetting } from './@utils/foundry/settings'
-import { MiniTracker } from './apps/tracker'
-import { renderCombatTrackerConfig } from './config'
-import { thirdPartyInitialization } from './@utils/anonymous/third'
+import { MiniTracker } from '@apps/tracker'
+import { thirdPartyInitialization } from '@utils/anonymous/third'
+import { error } from '@utils/foundry/notification'
+import { getSetting, registerSetting } from '@utils/foundry/settings'
+import { setModuleID } from '@utils/module'
 import { hasMTB } from './thirds/mtb'
 import { preUpdateToken } from './token'
-import { error } from './@utils/foundry/notifications'
-import { isSortableActive } from './module'
+import { renderCombatTrackerConfig } from './tracker'
+
+export const MODULE_ID = 'mini-tracker'
+setModuleID(MODULE_ID)
 
 export let tracker: MiniTracker | null = null
 
@@ -199,15 +202,6 @@ Hooks.once('ready', () => {
 
 Hooks.on('renderCombatTrackerConfig', renderCombatTrackerConfig)
 
-function checkForSortable() {
-    if (isSortableActive()) return
-    error('sortable', true)
-}
-
-function refreshTracker() {
-    tracker?.render()
-}
-
 function hpHooks(show: unknown) {
     const method = show ? 'on' : 'off'
     Hooks[method]('updateActor', updateActor)
@@ -225,10 +219,19 @@ function immobilizeHooks(immobilize: unknown) {
     if (hasMTB()) return
     if (!game.user.isGM) {
         const method = immobilize ? 'on' : 'off'
-        Hooks[method]('preUpdateToken', preUpdateToken)
+        Hooks.on('preUpdateToken', preUpdateToken)
     } else {
         refreshTracker()
     }
+}
+
+function checkForSortable() {
+    if (game.modules.get('_sortablejs')?.active) return
+    error('sortable', true)
+}
+
+function refreshTracker() {
+    tracker?.render()
 }
 
 function createTracker() {

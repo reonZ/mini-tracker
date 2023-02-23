@@ -1,5 +1,5 @@
-import { localize } from './@utils/foundry/i18n'
-import { getSetting, setSetting } from './@utils/foundry/settings'
+import { localize } from '@utils/foundry/localize'
+import { getSetting, setSetting } from '@utils/foundry/settings'
 
 export function renderCombatTrackerConfig(config: CombatTrackerConfig, html: JQuery) {
     injectHTML(html)
