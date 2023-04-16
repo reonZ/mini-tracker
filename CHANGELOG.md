@@ -1,3 +1,9 @@
+# 1.15.0
+
+-   added the target icon to the GM (previously only players had access to it)
+-   the target icon is now a toggleable (it will be active when the combatant is one of the user's target)
+-   now uses the token disposition color scheme for combatant border and background (inspired by the `pf2e` system)
+
 # 1.14.0
 
 -   the mini tracker application now properly emit hooks (no more name scrambling)
