@@ -21,7 +21,7 @@ Hooks.once('init', () => {
         config: true,
         type: Boolean,
         default: true,
-        onChange: enabled => {
+        onChange: (enabled: boolean) => {
             if (enabled) createTracker()
             else closeTracker()
         },

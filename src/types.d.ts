@@ -14,7 +14,8 @@ interface ApplicationPosition {
 }
 
 interface Turn {
-    id: string
+    combatantId: string
+    tokenId: string
     css: string
     name: string
     img: string
@@ -34,7 +35,6 @@ interface Turn {
     hpHue?: number
     showHp: boolean
     active: boolean
-    targeted: (HexColorString | undefined)[]
 }
 
 type ShowHP = 'none' | 'friendly' | 'gm' | 'all'

@@ -34,14 +34,11 @@
         </header>
 
         <ol>
-            {{#each turns}} {{#if this}}
-            <li class="combatant {{this.css}}" data-combatant-id="{{this.id}}">
+            {{#each turns}}
+            {{#if this}}
+            <li class="combatant {{this.css}}" data-combatant-id="{{this.combatantId}}" data-token-id="{{this.tokenId}}">
                 <img src="{{this.img}}" alt="{{this.name}}" />
-                <div class="targets">
-                    {{#each this.targeted}}
-                    <div class="target" style="background-color: {{this}};"></div>
-                    {{/each}}
-                </div>
+                <div class="__targets"></div>
 
                 <div class="__details">
                     <h4>{{this.name}}</h4>
@@ -57,7 +54,8 @@
                             data-tooltip="mini-tracker.anonymous.{{#if this.playersCanSeeName}}hide{{else}}show{{/if}}">
                             <i class="fa-solid fa-signature"></i>
                         </a>
-                        {{/if}} {{#if (and @root.immobilize this.hasPlayerOwner)}}
+                        {{/if}}
+                        {{#if (and @root.immobilize this.hasPlayerOwner)}}
                         <a class="combatant-control{{#if this.freed}} active{{/if}}{{#unless this.canImmobilize}} disabled{{/unless}}"
                             data-control="toggleImmobilized" data-tooltip="mini-tracker.movement.{{#if this.freed}}lock{{else}}free{{/if}}">
                             <i class="fa-solid fa-person-running"></i>
@@ -67,15 +65,15 @@
                             data-tooltip="COMBAT.ToggleDead">
                             <i class="fas fa-skull"></i>
                         </a>
-                        {{/if}} {{#if this.canPing}}
+                        {{/if}}
+                        {{#if this.canPing}}
                         <a class="combatant-control" data-control="pingCombatant" data-tooltip="COMBAT.PingCombatant">
                             <i class="fa-solid fa-bullseye-arrow"></i>
                         </a>
-                        {{/if}} {{#unless @root.isGM}}
+                        {{/if}}
                         <a class="combatant-control" data-control="targetCombatant" data-tooltip="mini-tracker.target">
                             <i class="fa-solid fa-street-view"></i>
                         </a>
-                        {{/unless}}
                         <div class="__effects">
                             {{#each this.effects}}
                             <img src="{{this.icon}}" data-tooltip="{{this.name}}" />
@@ -99,7 +97,8 @@
                     {{/if}}
                 </div>
             </li>
-            {{/if}} {{/each}}
+            {{/if}}
+            {{/each}}
         </ol>
 
         {{#if isGM}}

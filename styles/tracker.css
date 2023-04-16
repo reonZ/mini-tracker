@@ -95,7 +95,7 @@
 #mini-tracker .__inner > ol > li:hover {
   background: rgba(255, 255, 255, 0.08);
 }
-#mini-tracker .__inner > ol > li .targets {
+#mini-tracker .__inner > ol > li .__targets {
   position: absolute;
   width: var(--sidebar-item-height);
   display: flex;
@@ -103,7 +103,7 @@
   justify-content: center;
   gap: 1px;
 }
-#mini-tracker .__inner > ol > li .targets .target {
+#mini-tracker .__inner > ol > li .__targets .target {
   height: 0.58em;
   aspect-ratio: 1/1;
   border-radius: 50%;

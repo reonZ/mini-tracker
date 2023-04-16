@@ -61,10 +61,10 @@ export class MiniTracker extends Application {
         this._resizeEndHook = this.#onResizeEnd.bind(this)
 
         this._hooks = [
-            Hooks.on('renderCombatTracker', this.#onRender.bind(this)),
+            Hooks.on('renderCombatTracker', () => this.render()),
             Hooks.on('hoverToken', this.#onTokenHover.bind(this)),
             Hooks.on('preCreateCombatant', this.#onPreCreateCombatant.bind(this)),
-            Hooks.on('targetToken', this.#onRender.bind(this)),
+            Hooks.on('targetToken', this.#renderTargets.bind(this)),
         ]
 
         this._coordsDebounce = debounce(this.#setCoords, 1000)
@@ -235,7 +235,8 @@ export class MiniTracker extends Application {
             }
 
             const turn: Turn = {
-                id: combatant.id,
+                combatantId: combatant.id,
+                tokenId: combatant.tokenId,
                 css: css.join(' '),
                 name,
                 img: await ui.combat._getCombatantThumbnail(combatant),
@@ -254,12 +255,6 @@ export class MiniTracker extends Application {
                 hpMax,
                 hpHue,
                 active,
-                targeted:
-                    // @ts-ignore
-                    combatant.token?.object.targeted
-                        .toObject()
-                        .filter(x => !x.isGM)
-                        .map(x => x.color) ?? [],
                 showHp:
                     hpValue !== undefined &&
                     showHp !== 'none' &&
@@ -308,12 +303,36 @@ export class MiniTracker extends Application {
         }
     }
 
-    #onRender() {
-        this.render()
+    #renderTargets() {
+        const combat = ui.combat.viewed
+        if (!combat) return
+
+        const targetsIds = game.user.targets.ids
+        const turns = this.element.find<HTMLLIElement>('.__inner ol li.combatant')
+
+        turns.each(function () {
+            const { tokenId, combatantId } = this.dataset as { tokenId: string; combatantId: string }
+
+            const targetIcon = this.querySelector('.__details .__icons [data-control="targetCombatant"]') as HTMLElement
+            targetIcon.classList.toggle('active', targetsIds.includes(tokenId))
+
+            const combatant = combat.combatants.get(combatantId)
+            if (!combatant) return
+
+            const targetsEl = this.querySelector('.__targets') as HTMLDivElement
+            targetsEl.innerHTML = ''
+
+            const colors = combatant.token?.object?.targeted.toObject().map(user => user.color) ?? []
+            for (const color of colors) {
+                const div = `<div class="target" style="background-color: ${color};"></div>`
+                targetsEl.insertAdjacentHTML('beforeend', div)
+            }
+        })
     }
 
     protected async _render(force?: boolean | undefined, options?: RenderOptions | undefined): Promise<void> {
         await super._render(force, options)
+        this.#renderTargets()
         if (game.user.isGM && showOnTrackerMTB()) cloneIcons(this.listElement)
     }
 
@@ -402,7 +421,7 @@ export class MiniTracker extends Application {
         html.find('[data-control=trackerReverse]').on('click', () => (this.isReversed = !this.isReversed))
         html.find('[data-control=trackerExpand]').on('click', () => (this.isExpanded = !this.isExpanded))
 
-        html.find('[data-control=targetCombatant]').on('click', this.#onTarget.bind(this))
+        html.find('[data-control=targetCombatant]').on('click', this.#targetCombatant.bind(this))
 
         html.find('.combat-control').on('click', tracker._onCombatControl.bind(tracker))
         html.find('.combatant-control').on('click', tracker._onCombatantControl.bind(tracker))
@@ -481,22 +500,17 @@ export class MiniTracker extends Application {
         return ui.combat.viewed?.combatants.get(id)
     }
 
-    #onTarget(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+    #targetCombatant(event: JQuery.ClickEvent<any, any, HTMLElement>) {
         event.preventDefault()
 
         const combatant = this.#getCombatantFromEvent(event)
-        const token = combatant?.token
-
+        const token = combatant?.token?.object
         if (!token) return
 
-        const current = Array.from(game.user.targets).map(x => x.id)
-        const targets = event.shiftKey ? current : current.filter(x => x === token.id)
-        const index = targets.indexOf(token.id)
+        const thisUser = game.user
+        const targeted = token.targeted.some(user => user === thisUser)
 
-        if (index !== -1) targets.splice(index, 1)
-        else targets.push(token.id)
-
-        game.user.updateTokenTargets(targets)
+        token.setTarget(!targeted, { releaseOthers: !event.shiftKey })
     }
 
     #onToggleImmobilized(event: JQuery.ClickEvent<any, any, HTMLElement>) {
