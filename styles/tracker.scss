@@ -110,8 +110,14 @@
                 gap: 0.28em;
                 padding-left: 0.28em;
 
-                &:hover {
-                    background: rgba(255, 255, 255, 0.08);
+                &:hover,
+                &.hovered,
+                &.active {
+                    background: var(--color-background);
+                }
+
+                &.active {
+                    border-color: var(--color-border);
                 }
 
                 .__targets {
@@ -283,19 +289,6 @@
                 &:last-child {
                     border-bottom: 0;
                 }
-            }
-        }
-    }
-
-    .__inner.expanded {
-        ol {
-            li.hovered {
-                background: rgba(255, 255, 255, 0.08);
-            }
-
-            li.active {
-                border-color: var(--color-border-highlight);
-                background: rgba(255, 255, 255, 0.1);
             }
         }
     }

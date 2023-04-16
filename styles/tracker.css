@@ -92,8 +92,11 @@
   gap: 0.28em;
   padding-left: 0.28em;
 }
-#mini-tracker .__inner > ol > li:hover {
-  background: rgba(255, 255, 255, 0.08);
+#mini-tracker .__inner > ol > li:hover, #mini-tracker .__inner > ol > li.hovered, #mini-tracker .__inner > ol > li.active {
+  background: var(--color-background);
+}
+#mini-tracker .__inner > ol > li.active {
+  border-color: var(--color-border);
 }
 #mini-tracker .__inner > ol > li .__targets {
   position: absolute;
@@ -224,13 +227,6 @@
 }
 #mini-tracker .__inner:not(.reversed) > ol:last-child {
   border-bottom: 0;
-}
-#mini-tracker .__inner.expanded ol li.hovered {
-  background: rgba(255, 255, 255, 0.08);
-}
-#mini-tracker .__inner.expanded ol li.active {
-  border-color: var(--color-border-highlight);
-  background: rgba(255, 255, 255, 0.1);
 }
 #mini-tracker .__inner.reversed {
   flex-direction: column-reverse;

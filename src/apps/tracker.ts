@@ -1,7 +1,7 @@
 import { getCombatTrackerConfig, getSetting, setSetting } from '@utils/foundry/settings'
 import { flagsUpdatePath, templatePath } from '@utils/foundry/path'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '@src/thirds/mtb'
-import { canNamesBeHidden, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '@src/combat'
+import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '@src/combat'
 import { easeInQuad } from '@utils/math'
 import { getFlag } from '@utils/foundry/flags'
 import { thirdPartyToggleSeeName } from '@utils/anonymous/third'
@@ -234,10 +234,16 @@ export class MiniTracker extends Application {
                 else if (dim) css.push('anonymous')
             }
 
+            const color = getCombatantColor(combatant)
+
             const turn: Turn = {
                 combatantId: combatant.id,
                 tokenId: combatant.tokenId,
                 css: css.join(' '),
+                colors: {
+                    border: color.css,
+                    background: color.toRGBA(0.1),
+                },
                 name,
                 img: await ui.combat._getCombatantThumbnail(combatant),
                 hidden,

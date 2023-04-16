@@ -35,6 +35,10 @@ interface Turn {
     hpHue?: number
     showHp: boolean
     active: boolean
+    colors: {
+        border: string
+        background: string
+    }
 }
 
 type ShowHP = 'none' | 'friendly' | 'gm' | 'all'
