@@ -5,7 +5,7 @@ import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFre
 import { easeInQuad } from '@utils/math'
 import { getFlag } from '@utils/foundry/flags'
 import { thirdPartyToggleSeeName } from '@utils/anonymous/third'
-import { getSameCombatants } from '../../../../../../foundryVTT-projects/@utils/foundry/combatant'
+import { getSameCombatants } from '@utils/foundry/combatant'
 
 export class MiniTracker extends Application {
     private _isExpanded: boolean
