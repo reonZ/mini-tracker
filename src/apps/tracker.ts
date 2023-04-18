@@ -550,8 +550,8 @@ export class MiniTracker extends Application {
     #onSortEnd(event: Sortable.SortableEvent) {
         const id = event.item.dataset.combatantId
         const combat = ui.combat.viewed
-        const oldIndex = /** @type {number} */ event.oldIndex
-        const newIndex = /** @type {number} */ event.newIndex
+        const oldIndex = event.oldIndex
+        const newIndex = event.newIndex
 
         if (!combat || oldIndex === newIndex || !id) return
 
@@ -569,9 +569,9 @@ export class MiniTracker extends Application {
             nextInit = 0
             prevInit = 2
         } else if (nextInit == null) {
-            nextInit = /** @type {number} */ prevInit! - 2
+            nextInit = prevInit! - 2
         } else if (prevInit == null) {
-            prevInit = /** @type {number} */ nextInit + 2
+            prevInit = nextInit + 2
         }
 
         // @ts-ignore
