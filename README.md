@@ -1,6 +1,6 @@
 # FoundryVTT Mini Tracker
 
-![](./readme/updated.webp)
+![](./readme/updated2.webp)
 
 This module adds an extra floating `Combat Tracker` which provides new functionalities.
 
