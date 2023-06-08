@@ -1,3 +1,7 @@
+# 1.16 0
+
+-   just a manifest update for v11, no work was actually done for it
+
 # 1.15.0
 
 -   added the target icon to the GM (previously only players had access to it)
