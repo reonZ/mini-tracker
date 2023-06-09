@@ -1,5 +1,7 @@
 # FoundryVTT Mini Tracker
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K6M2V13)
+
 ![](./readme/updated3.webp)
 
 This module adds an extra floating `Combat Tracker` which provides new functionalities.
