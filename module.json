@@ -9,9 +9,7 @@
             "discord": "Idle#3251"
         }
     ],
-    "esmodules": [
-        "scripts/main.js"
-    ],
+    "esmodules": ["scripts/main.js"],
     "compatibility": {
         "minimum": "10.291",
         "verified": "11"
@@ -24,18 +22,7 @@
     "download": "https://github.com/reonZ/mini-tracker/releases/download/1.16.0/module.zip",
     "changelog": "https://github.com/reonZ/mini-tracker/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/mini-tracker/issues",
-    "styles": [
-        "styles/tracker.css"
-    ],
-    "relationships": {
-        "requires": [
-            {
-                "id": "_sortablejs",
-                "type": "module",
-                "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/sortablejs-lib/main/module.json"
-            }
-        ]
-    },
+    "styles": ["styles/tracker.css"],
     "languages": [
         {
             "lang": "en",

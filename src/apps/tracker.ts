@@ -1,11 +1,12 @@
-import { getCombatTrackerConfig, getSetting, setSetting } from '@utils/foundry/settings'
-import { flagsUpdatePath, templatePath } from '@utils/foundry/path'
-import { cloneIcons, hasMTB, showOnTrackerMTB } from '@src/thirds/mtb'
 import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '@src/combat'
-import { easeInQuad } from '@utils/math'
-import { getFlag } from '@utils/foundry/flags'
+import { cloneIcons, hasMTB, showOnTrackerMTB } from '@src/thirds/mtb'
 import { thirdPartyToggleSeeName } from '@utils/anonymous/third'
 import { getSameCombatants } from '@utils/foundry/combatant'
+import { getFlag } from '@utils/foundry/flags'
+import { flagsUpdatePath, templatePath } from '@utils/foundry/path'
+import { getCombatTrackerConfig, getSetting, setSetting } from '@utils/foundry/settings'
+import { easeInQuad } from '@utils/math'
+import Sortable from 'sortablejs'
 
 export class MiniTracker extends Application {
     private _isExpanded: boolean
@@ -198,7 +199,7 @@ export class MiniTracker extends Application {
             const effects = new Map()
             if (combatant.actor) {
                 for (const effect of combatant.actor.temporaryEffects) {
-                    if (effect.getFlag('core', 'statusId') === CONFIG.specialStatusEffects.DEFEATED) defeated = true
+                    if (effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED)) defeated = true
                     else if (effect.icon) effects.set(effect.icon, { icon: effect.icon, name: effect.label })
                 }
             }
@@ -538,7 +539,6 @@ export class MiniTracker extends Application {
     }
 
     #makeSortable() {
-        if (!game.modules.get('_sortablejs')?.active) return
         this._sortable = new Sortable(this.listElement[0]!, {
             animation: 150,
             draggable: '.combatant',

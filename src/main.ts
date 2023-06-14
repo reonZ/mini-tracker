@@ -193,8 +193,6 @@ Hooks.once('init', () => {
 })
 
 Hooks.once('ready', () => {
-    if (game.user.isGM) checkForSortable()
-
     setTimeout(() => {
         if (getSetting('enabled')) createTracker()
         if (getSetting('immobilize')) immobilizeHooks(true)
@@ -225,11 +223,6 @@ function immobilizeHooks(immobilize: unknown) {
     } else {
         refreshTracker()
     }
-}
-
-function checkForSortable() {
-    if (game.modules.get('_sortablejs')?.active) return
-    error('sortable', true)
 }
 
 function refreshTracker() {
