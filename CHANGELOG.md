@@ -1,3 +1,8 @@
+# 1.17.0
+
+-   updated effect statuses for v11 (removes warnings spam)
+-   the module now ships `SortableJS` directly and therefore doesn't have the module dependency
+
 # 1.16.0
 
 -   just a manifest update for v11, no work was actually done for it
