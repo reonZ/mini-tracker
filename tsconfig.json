@@ -12,6 +12,7 @@
         "experimentalDecorators": true,
         "esModuleInterop": true,
         "sourceMap": true,
+        "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "noUncheckedIndexedAccess": true,
         "baseUrl": ".",
