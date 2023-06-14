@@ -13,7 +13,7 @@
         "scripts/main.js"
     ],
     "compatibility": {
-        "minimum": "10.291",
+        "minimum": "11.301",
         "verified": "11"
     },
     "version": "1.17.0",
