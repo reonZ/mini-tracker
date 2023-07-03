@@ -1,3 +1,7 @@
+# 1.17.1
+
+-   replaced root-level url to use relative path
+
 # 1.17.0
 
 -   this update is only for v11
