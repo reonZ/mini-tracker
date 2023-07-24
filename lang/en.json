@@ -31,6 +31,10 @@
                 "name": "Hover Delay",
                 "hint": "Time in milliseconds before the tracker expands on mouse hover."
             },
+            "started": {
+                "name": "Only When Started",
+                "hint": "The tracker will only show up for players if the combat has actually started."
+            },
             "select": {
                 "name": "Select Token",
                 "hint": "Select the token of the current combatant. This option is only for the GM."

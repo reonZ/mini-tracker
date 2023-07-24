@@ -167,12 +167,13 @@ export class MiniTracker extends Application {
     }
 
     async getData(options?: Partial<ApplicationOptions> | undefined) {
+        const isGM = game.user.isGM
         const combat = ui.combat.viewed
-        if (!combat || !combat.turns.some(x => x.isOwner)) {
+
+        if (!combat || (!isGM && getSetting('started') && !combat.started) || !combat.turns.some(x => x.isOwner)) {
             return { hasCombat: false }
         }
 
-        const isGM = game.user.isGM
         const currentCombatant = combat.combatant
         const showHp = getSetting<ShowHP>('showHp')
         const hpValuePath = getSetting<string>('hpValue')

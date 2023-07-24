@@ -1,6 +1,5 @@
 import { MiniTracker } from '@apps/tracker'
 import { thirdPartyInitialization } from '@utils/anonymous/third'
-import { error } from '@utils/foundry/notification'
 import { getSetting, registerSetting } from '@utils/foundry/settings'
 import { setModuleID } from '@utils/module'
 import { hasMTB } from './thirds/mtb'
@@ -89,6 +88,14 @@ Hooks.once('init', () => {
     })
 
     // WORLD SETTINGS
+
+    registerSetting({
+        name: 'started',
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: refreshTracker,
+    })
 
     registerSetting({
         name: 'turn',
