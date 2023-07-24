@@ -124,6 +124,10 @@ When enabled, the tracker will expand when hovering over the combatant.
 
 Set the amount of time (in milliseconds) before the tracker starts expanding on mouse hover.
 
+## Only When Started
+
+The tracker will only show up for players if the combat has actually started.
+
 ## End Turn
 
 Should the players be able to end their own turn.
