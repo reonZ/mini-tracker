@@ -1,3 +1,7 @@
+# 1.18.0
+
+-   added `Only When Started` setting, when enabled the tracker will only show up for players if the combat has actually started
+
 # 1.17.1
 
 -   replaced root-level url to use relative path

@@ -16,12 +16,12 @@
         "minimum": "11.301",
         "verified": "11"
     },
-    "version": "1.17.1",
+    "version": "1.18.0",
     "manifestPlusVersion": "1.2.0",
     "url": "https://github.com/reonZ/mini-tracker",
     "readme": "https://github.com/reonZ/mini-tracker/blob/master/README.md",
     "manifest": "https://raw.githubusercontent.com/reonZ/mini-tracker/master/module.json",
-    "download": "https://github.com/reonZ/mini-tracker/releases/download/1.17.1/module.zip",
+    "download": "https://github.com/reonZ/mini-tracker/releases/download/1.18.0/module.zip",
     "changelog": "https://github.com/reonZ/mini-tracker/blob/master/CHANGELOG.md",
     "bugs": "https://github.com/reonZ/mini-tracker/issues",
     "styles": [
