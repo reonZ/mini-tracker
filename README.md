@@ -80,6 +80,10 @@ The tracker allow the GM to reorganize and change the initiative of a combatant 
 
 This will set a new initiative for the combatant, using decimals when needed (which may or may not be shown in the tracker depending on the system).
 
+# Move to combatant initiative
+
+You can `ctrl + click` on a combatant to go directly to its initiative without having to click multiple time on `Next Turn` or `Previous Turn`
+
 # Prevent Movement
 
 If enabled, this module can prevent players from being able to move tokens on the board.

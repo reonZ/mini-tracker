@@ -1,6 +1,8 @@
-#
+# 1.19.0
 
-TODO add ctrl+click to go directly to a combatant initiative
+-   you can now directly go to any combatant initiative using `ctrl + click` which prevent the need to click multiple times on `Next Turn` or `Previous Turn` to reach the combatant (also preventing turn change triggers from certain systems/modules for the in-between combatants)
+-   added `Close Sheet` setting, when enabled, the actor sheet of the last combatant will be automatically closed (this is a GM only setting)
+-   added `Save Sheet Coords` setting, when enabled, the coordinates of the last automatically closed sheet will be saved and used for subsequent automatically opened sheets
 
 # 1.18.0
 
