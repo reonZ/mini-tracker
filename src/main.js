@@ -1,15 +1,11 @@
-import { MiniTracker } from '@apps/tracker'
-import { thirdPartyInitialization } from '@utils/anonymous/third'
-import { getSetting, registerSetting } from '@utils/foundry/settings'
-import { setModuleID } from '@utils/module'
-import { hasMTB } from './thirds/mtb'
-import { preUpdateToken } from './token'
+import { updateActor } from './actor'
+import { MiniTracker } from './apps/tracker'
+import { getSetting, registerSetting } from './module'
+import { thirdPartyInitialization } from './third'
+import { hasMTB } from './third/mtb'
 import { renderCombatTrackerConfig } from './tracker'
 
-export const MODULE_ID = 'mini-tracker'
-setModuleID(MODULE_ID)
-
-export let tracker: MiniTracker | null = null
+export let tracker = null
 
 Hooks.once('init', () => {
     // CLIENT SETTINGS
@@ -20,7 +16,7 @@ Hooks.once('init', () => {
         config: true,
         type: Boolean,
         default: true,
-        onChange: (enabled: boolean) => {
+        onChange: enabled => {
             if (enabled) createTracker()
             else closeTracker()
         },
@@ -209,24 +205,18 @@ Hooks.once('ready', () => {
 
 Hooks.on('renderCombatTrackerConfig', renderCombatTrackerConfig)
 
-function hpHooks(show: unknown) {
+function hpHooks(show) {
     const method = show ? 'on' : 'off'
     Hooks[method]('updateActor', updateActor)
     refreshTracker()
 }
 
-function updateActor(actor: Actor, data: DocumentUpdateData) {
-    const hpValue = getSetting<string>('hpValue')
-    const hpMax = getSetting<string>('hpMax')
-    if (hpValue !== undefined && hasProperty(data, `system.${hpValue}`)) return refreshTracker()
-    if (hpMax !== undefined && hasProperty(data, `system.${hpMax}`)) return refreshTracker()
-}
-
-function immobilizeHooks(immobilize: unknown) {
+function immobilizeHooks(immobilize) {
     if (hasMTB()) return
+
     if (!game.user.isGM) {
         const method = immobilize ? 'on' : 'off'
-        Hooks.on('preUpdateToken', preUpdateToken)
+        Hooks[method]('preUpdateToken', preUpdateToken)
     } else {
         refreshTracker()
     }
@@ -243,6 +233,6 @@ function createTracker() {
 }
 
 function closeTracker() {
-    if (tracker) tracker.close()
+    tracker?.close()
     tracker = null
 }

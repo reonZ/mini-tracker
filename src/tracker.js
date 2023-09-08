@@ -1,20 +1,19 @@
-import { localize } from '@utils/foundry/localize'
-import { getSetting, setSetting } from '@utils/foundry/settings'
+import { getSetting, localize, setSetting } from './module'
 
-export function renderCombatTrackerConfig(config: CombatTrackerConfig, html: JQuery) {
+export function renderCombatTrackerConfig(config, html) {
     injectHTML(html)
     addEvents(html)
     html.css('height', 'auto')
 }
 
-function addEvents(html: JQuery) {
-    html.find<HTMLInputElement>('input[name="hideDeads"]').on('change', function () {
+function addEvents(html) {
+    html.find('input[name="hideDeads"]').on('change', function () {
         const checked = $(this).is(':checked')
         setSetting('dead', checked)
     })
 }
 
-function injectHTML(html: JQuery) {
+function injectHTML(html) {
     const checked = getSetting('dead') ? 'checked' : ''
 
     let content = '<div class="form-group">'

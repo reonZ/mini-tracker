@@ -1,19 +1,17 @@
-import { getModule } from '@utils/foundry/module'
-
 const MODULE_ID = 'monks-tokenbar'
 
 export function hasMTB() {
-    return getModule(MODULE_ID)?.active
+    return game.modules.get(MODULE_ID)?.active
 }
 
-export function cloneIcons(list: JQuery) {
-    const ol = ui.combat.element.find<HTMLOListElement>('#combat-tracker')
-    const combatants = ol.find<HTMLLIElement>('.combatant:has([data-control="toggleMovement"])')
+export function cloneIcons(list) {
+    const ol = ui.combat.element.find('#combat-tracker')
+    const combatants = ol.find('.combatant:has([data-control="toggleMovement"])')
 
     combatants.each(function () {
         const li = $(this)
-        const id = li.attr('data-combatant-id')!
-        const icon = li.find<HTMLAnchorElement>('[data-control="toggleMovement"]')
+        const id = li.attr('data-combatant-id')
+        const icon = li.find('[data-control="toggleMovement"]')
         const clone = icon.clone(true)
 
         clone.on('click', () => icon.toggleClass('active'))

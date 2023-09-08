@@ -4,8 +4,8 @@ export function isPF2eSystem() {
     return game.system.id === SYSTEM_ID
 }
 
-export function getPF2eDispositionColor(combatant: Combatant) {
-    const actor = combatant.actor as (Actor & { alliance: 'party' | 'opposition' | null }) | null
+export function getPF2eDispositionColor(combatant) {
+    const actor = combatant.actor
     if (!actor) return CONFIG.Canvas.dispositionColors.NEUTRAL
 
     const alliance = actor.alliance

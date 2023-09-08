@@ -1,3 +1,7 @@
+#
+
+TODO add ctrl+click to go directly to a combatant initiative
+
 # 1.18.0
 
 -   added `Only When Started` setting, when enabled the tracker will only show up for players if the combat has actually started

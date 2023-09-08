@@ -1,8 +1,7 @@
-import { warn } from '@utils/foundry/notification'
-import { getFlag } from '@utils/foundry/flags'
 import { tracker } from './main'
+import { getFlag, warn } from './module'
 
-export function preUpdateToken(token: TokenDocument, data: Partial<TokenSource>) {
+export function preUpdateToken(token, data) {
     if (!tracker || !('x' in data || 'y' in data)) return
 
     const combatant = token.combatant

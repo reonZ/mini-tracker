@@ -1,35 +1,29 @@
-import {
-    thirdPartyCanNamesBeHidden,
-    thirdPartyGetName,
-    thirdPartyPlayersSeeName,
-    thirdPartyToggleSeeName,
-} from '@utils/anonymous/third'
-import { localize } from '@utils/foundry/localize'
-import { getFlag, setFlag } from '@utils/foundry/flags'
-import { getPF2eDispositionColor, isPF2eSystem } from './thirds/pf2e'
+import { getFlag, localize, setFlag } from './module'
+import { thirdPartyCanNamesBeHidden, thirdPartyGetName, thirdPartyPlayersSeeName, thirdPartyToggleSeeName } from './third'
+import { getPF2eDispositionColor, isPF2eSystem } from './third/pf2e'
 
 export function canNamesBeHidden() {
     return thirdPartyCanNamesBeHidden?.() ?? false
 }
 
-export function playersSeeName(combatant: Combatant) {
+export function playersSeeName(combatant) {
     return combatant.actor?.hasPlayerOwner || (thirdPartyPlayersSeeName?.(combatant) ?? true)
 }
 
-export function togglePlayersSeeName(combatant: Combatant) {
+export function togglePlayersSeeName(combatant) {
     return thirdPartyToggleSeeName?.(combatant)
 }
 
-export function getName(combatant: Combatant) {
+export function getName(combatant) {
     return thirdPartyGetName?.(combatant) ?? localize('unknown')
 }
 
-export function toggleFreed(combatant: Combatant) {
-    const immobilized = getFlag<boolean>(combatant, 'freed')
+export function toggleFreed(combatant) {
+    const immobilized = getFlag(combatant, 'freed')
     setFlag(combatant, 'freed', !immobilized)
 }
 
-function getCombatantDispositionColor(combatant: Combatant) {
+function getCombatantDispositionColor(combatant) {
     if (isPF2eSystem()) return getPF2eDispositionColor(combatant)
 
     const actor = combatant.actor
@@ -44,7 +38,7 @@ function getCombatantDispositionColor(combatant: Combatant) {
     return CONFIG.Canvas.dispositionColors.NEUTRAL
 }
 
-export function getCombatantColor(combatant: Combatant) {
+export function getCombatantColor(combatant) {
     const dispositionColor = getCombatantDispositionColor(combatant)
     return new Color(dispositionColor)
 }

@@ -1,51 +1,31 @@
-import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '@src/combat'
-import { cloneIcons, hasMTB, showOnTrackerMTB } from '@src/thirds/mtb'
-import { thirdPartyToggleSeeName } from '@utils/anonymous/third'
-import { getSameCombatants } from '@utils/foundry/combatant'
-import { getFlag } from '@utils/foundry/flags'
-import { flagsUpdatePath, templatePath } from '@utils/foundry/path'
-import { getCombatTrackerConfig, getSetting, setSetting } from '@utils/foundry/settings'
-import { easeInQuad } from '@utils/math'
 import Sortable from 'sortablejs'
+import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '../combat.'
+import {
+    easeInQuad,
+    flagsUpdatePath,
+    getCombatTrackerConfig,
+    getFlag,
+    getSameCombatants,
+    getSetting,
+    setSetting,
+    templatePath,
+} from '../module'
+import { cloneIcons, hasMTB, showOnTrackerMTB } from '../third/mtb'
 
 export class MiniTracker extends Application {
-    private _isExpanded: boolean
-    private _maxHeight?: number
-    private _dragging: boolean
-    private _lastCombat: string
-    private _lastCombatant: string
-    private _lastMoveTime: number
-    private _initialPosition: ApplicationPosition
-    private _initialPointer: { x: number; y: number } = { x: 0, y: 0 }
-    private _combatantHeight?: number
-    private _boxHeight?: number
-    private _innerMargins?: number
-    private _isReversed: boolean
-    private _dragHook: (event: MouseEvent) => void
-    private _dragEndHook: (event: MouseEvent) => void
-    private _expandedDebounce: () => void
-    private _coordsDebounce: () => void
-    private _menu?: ContextMenu
-    private _listHoverHook?: NodeJS.Timeout
-    private _resizeHook: (event: MouseEvent) => void
-    private _resizeEndHook: (event: MouseEvent) => void
-    private _sortable?: Sortable
-    private _hooks: number[]
-    private _lastTurn: number
-
     constructor() {
         super()
 
-        const { left, bottom, top } = getSetting<TrackerCoords>('coords')
+        const { left, bottom, top } = getSetting('coords')
         if (typeof left === 'number') this.position.left = left
         if (typeof top === 'number') this.position.top = top
         if (typeof bottom === 'number') this.position.bottom = bottom
 
-        const expanded = getSetting<string>('expanded')
+        const expanded = getSetting('expanded')
         this._isExpanded = expanded !== 'false'
         this._maxHeight = expanded !== 'false' && expanded !== 'true' ? parseInt(expanded) : undefined
 
-        this._isReversed = getSetting<boolean>('reversed')
+        this._isReversed = getSetting('reversed')
 
         this._dragging = false
 
@@ -135,13 +115,13 @@ export class MiniTracker extends Application {
     get combatantHeight() {
         if (this._combatantHeight) return this._combatantHeight
         this._combatantHeight = this.combatantElements.filter('.active').outerHeight(true)
-        return this._combatantHeight as number
+        return this._combatantHeight
     }
 
     get boxHeight() {
         if (this._boxHeight) return this._boxHeight
-        const height = this.element.outerHeight(true)!
-        const listHeight = this.listElement.innerHeight()!
+        const height = this.element.outerHeight(true)
+        const listHeight = this.listElement.innerHeight()
         this._boxHeight = height - listHeight
         return this._boxHeight
     }
@@ -166,7 +146,7 @@ export class MiniTracker extends Application {
         this._expandedDebounce()
     }
 
-    async getData(options?: Partial<ApplicationOptions> | undefined) {
+    async getData(options) {
         const isGM = game.user.isGM
         const combat = ui.combat.viewed
 
@@ -175,22 +155,22 @@ export class MiniTracker extends Application {
         }
 
         const currentCombatant = combat.combatant
-        const showHp = getSetting<ShowHP>('showHp')
-        const hpValuePath = getSetting<string>('hpValue')
-        const hpMaxPath = getSetting<string>('hpMax')
-        const endTurn = getSetting<boolean>('turn')
+        const showHp = getSetting('showHp')
+        const hpValuePath = getSetting('hpValue')
+        const hpMaxPath = getSetting('hpMax')
+        const endTurn = getSetting('turn')
         const reversed = this.isReversed
         const hideNames = canNamesBeHidden()
-        const immobilize = getSetting<boolean>('immobilize') && !hasMTB()
+        const immobilize = getSetting('immobilize') && !hasMTB()
         const sceneId = canvas.scene?.id
         const canPing = game.user.hasPermission('PING_CANVAS')
-        const hideDefeated = getSetting<boolean>('dead') && getCombatTrackerConfig().skipDefeated
-        const dim = getSetting<boolean>('dim')
+        const hideDefeated = getSetting('dead') && getCombatTrackerConfig().skipDefeated
+        const dim = getSetting('dim')
 
         let hasActive = false
         let hasDecimals = false
 
-        const turns: Turn[] = []
+        const turns = []
         for (const [i, combatant] of combat.turns.entries()) {
             if (!combatant.visible) continue
             if (hideDefeated && combatant.defeated && !combatant.actor?.hasPlayerOwner) continue
@@ -205,8 +185,8 @@ export class MiniTracker extends Application {
                 }
             }
 
-            const hpValue = !!hpValuePath ? getProperty<number | undefined>(combatant, `actor.system.${hpValuePath}`) : undefined
-            const hpMax = !!hpMaxPath ? getProperty<number | undefined>(combatant, `actor.system.${hpMaxPath}`) : undefined
+            const hpValue = !!hpValuePath ? getProperty(combatant, `actor.system.${hpValuePath}`) : undefined
+            const hpMax = !!hpMaxPath ? getProperty(combatant, `actor.system.${hpMaxPath}`) : undefined
 
             let hpHue
             if (hpValue !== undefined && hpMax !== undefined) {
@@ -238,7 +218,7 @@ export class MiniTracker extends Application {
 
             const color = getCombatantColor(combatant)
 
-            const turn: Turn = {
+            const turn = {
                 combatantId: combatant.id,
                 tokenId: combatant.tokenId,
                 css: css.join(' '),
@@ -278,7 +258,7 @@ export class MiniTracker extends Application {
 
         if (!hasActive) {
             const active = Math.min(combat.turn ?? 0, turns.length - 1)
-            const combatant = turns[active]!
+            const combatant = turns[active]
             combatant.active = true
             const css = combatant.css ? combatant.css.split(' ') : []
             css.push('active')
@@ -292,7 +272,7 @@ export class MiniTracker extends Application {
         const precision = CONFIG.Combat.initiative.decimals
         turns.forEach(combatant => {
             if (combatant.initiative === null) return
-            combatant.initiative = (combatant.initiative as number).toFixed(hasDecimals ? precision : 0)
+            combatant.initiative = combatant.initiative.toFixed(hasDecimals ? precision : 0)
         })
 
         return {
@@ -307,7 +287,7 @@ export class MiniTracker extends Application {
             arrow: reversed ? 'up' : 'down',
             innerCss: innerCss.join(' '),
             isCurrentTurn: currentCombatant?.isOwner,
-            fontSize: getSetting<number>('scale'),
+            fontSize: getSetting('scale'),
         }
     }
 
@@ -316,18 +296,18 @@ export class MiniTracker extends Application {
         if (!combat) return
 
         const targetsIds = game.user.targets.ids
-        const turns = this.element.find<HTMLLIElement>('.__inner ol li.combatant')
+        const turns = this.element.find('.__inner ol li.combatant')
 
         turns.each(function () {
-            const { tokenId, combatantId } = this.dataset as { tokenId: string; combatantId: string }
+            const { tokenId, combatantId } = this.dataset
 
-            const targetIcon = this.querySelector('.__details .__icons [data-control="targetCombatant"]') as HTMLElement
+            const targetIcon = this.querySelector('.__details .__icons [data-control="targetCombatant"]')
             targetIcon.classList.toggle('active', targetsIds.includes(tokenId))
 
             const combatant = combat.combatants.get(combatantId)
             if (!combatant) return
 
-            const targetsEl = this.querySelector('.__targets') as HTMLDivElement
+            const targetsEl = this.querySelector('.__targets')
             targetsEl.innerHTML = ''
 
             const colors = combatant.token?.object?.targeted.toObject().map(user => user.color) ?? []
@@ -338,20 +318,20 @@ export class MiniTracker extends Application {
         })
     }
 
-    protected async _render(force?: boolean | undefined, options?: RenderOptions | undefined): Promise<void> {
+    async _render(force, options) {
         await super._render(force, options)
         this.#renderTargets()
         if (game.user.isGM && showOnTrackerMTB()) cloneIcons(this.listElement)
     }
 
-    render(force?: boolean, options?: any) {
+    render(force, options) {
         const combat = ui.combat.viewed
         const isGM = game.user.isGM
         const combatId = combat?.id ?? ''
         const combatant = combat?.combatant
-        const immobilize = getSetting<boolean>('immobilize') && !hasMTB()
-        const reveal = getSetting<boolean>('reveal')
-        const revealToken = getSetting<boolean>('revealToken')
+        const immobilize = getSetting('immobilize') && !hasMTB()
+        const reveal = getSetting('reveal')
+        const revealToken = getSetting('revealToken')
         const diffCombatant = this._lastCombatant !== combatant?.id
         const diffTurn = combat?.turn !== this._lastTurn
 
@@ -379,7 +359,7 @@ export class MiniTracker extends Application {
 
             const updates = combat.turns.reduce((combatants, combatant, i) => {
                 let updated = false
-                const update = { _id: combatant.id } as Record<string, unknown> & { _id: string }
+                const update = { _id: combatant.id }
 
                 if (reveal && i === combat.turn && combatant.hidden) {
                     if (revealToken) combatant.token?.update({ hidden: false })
@@ -387,7 +367,7 @@ export class MiniTracker extends Application {
                     updated = true
                 }
 
-                if (immobilize && getFlag<boolean>(combatant, 'freed')) {
+                if (immobilize && getFlag(combatant, 'freed')) {
                     update[flag] = false
                     updated = true
                 }
@@ -395,7 +375,7 @@ export class MiniTracker extends Application {
                 if (updated) combatants.push(update)
 
                 return combatants
-            }, [] as EmbeddedDocumentUpdateData<Combatant>[])
+            }, [])
 
             if (updates.length) combat.updateEmbeddedDocuments('Combatant', updates)
         }
@@ -407,13 +387,13 @@ export class MiniTracker extends Application {
         return super.render(force, options)
     }
 
-    async close(options?: ({ force?: boolean | undefined } & Record<string, unknown>) | undefined): Promise<void> {
+    async close(options) {
         const result = await super.close(options)
         this._hooks.forEach(x => Hooks.off('any', x))
         return result
     }
 
-    activateListeners(html: JQuery) {
+    activateListeners(html) {
         const combat = ui.combat.viewed
         if (!combat || !this.innerElement.length) return
 
@@ -456,8 +436,8 @@ export class MiniTracker extends Application {
         combatants.on('click', tracker._onCombatantMouseDown.bind(tracker))
     }
 
-    setPosition({ left, top, bottom }: ApplicationPosition) {
-        const el = this.element[0]!
+    setPosition({ left, top, bottom }) {
+        const el = this.element[0]
         const currentPosition = this.position
         const minHeight = this.minHeight
 
@@ -493,22 +473,22 @@ export class MiniTracker extends Application {
         return currentPosition
     }
 
-    _contextMenu($html: JQuery) {
-        this._menu = ContextMenu.create(this, $html, '.combatant', ui.combat._getEntryContextOptions())!
+    _contextMenu(html) {
+        this._menu = ContextMenu.create(this, html, '.combatant', ui.combat._getEntryContextOptions())
     }
 
-    #onPreCreateCombatant(combatant: Combatant, data: DocumentUpdateData<Combatant>, context: DocumentModificationContext) {
+    #onPreCreateCombatant(combatant, data, context) {
         if (context.temporary || !getSetting('hide') || combatant.actor?.hasPlayerOwner) return
         combatant.updateSource({ hidden: true })
     }
 
-    #getCombatantFromEvent(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+    #getCombatantFromEvent(event) {
         const $combatant = $(event.currentTarget).closest('.combatant')
-        const id = $combatant.attr('data-combatant-id')!
+        const id = $combatant.attr('data-combatant-id')
         return ui.combat.viewed?.combatants.get(id)
     }
 
-    #targetCombatant(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+    #targetCombatant(event) {
         event.preventDefault()
 
         const combatant = this.#getCombatantFromEvent(event)
@@ -521,13 +501,13 @@ export class MiniTracker extends Application {
         token.setTarget(!targeted, { releaseOthers: !event.shiftKey })
     }
 
-    #onToggleImmobilized(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+    #onToggleImmobilized(event) {
         event.preventDefault()
         const combatant = this.#getCombatantFromEvent(event)
         if (combatant) toggleFreed(combatant)
     }
 
-    async #togglePlayersCanSeeName(event: JQuery.ClickEvent<any, any, HTMLElement>) {
+    async #togglePlayersCanSeeName(event) {
         event.preventDefault()
         const combatant = this.#getCombatantFromEvent(event)
         if (!combatant) return
@@ -540,7 +520,7 @@ export class MiniTracker extends Application {
     }
 
     #makeSortable() {
-        this._sortable = new Sortable(this.listElement[0]!, {
+        this._sortable = new Sortable(this.listElement[0], {
             animation: 150,
             draggable: '.combatant',
             delay: 50,
@@ -548,7 +528,7 @@ export class MiniTracker extends Application {
         })
     }
 
-    #onSortEnd(event: Sortable.SortableEvent) {
+    #onSortEnd(event) {
         const id = event.item.dataset.combatantId
         const combat = ui.combat.viewed
         const oldIndex = event.oldIndex
@@ -570,29 +550,28 @@ export class MiniTracker extends Application {
             nextInit = 0
             prevInit = 2
         } else if (nextInit == null) {
-            nextInit = prevInit! - 2
+            nextInit = prevInit - 2
         } else if (prevInit == null) {
             prevInit = nextInit + 2
         }
 
-        // @ts-ignore
         const newInit = (prevInit + nextInit) / 2
         combat.setInitiative(id, newInit)
     }
 
-    #onResizeStart(event: JQuery.MouseDownEvent) {
+    #onResizeStart(event) {
         event.preventDefault()
 
         window.addEventListener('mousemove', this._resizeHook)
         window.addEventListener('mouseup', this._resizeEndHook)
     }
 
-    #onResize(event: MouseEvent) {
+    #onResize(event) {
         event.preventDefault()
 
         if (!this.moveTick) return
 
-        let maxHeight: number | undefined = event.clientY - (this.position.top ?? 0)
+        let maxHeight = event.clientY - (this.position.top ?? 0)
         if (this.isReversed) maxHeight = -(maxHeight - this.minHeight)
 
         maxHeight = Math.max(maxHeight, this.minHeight)
@@ -607,25 +586,25 @@ export class MiniTracker extends Application {
         this.maxHeight = maxHeight
     }
 
-    #onResizeEnd(event: MouseEvent) {
+    #onResizeEnd(event) {
         event.preventDefault()
 
         window.removeEventListener('mousemove', this._resizeHook)
         window.removeEventListener('mouseup', this._resizeEndHook)
     }
 
-    #onDragStart(event: JQuery.MouseDownEvent) {
+    #onDragStart(event) {
         event.preventDefault()
 
         this.isDragging = true
-        this._initialPosition = duplicate(this.position)
+        this._initialPosition = deepClone(this.position)
         this._initialPointer = { x: event.clientX, y: event.clientY }
 
         window.addEventListener('mousemove', this._dragHook)
         window.addEventListener('mouseup', this._dragEndHook)
     }
 
-    #onDrag(event: MouseEvent) {
+    #onDrag(event) {
         event.preventDefault()
 
         if (!this.moveTick) return
@@ -649,7 +628,7 @@ export class MiniTracker extends Application {
         this._coordsDebounce()
     }
 
-    #onDragEnd(event: MouseEvent) {
+    #onDragEnd(event) {
         event.preventDefault()
 
         this.isDragging = false
@@ -659,7 +638,7 @@ export class MiniTracker extends Application {
         window.removeEventListener('mouseup', this._dragEndHook)
     }
 
-    #onTokenHover(token: Token, hovered: boolean) {
+    #onTokenHover(token, hovered) {
         const combatant = token.combatant
         if (!combatant) return
         const combatants = this.combatantElements
@@ -684,7 +663,7 @@ export class MiniTracker extends Application {
 
     #onListHover() {
         if (this.isExpanded || !getSetting('hover')) return
-        const delay = getSetting<number>('delay')
+        const delay = getSetting('delay')
         if (delay) this._listHoverHook = setTimeout(() => this.#expandList(), delay)
         else this.#expandList()
     }
@@ -694,7 +673,7 @@ export class MiniTracker extends Application {
         this.#collapseList()
     }
 
-    #calculateHeight(tmpHeight?: number) {
+    #calculateHeight(tmpHeight) {
         const inner = this.innerElement
         if (!inner.length) return
 
@@ -721,9 +700,9 @@ export class MiniTracker extends Application {
 
     #scrollToCurrent() {
         const list = this.listElement
-        const height = list.innerHeight()!
+        const height = list.innerHeight()
         if (height === list.prop('scrollHeight')) return
-        const active = list.find('> .active')[0]!
+        const active = list.find('> .active')[0]
         list.scrollTop(active.offsetTop - height / 2 + active.offsetHeight / 2)
     }
 
