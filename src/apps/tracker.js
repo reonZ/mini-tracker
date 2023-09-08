@@ -447,7 +447,7 @@ export class MiniTracker extends Application {
             html.find('[data-control=toggle-name-visibility]').on('click', this.#togglePlayersCanSeeName.bind(this))
         }
 
-        combatants.on('click', tracker._onCombatantMouseDown.bind(tracker))
+        combatants.on('click', this.#onCombatantClick.bind(this))
     }
 
     setPosition({ left, top, bottom }) {
@@ -491,14 +491,34 @@ export class MiniTracker extends Application {
         this._menu = ContextMenu.create(this, html, '.combatant', ui.combat._getEntryContextOptions())
     }
 
+    #onCombatantClick(event) {
+        event.preventDefault()
+
+        if (event.ctrlKey) {
+            const combat = ui.combat.viewed
+            const combatantId = event.currentTarget.closest('.combatant').dataset.combatantId
+            const turn = combat.turns.findIndex(combatant => combatant.id === combatantId)
+            const currentTurn = combat.turn
+
+            if (currentTurn === turn) return
+
+            const direction = turn < currentTurn ? -1 : 1
+
+            Hooks.callAll('combatTurn', combat, { turn }, { direction })
+            combat.update({ turn }, { direction })
+        } else {
+            ui.combat._onCombatantMouseDown(event)
+        }
+    }
+
     #onPreCreateCombatant(combatant, data, context) {
         if (context.temporary || !getSetting('hide') || combatant.actor?.hasPlayerOwner) return
         combatant.updateSource({ hidden: true })
     }
 
     #getCombatantFromEvent(event) {
-        const $combatant = $(event.currentTarget).closest('.combatant')
-        const id = $combatant.attr('data-combatant-id')
+        const combatant = $(event.currentTarget).closest('.combatant')
+        const id = combatant.attr('data-combatant-id')
         return ui.combat.viewed?.combatants.get(id)
     }
 
