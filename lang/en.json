@@ -43,6 +43,14 @@
                 "name": "Open Sheet",
                 "hint": "Should the sheet of the current combatant be automatically opened. This option is only for the GM."
             },
+            "close-sheet": {
+                "name": "Close Sheet",
+                "hint": "Should the sheet of the last combatant be automatically closed on turn change. This option is only for the GM."
+            },
+            "sheet-coords": {
+                "name": "Save Sheet Coords",
+                "hint": "When enabled, the coordinates of the last combatant sheet will be saved and used for the 'Open Sheet' setting. This is only used when the 'Close Sheet' setting is also enabled. This option is only for the GM."
+            },
             "turn": {
                 "name": "End Turn",
                 "hint": "Should the players be able to end their own turn."

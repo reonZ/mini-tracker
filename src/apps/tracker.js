@@ -341,11 +341,25 @@ export class MiniTracker extends Application {
             if (token && getSetting('pan') && combatant.visible) {
                 canvas.animatePan({ x: token.x, y: token.y })
             }
+
+            if (getSetting('close-sheet')) {
+                const lastCombatant = combat?.combatants.get(this._lastCombatant)
+                const sheet = lastCombatant?.actor?.sheet
+                if (sheet && sheet._state === sheet.constructor.RENDER_STATES.RENDERED) {
+                    this._sheetCoords = sheet.position
+                    sheet.close()
+                }
+            }
+
+            if (!getSetting('sheet-coords')) this._sheetCoords = undefined
+
             if (combatant && !combatant.actor?.hasPlayerOwner) {
                 if (token?.object && getSetting('select')) token.object.control({ releaseOthers: true })
 
                 const sheet = combatant.actor?.sheet
-                if (sheet && getSetting('sheet')) sheet.render(true)
+                if (sheet && getSetting('sheet')) {
+                    sheet.render(true, this._sheetCoords ?? {})
+                }
             }
         }
 

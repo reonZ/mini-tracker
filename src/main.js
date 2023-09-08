@@ -192,6 +192,20 @@ Hooks.once('init', () => {
         default: false,
     })
 
+    registerSetting({
+        name: 'close-sheet',
+        config: true,
+        type: Boolean,
+        default: false,
+    })
+
+    registerSetting({
+        name: 'sheet-coords',
+        config: true,
+        type: Boolean,
+        default: true,
+    })
+
     thirdPartyInitialization()
 })
 
