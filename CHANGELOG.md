@@ -1,3 +1,8 @@
+# 1.19.1
+
+-   fixed error with the `pf2e` system
+-   fixed sheet not automatically closing owhen it was in the `RENDERING` state
+
 # 1.19.0
 
 -   you can now directly go to any combatant initiative using `ctrl + click` which prevent the need to click multiple times on `Next Turn` or `Previous Turn` to reach the combatant (also preventing turn change triggers from certain systems/modules for the in-between combatants)
