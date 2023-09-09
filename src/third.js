@@ -1,3 +1,5 @@
+import { tokenSetsNameVisibility } from './third/pf2e'
+
 export let thirdPartyCanNamesBeHidden
 export let thirdPartyPlayersSeeName
 export let thirdPartyToggleSeeName
