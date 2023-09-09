@@ -345,9 +345,10 @@ export class MiniTracker extends Application {
             if (getSetting('close-sheet')) {
                 const lastCombatant = combat?.combatants.get(this._lastCombatant)
                 const sheet = lastCombatant?.actor?.sheet
-                if (sheet && sheet._state === sheet.constructor.RENDER_STATES.RENDERED) {
+
+                if (sheet && sheet.appId in ui.windows) {
                     this._sheetCoords = sheet.position
-                    sheet.close()
+                    sheet.close({ force: true })
                 }
             }
 
