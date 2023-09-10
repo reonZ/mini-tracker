@@ -11,6 +11,7 @@ import {
     templatePath,
 } from '../module'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '../third/mtb'
+import { thirdPartyToggleSeeName } from '../third'
 
 export class MiniTracker extends Application {
     constructor() {
