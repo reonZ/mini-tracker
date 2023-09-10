@@ -1,7 +1,11 @@
+# 1.19.2
+
+-   fixed third party toggle see name error
+
 # 1.19.1
 
 -   fixed error with the `pf2e` system
--   fixed sheet not automatically closing owhen it was in the `RENDERING` state
+-   fixed sheet not automatically closing when it was in the `RENDERING` state
 
 # 1.19.0
 
