@@ -1,3 +1,7 @@
+# 1.19.3
+
+-   fixed immobilization error for players
+
 # 1.19.2
 
 -   fixed third party toggle see name error
