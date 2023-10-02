@@ -3,6 +3,7 @@ import { MiniTracker } from './apps/tracker'
 import { getSetting, registerSetting } from './module'
 import { thirdPartyInitialization } from './third'
 import { hasMTB } from './third/mtb'
+import { preUpdateToken } from './token'
 import { renderCombatTrackerConfig } from './tracker'
 
 export let tracker = null
