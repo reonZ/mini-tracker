@@ -6,38 +6,6 @@
 
 This module adds an extra floating `Combat Tracker` which provides new functionalities.
 
--   [Displayed when needed](#displayed-when-needed)
--   [Minimized](#minimized)
--   [Expanded](#expanded)
--   [Change Orientation](#change-orientation)
--   [Saved](#saved)
--   [Change initiative by dragging combatant](#change-initiative-by-dragging-combatant)
--   [Prevent Movement](#prevent-movement)
--   [Hide creatures name](#hide-creatures-name)
-    -   [Systems](#systems)
-    -   [Modules](#modules)
--   [Settings](#settings)
-    -   [Enabled (client)](#enabled-client)
-    -   [Font Size (client)](#font-size-client)
-    -   [Expand on Hover (client)](#expand-on-hover-client)
-    -   [Hover Delay (client)](#hover-delay-client)
-    -   [End Turn](#end-turn)
-    -   [Show HP](#show-hp)
-    -   [HP Value Path](#hp-value-path)
-    -   [HP Max Path](#hp-max-path)
-    -   [Dim Anonymous](#dim-anonymous)
-    -   [Hide Defeated](#hide-defeated)
-    -   [Hide Combatants](#hide-combatants)
-    -   [Reveal Combatants](#reveal-combatants)
-    -   [Reveal Tokens](#reveal-tokens)
-    -   [Prevent Movement](#prevent-movement)
-    -   [Pan to Token](#pan-to-token)
-    -   [Select Token](#select-token)
-    -   [Open Sheet](#open-sheet)
--   [Secret](#secret)
--   [Localization](#localization)
--   [CHANGELOG](#changelog)
-
 # Displayed when needed
 
 The tracker will automatically appear on screen when there is an active encounter containing a combatant owned by the user (any combatant will do for the GM).
@@ -204,11 +172,6 @@ To change this setting, simply open your browser devtools (F12) and in the conso
 To return to the normal behavior simply type:
 
     game.settings.set('mini-tracker', 'fake-reversed', false)
-
-# Localization
-
--   English
--   Spanish thanks to [lozanoje](https://github.com/lozanoje)
 
 # CHANGELOG
 
