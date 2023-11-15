@@ -87,7 +87,8 @@
                     {{#if this.hasRolled}} {{#if @root.showHp}}
                     <span>{{this.initiative}} <i class="fas fa-dice-d20"></i></span>
                     {{#if this.showHp}}
-                    <span class="hp{{#unless (eq this.hpMax undefined)}} colored{{/unless}}" style="--hp-hue: {{this.hpHue}};">
+                    <span class="hp{{#unless (eq this.hpMax undefined)}} colored{{/unless}}{{#if this.hpTooltip}} special{{/if}}"
+                        style="--hp-hue: {{this.hpHue}};" data-tooltip="{{this.hpTooltip}}">
                         {{this.hpValue}}
                         <i class="fas fa-heart"></i>
                     </span>

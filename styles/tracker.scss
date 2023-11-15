@@ -228,8 +228,14 @@
                 }
 
                 &:not(.hidden):not(.defeated) {
-                    .__initiative .hp.colored {
-                        color: hsl(var(--hp-hue) 75% 40%);
+                    .__initiative .hp {
+                        &.colored {
+                            color: hsl(var(--hp-hue) 75% 40%);
+                        }
+
+                        &.special i {
+                            text-shadow: 0 0 4px #00f4ff;
+                        }
                     }
                 }
 

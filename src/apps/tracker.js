@@ -11,7 +11,7 @@ import {
     templatePath,
 } from '../module'
 import { cloneIcons, hasMTB, showOnTrackerMTB } from '../third/mtb'
-import { thirdPartyToggleSeeName } from '../third'
+import { thirdPartyHealthEstimate, thirdPartyToggleSeeName } from '../third'
 
 export class MiniTracker extends Application {
     constructor() {
@@ -157,8 +157,6 @@ export class MiniTracker extends Application {
 
         const currentCombatant = combat.combatant
         const showHp = getSetting('showHp')
-        const hpValuePath = getSetting('hpValue')
-        const hpMaxPath = getSetting('hpMax')
         const endTurn = getSetting('turn')
         const reversed = this.isReversed
         const hideNames = canNamesBeHidden()
@@ -170,6 +168,17 @@ export class MiniTracker extends Application {
 
         let hasActive = false
         let hasDecimals = false
+
+        const healthEstimate =
+            thirdPartyHealthEstimate() ??
+            (() => {
+                const hpValuePath = getSetting('hpValue')
+                const hpMaxPath = getSetting('hpMax')
+                return actor => ({
+                    hpValue: !!hpValuePath ? getProperty(actor, `system.${hpValuePath}`) : undefined,
+                    hpMax: !!hpMaxPath ? getProperty(actor, `system.${hpMaxPath}`) : undefined,
+                })
+            })()
 
         const turns = []
         for (const [i, combatant] of combat.turns.entries()) {
@@ -186,8 +195,7 @@ export class MiniTracker extends Application {
                 }
             }
 
-            const hpValue = !!hpValuePath ? getProperty(combatant, `actor.system.${hpValuePath}`) : undefined
-            const hpMax = !!hpMaxPath ? getProperty(combatant, `actor.system.${hpMaxPath}`) : undefined
+            const { hpValue, hpMax, hpTooltip } = healthEstimate(combatant.actor) ?? {}
 
             let hpHue
             if (hpValue !== undefined && hpMax !== undefined) {
@@ -243,6 +251,7 @@ export class MiniTracker extends Application {
                 hpValue,
                 hpMax,
                 hpHue,
+                hpTooltip,
                 active,
                 showHp:
                     hpValue !== undefined &&

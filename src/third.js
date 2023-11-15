@@ -1,4 +1,5 @@
-import { tokenSetsNameVisibility } from './third/pf2e'
+import { getDnd5eHealthEstimate } from './third/dnd5e'
+import { getPF2eHealthEstimate, tokenSetsNameVisibility } from './third/pf2e'
 
 export let thirdPartyCanNamesBeHidden
 export let thirdPartyPlayersSeeName
@@ -17,4 +18,16 @@ export function thirdPartyInitialization() {
         thirdPartyCanNamesBeHidden = tokenSetsNameVisibility
         thirdPartyPlayersSeeName = combatant => combatant.playersCanSeeName
     }
+}
+
+export function thirdPartyHealthEstimate() {
+    let fn
+
+    if (game.system.id === 'pf2e') {
+        fn = getPF2eHealthEstimate
+    } else if (game.system.id === 'dnd5e') {
+        fn = getDnd5eHealthEstimate
+    }
+
+    return fn ? actor => (actor ? fn(actor) : undefined) : undefined
 }

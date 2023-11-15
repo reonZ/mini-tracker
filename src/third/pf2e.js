@@ -22,3 +22,27 @@ export function tokenSetsNameVisibility() {
         return !!game.settings.get('pf2e', 'metagame.tokenSetsNameVisibility')
     return !!game.settings.get('pf2e', 'metagame_tokenSetsNameVisibility')
 }
+
+export function getPF2eHealthEstimate(actor) {
+    const hp = actor.system.attributes.hp
+
+    let hpValue = hp.value + hp.temp
+    let hpMax = hp.max
+    let hasSpecial = !!hp.temp
+    let tooltip = hp.value
+
+    if (hasSpecial) tooltip += ` + ${hp.temp} temp`
+
+    if (actor.type === 'character' && game.settings.get('pf2e', 'staminaVariant')) {
+        hpValue += hp.sp.value
+        hpMax += hp.sp.max
+        hasSpecial ||= !!hp.sp.value
+        tooltip += ` + ${hp.sp.value} stam`
+    }
+
+    return {
+        hpValue,
+        hpMax,
+        hpTooltip: hasSpecial ? tooltip : '',
+    }
+}
