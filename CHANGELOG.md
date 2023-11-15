@@ -1,3 +1,9 @@
+# 1.20.0
+
+-   added special health estimate for both the `DnD5e` and `PF2e` systems
+    -   it will now show the total of the HP + temp HP + stamina (for `PF2e`)
+    -   if the combatant has any temp HP or stamina, the little heart will have a blue shadow and hovering over it will show the separated values
+
 # 1.19.3
 
 -   fixed immobilization error for players

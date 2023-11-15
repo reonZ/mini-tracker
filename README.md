@@ -117,9 +117,13 @@ Select the requirement to display HP in the tracker.
 
 If set with an actor system path, will display the current hp of combatants in the tracker.
 
+NOTE: the systems `DnD5e` and `PF2e` have their own functionality for it
+
 ## HP Max Path
 
 If set with an actor system path, will color code the hp on the tracker depending on the ratio current/max HP. This requires a valid path for HP value too.
+
+NOTE: the systems `DnD5e` and `PF2e` have their own functionality for it
 
 ## Dim Anonymous
 
