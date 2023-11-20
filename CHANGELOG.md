@@ -1,3 +1,7 @@
+# 1.20.1
+
+-   changed the `Ping Token` icon
+
 # 1.20.0
 
 -   added special health estimate for both the `DnD5e` and `PF2e` systems
