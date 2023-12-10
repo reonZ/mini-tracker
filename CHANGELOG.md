@@ -1,3 +1,8 @@
+# 1.21.0
+
+-   added a `Threat Award` tooltip for the `PF2e` system, it can be seen when hovering over the setting cog icon
+-   fixed not being able to toggle name visibility when using the `PF2e` system `Tokens Determine NPC Name Visibility` metagame setting
+
 # 1.20.1
 
 -   changed the `Ping Token` icon

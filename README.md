@@ -78,6 +78,10 @@ If `shift` is held while toggling a combatant name, all the combatants with the 
 
 -   [Anonymous](https://foundryvtt.com/packages/anonymous)
 
+# Threat Award
+
+A threat award tooltip will be generated for the [Pathfinder Second Edition (Official)](https://foundryvtt.com/packages/pf2e) when hovering over the setting cog icon of the `Mini Tracker`, giving a summary of the encounter difficulty and how much experience should be awarded to the participants
+
 # Settings
 
 ## Enabled (client)
