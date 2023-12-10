@@ -316,3 +316,39 @@
         }
     }
 }
+
+[role='tooltip'] {
+    .pf2e-mini-tracker-threat-award {
+        > * {
+            text-align: start;
+
+            &.small {
+                font-size: 0.85em;
+                font-style: italic;
+                text-align: end;
+            }
+        }
+
+        .threat {
+            &.trivial {
+                color: aqua;
+            }
+
+            &.low {
+                color: lime;
+            }
+
+            &.moderate {
+                color: yellow;
+            }
+
+            &.severe {
+                color: orange;
+            }
+
+            &.extreme {
+                color: red;
+            }
+        }
+    }
+}

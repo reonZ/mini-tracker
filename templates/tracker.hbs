@@ -21,12 +21,13 @@
             </span>
 
             {{#if isGM}}
-            <a data-control="trackerSettings" title="{{localize 'COMBAT.Settings'}}">
+            <a data-control="trackerSettings" {{#if threatAwardTooltip includeZero=true}}data-tooltip="{{threatAwardTooltip}}"
+                data-tooltip-direction="{{direction}}" {{else}}title="{{localize 'COMBAT.Settings'}}" {{/if}}>
                 <i class="fas fa-cog"></i>
             </a>
             {{/if}}
             <a data-control="trackerReverse" title="{{localize 'mini-tracker.reverse'}}">
-                <i class="fa-solid fa-arrow-{{arrow}}"></i>
+                <i class="fa-solid fa-arrow-{{lower direction}}"></i>
             </a>
             <a data-control="trackerExpand" title="{{localize 'mini-tracker.expand'}}">
                 <i class="fas fa-expand"></i>

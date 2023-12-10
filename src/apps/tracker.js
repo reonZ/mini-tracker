@@ -1,5 +1,5 @@
 import Sortable from 'sortablejs'
-import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '../combat.'
+import { canNamesBeHidden, getCombatantColor, getName, playersSeeName, toggleFreed, togglePlayersSeeName } from '../combat'
 import {
     easeInQuad,
     flagsUpdatePath,
@@ -7,11 +7,12 @@ import {
     getFlag,
     getSameCombatants,
     getSetting,
+    localize,
     setSetting,
     templatePath,
 } from '../module'
-import { cloneIcons, hasMTB, showOnTrackerMTB } from '../third/mtb'
 import { thirdPartyHealthEstimate, thirdPartyToggleSeeName } from '../third'
+import { cloneIcons, hasMTB, showOnTrackerMTB } from '../third/mtb'
 
 export class MiniTracker extends Application {
     constructor() {
@@ -285,6 +286,14 @@ export class MiniTracker extends Application {
             combatant.initiative = combatant.initiative.toFixed(hasDecimals ? precision : 0)
         })
 
+        const threatAwardTooltip = await (async () => {
+            if (game.system.id !== 'pf2e' || !combat.metrics) return ''
+            return renderTemplate(templatePath('pf2e-threat-award.hbs'), {
+                ...combat.metrics,
+                i18n: key => localize(`pf2e.${key}`),
+            })
+        })()
+
         return {
             isGM,
             turns,
@@ -294,10 +303,11 @@ export class MiniTracker extends Application {
             showHp: showHp === 'all' || showHp === 'friendly' || (showHp === 'gm' && isGM),
             hasCombat: true,
             round: combat.round,
-            arrow: reversed ? 'up' : 'down',
+            direction: reversed ? 'UP' : 'DOWN',
             innerCss: innerCss.join(' '),
             isCurrentTurn: currentCombatant?.isOwner,
             fontSize: getSetting('scale'),
+            threatAwardTooltip,
         }
     }
 

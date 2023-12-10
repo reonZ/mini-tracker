@@ -10,6 +10,10 @@
             "show": "Show name to players",
             "hide": "Hide name from players"
         },
+        "pf2e": {
+            "budget": "Budget",
+            "level": "Party Level"
+        },
         "movement": {
             "free": "Free movement",
             "lock": "Lock Movement"
