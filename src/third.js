@@ -17,6 +17,7 @@ export function thirdPartyInitialization() {
     } else if (game.system.id === 'pf2e') {
         thirdPartyCanNamesBeHidden = tokenSetsNameVisibility
         thirdPartyPlayersSeeName = combatant => combatant.playersCanSeeName
+        thirdPartyToggleSeeName = combatant => combatant.toggleNameVisibility()
     }
 }
 
