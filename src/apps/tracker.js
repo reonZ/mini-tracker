@@ -308,6 +308,7 @@ export class MiniTracker extends Application {
             isCurrentTurn: currentCombatant?.isOwner,
             fontSize: getSetting('scale'),
             threatAwardTooltip,
+            lower: str => str.toLowerCase(),
         }
     }
 
