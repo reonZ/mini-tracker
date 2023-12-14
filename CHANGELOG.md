@@ -1,3 +1,7 @@
+# 1.21.1
+
+-   fixed error with missing handlebar helper
+
 # 1.21.0
 
 -   added a `Threat Award` tooltip for the `PF2e` system, it can be seen when hovering over the setting cog icon
