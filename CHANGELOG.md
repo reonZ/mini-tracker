@@ -1,3 +1,7 @@
+# 1.22.0
+
+-   added a new `Texture Scaling` client setting (default enabled): the module will invert scale the combatant's image based on the token texture scaling, useful for worlds that use popout images
+
 # 1.21.1
 
 -   fixed error with missing handlebar helper
