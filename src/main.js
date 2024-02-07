@@ -38,6 +38,15 @@ Hooks.once('init', () => {
     })
 
     registerSetting({
+        name: 'texture-scaling',
+        scope: 'client',
+        config: true,
+        type: Boolean,
+        default: true,
+        onChange: refreshTracker,
+    })
+
+    registerSetting({
         name: 'hover',
         scope: 'client',
         config: true,

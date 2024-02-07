@@ -39,7 +39,8 @@
             {{#if this}}
             <li class="combatant {{this.css}}" data-combatant-id="{{this.combatantId}}" data-token-id="{{this.tokenId}}"
                 style="--color-border: {{this.colors.border}}; --color-background: {{this.colors.background}};">
-                <img src="{{this.img}}" alt="{{this.name}}" />
+                <div class="__avatar" style="background-image: {{this.avatar.image}}; background-size: {{this.avatar.size}};">
+                </div>
                 <div class="__targets"></div>
 
                 <div class="__details">

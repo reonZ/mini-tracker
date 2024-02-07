@@ -228,6 +228,12 @@ export class MiniTracker extends Application {
 
             const color = getCombatantColor(combatant)
 
+            const texture = (getSetting('texture-scaling') ? combatant.token.texture : undefined) ?? {
+                scaleX: 1,
+                scaleY: 1,
+                src: await ui.combat._getCombatantThumbnail(combatant),
+            }
+
             const turn = {
                 combatantId: combatant.id,
                 tokenId: combatant.tokenId,
@@ -237,6 +243,10 @@ export class MiniTracker extends Application {
                     background: color.toRGBA(0.1),
                 },
                 name,
+                avatar: {
+                    image: `url(${texture.src})`,
+                    size: `calc(100% * ${Math.max(1, texture.scaleX)}) calc(100% * ${Math.max(1, texture.scaleY)})`,
+                },
                 img: await ui.combat._getCombatantThumbnail(combatant),
                 hidden,
                 hasPlayerOwner,

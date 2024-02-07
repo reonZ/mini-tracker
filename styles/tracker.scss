@@ -120,6 +120,13 @@
                     border-color: var(--color-border);
                 }
 
+                .__avatar {
+                    height: var(--sidebar-item-height);
+                    width: var(--sidebar-item-height);
+                    background-position: center;
+                    background-repeat: no-repeat;
+                }
+
                 .__targets {
                     position: absolute;
                     width: var(--sidebar-item-height);
@@ -134,15 +141,6 @@
                         border-radius: 50%;
                         border: 1px solid white;
                     }
-                }
-
-                > img {
-                    flex: 0 0 var(--sidebar-item-height);
-                    height: var(--sidebar-item-height);
-                    width: var(--sidebar-item-height);
-                    object-fit: cover;
-                    object-position: 50% 0;
-                    border: none;
                 }
 
                 .__details {

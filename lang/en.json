@@ -23,6 +23,10 @@
                 "name": "Enabled",
                 "hint": "Enable/disable mini combat tracker."
             },
+            "texture-scaling": {
+                "name": "Texture Scaling",
+                "hint": "When enabled, the module will invert scale the combatant's image based on the token texture scaling. Useful for worlds that use popout images."
+            },
             "pan": {
                 "name": "Pan to Token",
                 "hint": "Should the camera pan to the token of the current combatant. This option is only for the GM."
