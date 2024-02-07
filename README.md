@@ -92,6 +92,10 @@ Enable or disable the mini tracker for the user.
 
 Changing the font size will scale the whole tracker with it.
 
+## Texture Scaling
+
+When enabled, the module will invert scale the combatant's image based on the token texture scaling. Useful for worlds that use popout images.
+
 ## Expand on Hover (client)
 
 When enabled, the tracker will expand when hovering over the combatant.
